@@ -17,7 +17,7 @@ export default function Home() {
     const fetchUsers = async () => {
       
       const users = await Promise.all(userIds.map(async userId => {
-        const url = `http://localhost:7071/api/users/${userId}`
+        const url = `https://bjsscompetitivestandingbackend.azurewebsites.net/api/users/${userId}`
         console.log(url);
         
         const response = await fetch(url)
@@ -25,10 +25,6 @@ export default function Home() {
       }))
 
       console.log(users)
-
-      // const response = await fetch('http://localhost:7071/api/users/jjp')
-
-      // const json = await response.json()
 
       setUsers(users)
       setApiLoading(false)
