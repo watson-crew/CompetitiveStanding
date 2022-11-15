@@ -6,6 +6,7 @@
     "dev": "npm start",
     "build": "tsc",
     "watch": "tsc -w",
+    "lint": "echo \"No Linting configured\"",
     "prestart": "npm run build",
     "start": "func start",
     "test": "echo \"No tests yet...\""
