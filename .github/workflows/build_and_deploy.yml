@@ -1,0 +1,151 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server' # set this to the path to your web app project, defaults to the repository root
+  NODE_VERSION: '16.x' # set this to the node version to use (supports 8.x, 10.x, 12.x)
+  BACKEND_SLOT: ${{ github.ref == 'refs/heads/master' && 'Production' || 'qa' }}
+  BACKEND_PUBLISH_PROFILE: ${{ github.ref == 'refs/heads/master' && secrets.PRODUCTION_BACKEND_PUBLISH_PROFILE || secrets.QA_BACKEND_PUBLISH_PROFILE }}
+  FRONTEND_OUTPUT_LOCATION: './apps/web/out'
+  BACKEND_OUTPUT_LOCATION: './apps/server/dist'
+  API_BASE_URL: ${{ github.ref == 'refs/heads/master' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
+
+jobs:
+  cancel-existing:
+    runs-on: ubuntu-latest
+    name: Cancel Previous Pipeline Runs
+    steps:
+      - uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+  install:
+    needs: cancel-existing
+    runs-on: ubuntu-latest
+    name: 'NPM Install'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup npmrc
+        run: echo "//npm.pkg.github.com/:_authToken=${{secrets.NPM_AUTH_TOKEN}}" > .npmrc
+      - name: Cache Node modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-cache-node-modules-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Node build
+        run: npm ci
+
+  lint:
+    needs: install
+    name: 'Lint source code'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Load node_modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Lint
+        run: npm run lint
+
+  test:
+    needs: install
+    name: 'Run tests'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Load node_modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Unit Test
+        run: npm test
+
+  build:
+    needs:
+      - lint
+      - test
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Load node_modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Build
+        run: npm run build
+      - name: Cache Frontend
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.FRONTEND_OUTPUT_LOCATION }}
+          key: ${{ runner.os }}-build-cache-frontend-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-cache-frontend-
+      - name: Cache Backend
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.BACKEND_OUTPUT_LOCATION }}
+          key: ${{ runner.os }}-build-cache-backend-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-cache-backend-
+
+  deploy-frontend:
+    name: Frontend Deploy
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Load frontend
+        uses: actions/cache@v2
+        with:
+          path: './apps/web/out'
+          key: ${{ runner.os }}-build-cache-frontend-${{ hashFiles('**/package-lock.json') }}
+      - name: Deploy frontend
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BAY_0CAAA7303 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          skip_app_build: true
+          app_location: ${{ env.FRONTEND_OUTPUT_LOCATION }}
+
+  deploy-backend:
+    name: Backend Deploy
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Load backend
+        uses: actions/cache@v2
+        with:
+          path: '**/apps/server/dist'
+          key: ${{ runner.os }}-build-cache-backend-${{ hashFiles('**/package-lock.json') }}
+      - name: Deploy azure functions
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: 'BjssCompetitiveStandingBackend'
+          slot-name: ${{ env.BACKEND_SLOT }}
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          publish-profile: ${{ env.BACKEND_PUBLISH_PROFILE }}
