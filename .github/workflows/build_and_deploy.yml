@@ -82,6 +82,11 @@ jobs:
     name: Build
     steps:
       - uses: actions/checkout@v2
+      - name: Load node_modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Build
         run: npm run build
       - name: Cache Frontend
