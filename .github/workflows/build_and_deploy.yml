@@ -109,7 +109,7 @@ jobs:
         with:
           path: './apps/web/out'
           key: ${{ runner.os }}-build-cache-frontend-${{ hashFiles('**/package-lock.json') }}
-      - name: Build And Deploy
+      - name: Deploy frontend
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -117,8 +117,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           skip_app_build: true
-          app_location: '.' # App source code path
-          output_location: ${{ env.FRONTEND_OUTPUT_LOCATION }}
+          app_location: ${{ env.FRONTEND_OUTPUT_LOCATION }}
 
   deploy-backend:
     name: Backend Deploy
@@ -132,7 +131,7 @@ jobs:
         with:
           path: '**/apps/server/dist'
           key: ${{ runner.os }}-build-cache-backend-${{ hashFiles('**/package-lock.json') }}
-      - name: Build And Deploy
+      - name: Deploy azure functions
         uses: Azure/functions-action@v1
         id: fa
         with:
