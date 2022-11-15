@@ -28,6 +28,7 @@ jobs:
           access_token: ${{ github.token }}
 
   install:
+    needs: cancel-existing
     runs-on: ubuntu-latest
     name: 'NPM Install'
     steps:
