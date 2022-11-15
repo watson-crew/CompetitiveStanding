@@ -3,7 +3,7 @@ import users from "../src/db/userDb";
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
-  req: HttpRequest
+  _req: HttpRequest
 ): Promise<void> {
   const { memorableId } = context.bindingData;
 
