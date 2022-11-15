@@ -41,36 +41,23 @@ export default function Index() {
   const [apiLoading, setApiLoading] = useState(true)
   const [users, setUsers] = useState<any[]>([])
 
-  const userIds = ['jjp', 'pjm', 'stc', 'ad2']
-
   const { apiBaseUrl } = getConfig().publicRuntimeConfig
+  const userIds = ['jjp', 'pjm', 'stc', 'ad2']
 
   useEffect(() => {
 
+    console.log('called')
+
     const fetchUsers = async () => {
-      
-      console.log(apiBaseUrl)
 
       const responses = await Promise.all(userIds
-        .map(async userId => { 
-          try {
-            const foo = await fetch(`${apiBaseUrl}/users/${userId}`)
-            console.log(foo)
-            return fetch(`${apiBaseUrl}/users/${userId}`)
-          } catch (error) {
-            return null
-          }
-        })
+        .map(userId => fetch(`${apiBaseUrl}/users/${userId}`).catch(() => null)
+        )
       )
-
-      console.log(responses)
-
 
       const users = await Promise.all(responses
         .filter(response => response && response.status === 200)
         .map(response => response!.json()))
-
-      console.log(users)
 
       setUsers(users)
       setApiLoading(false)

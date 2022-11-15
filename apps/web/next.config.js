@@ -1,7 +1,7 @@
 const withTM = require('next-transpile-modules')(['ui']);
 
 module.exports = withTM({
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
     domains: ['i.pinimg.com', 'ca.slack-edge.com'],
     unoptimized: true

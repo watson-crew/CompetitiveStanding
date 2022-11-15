@@ -8,13 +8,15 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
+
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server' # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '16.x' # set this to the node version to use (supports 8.x, 10.x, 12.x)
   BACKEND_SLOT: ${{ github.ref == 'refs/heads/master' && 'Production' || 'qa' }}
-  BACKEND_PUBLISH_PROFILE: ${{ github.ref == 'refs/heads/master' && secrets.AZUREAPPSERVICE_PUBLISHPROFILE_38A24B57869D4A5BACD927DB7B0D1E40 || secrets.QA_BACKEND_PUBLISH_PROFILE }}
+  BACKEND_PUBLISH_PROFILE: ${{ github.ref == 'refs/heads/master' && secrets.PRODUCTION_BACKEND_PUBLISH_PROFILE || secrets.QA_BACKEND_PUBLISH_PROFILE }}
   FRONTEND_OUTPUT_LOCATION: './apps/web/out'
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
+  API_BASE_URL: ${{ github.ref == 'refs/heads/master' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
 
 jobs:
   cancel-existing:

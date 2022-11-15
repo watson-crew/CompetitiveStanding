@@ -15,7 +15,7 @@ const httpTrigger: AzureFunction = async function (
 
   context.res = {
     headers: {
-      'Access-Control-Allow-Origin': 'http://localhost:3001',
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET',
       'Content-Type': 'application/json',
     },
