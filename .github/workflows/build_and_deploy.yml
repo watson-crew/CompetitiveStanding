@@ -70,8 +70,11 @@ jobs:
 
   deploy-frontend:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    needs:
+      - lint
+      - test
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
+    name: Frontend Deploy
     steps:
       - uses: actions/checkout@v2
         with:
@@ -87,7 +90,7 @@ jobs:
 
   deploy-backend-prod:
     if: (github.ref == 'refs/heads/master' && github.event_name == 'push')
-    name: 'Deploy Production'
+    name: 'Backend deploy - Production '
     runs-on: ubuntu-latest
     needs:
       - lint
