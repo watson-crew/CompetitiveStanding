@@ -6,15 +6,14 @@
   "scripts": {
     "dev": "npm start",
     "build": "./build.sh",
-    "build2": "tsc && cp package.json dist && cd dist && npm install --production && cd .. && prisma generate && cp -R node_modules/.prisma dist/node_modules",
     "ts:transpile": "tsc",
     "prisma:generate": "prisma generate",
+    "prisma:migrate-deploy": "prisma migrate deploy",
     "watch": "tsc -w",
     "lint": "echo \"No Linting configured\"",
     "prestart": "npm run build",
     "start": "func start",
-    "test": "echo \"No tests yet...\"",
-    "prisma:migrate": "prisma migrate deploy"
+    "test": "echo \"No tests yet...\""
   },
   "prisma": {
     "seed": "npx ts-node prisma/seed.ts"

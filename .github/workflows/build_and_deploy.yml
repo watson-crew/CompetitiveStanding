@@ -144,9 +144,14 @@ jobs:
         with:
           files: |
             **/migrations/**
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changed-files-specific.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
       - name: Run database migration
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run migrate:deploy
+        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run prisma:migrate-deploy
 
   deploy-backend:
     name: Backend Deploy
