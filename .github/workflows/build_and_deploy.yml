@@ -126,11 +126,10 @@ jobs:
   migrate-database:
     name: Datbase Migration
     runs-on: ubuntu-latest
-    # TODO: Only deploy to production when in main (TODO: Configure to deploy test for some branches, prod when on main)
     needs:
       - build
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
+      DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
       AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server'
     steps:
       - uses: actions/checkout@v2
@@ -139,10 +138,15 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Run production migration
+      - name: Get changed files in the migrations folder
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v34
+        with:
+          files: |
+            **/migrations/**
+      - name: Run database migration
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run migrate:deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
 
   deploy-backend:
     name: Backend Deploy
