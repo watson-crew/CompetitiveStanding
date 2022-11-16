@@ -129,6 +129,9 @@ jobs:
     # TODO: Only deploy to production when in main (TODO: Configure to deploy test for some branches, prod when on main)
     needs:
       - build
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
+      AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server'
     steps:
       - uses: actions/checkout@v2
       - name: Load node_modules
