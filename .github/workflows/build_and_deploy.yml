@@ -10,13 +10,9 @@ on:
       - main
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server' # set this to the path to your web app project, defaults to the repository root
-  NODE_VERSION: '16.x' # set this to the node version to use (supports 8.x, 10.x, 12.x)
-  BACKEND_SLOT: ${{ github.ref == 'refs/heads/main' && 'Production' || 'qa' }}
-  BACKEND_PUBLISH_PROFILE: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_BACKEND_PUBLISH_PROFILE || secrets.QA_BACKEND_PUBLISH_PROFILE }}
+  NODE_VERSION: '16.x'
   FRONTEND_OUTPUT_LOCATION: './apps/web/out'
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
-  API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
 
 jobs:
   cancel-existing:
@@ -38,10 +34,6 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-cache-node-modules-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Node build
         run: npm ci
 
@@ -79,6 +71,8 @@ jobs:
       - test
     runs-on: ubuntu-latest
     name: Build
+    env:
+      API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
     steps:
       - uses: actions/checkout@v3
       - name: Load node_modules
@@ -87,21 +81,22 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Build
-        run: npm run build
+        run: |
+          npm run build
+          echo "Built frontend"
+          find ${{ env.FRONTEND_OUTPUT_LOCATION }}
+          echo "Built backend"
+          find ${{ env.BACKEND_OUTPUT_LOCATION }}
       - name: Cache Frontend
         uses: actions/cache@v3
         with:
           path: ${{ env.FRONTEND_OUTPUT_LOCATION }}
           key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-build-cache-frontend-
       - name: Cache Backend
         uses: actions/cache@v3
         with:
           path: ${{ env.BACKEND_OUTPUT_LOCATION }}
           key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-build-cache-backend-
 
   deploy-frontend:
     name: Frontend Deploy
@@ -115,7 +110,7 @@ jobs:
       - name: Load frontend
         uses: actions/cache@v3
         with:
-          path: './apps/web/out'
+          path: ${{ env.FRONTEND_OUTPUT_LOCATION }}
           key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
       - name: Deploy frontend
         id: builddeploy
@@ -132,12 +127,16 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build
+    env:
+      AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server'
+      BACKEND_SLOT: ${{ github.ref == 'refs/heads/main' && 'Production' || 'qa' }}
+      BACKEND_PUBLISH_PROFILE: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_BACKEND_PUBLISH_PROFILE || secrets.QA_BACKEND_PUBLISH_PROFILE }}
     steps:
       - uses: actions/checkout@v3
       - name: Load backend
         uses: actions/cache@v3
         with:
-          path: '**/apps/server/dist'
+          path: ${{ env.BACKEND_OUTPUT_LOCATION }}
           key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
       - name: Deploy azure functions
         uses: Azure/functions-action@v1
