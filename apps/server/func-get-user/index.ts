@@ -1,8 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions';
 import users from '../src/db/userDb';
 
-const isOdd = require('is-odd');
-
 const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest,
@@ -15,17 +13,26 @@ const httpTrigger: AzureFunction = async function (
 
   context.log(`[func-get-user] Found user ${JSON.stringify(user)}`);
 
-  context.log(isOdd('2'));
+  try {
+    const isOdd = require('is-odd');
+    context.log(isOdd('2'));
 
-  context.res = {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET',
-      'Content-Type': 'application/json',
-      'is-odd': isOdd('2'),
-    },
-    body: user,
-  };
+    context.res = {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET',
+        'Content-Type': 'application/json',
+      },
+      body: user,
+    };
+  } catch (err) {
+    context.log(err);
+
+    context.res = {
+      status: 500,
+      body: JSON.stringify(err),
+    };
+  }
 };
 
 export default httpTrigger;
