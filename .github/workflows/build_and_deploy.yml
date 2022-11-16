@@ -142,8 +142,8 @@ jobs:
         id: changed-files-specific
         uses: tj-actions/changed-files@v34
         with:
-          files: |
-            **/migrations/**
+          files: "**/migrations/**"
+          fetch_depth: "1"
       - name: List all changed files
         run: |
           for file in ${{ steps.changed-files-specific.outputs.all_changed_files }}; do
