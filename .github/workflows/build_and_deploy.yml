@@ -127,11 +127,31 @@ jobs:
           skip_app_build: true
           app_location: ${{ env.FRONTEND_OUTPUT_LOCATION }}
 
+  migrate-database:
+    name: Datbase Migration
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # Only deploy main (TODO: Configure to deploy test for some branches, prod when on main)
+    needs:
+      - test
+    steps:
+      - uses: actions/checkout@v2
+      - name: Load node_modules
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Run production migration
+        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        run: npm run migrate:deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
   deploy-backend:
     name: Backend Deploy
     runs-on: ubuntu-latest
     needs:
       - build
+      - migrate-database
     steps:
       - uses: actions/checkout@v3
       - name: Load backend
