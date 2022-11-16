@@ -3,9 +3,9 @@ import users from '../src/db/userDb';
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
-  _req: HttpRequest,
+  req: HttpRequest,
 ): Promise<void> {
-  const { memorableId } = context.bindingData;
+  const { memorableId } = req.params;
 
   context.log(`[func-get-user] Finding user by id ${memorableId}`);
 
