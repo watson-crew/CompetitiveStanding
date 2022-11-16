@@ -87,7 +87,7 @@ jobs:
       - name: Cache Frontend
         uses: actions/cache@v3
         with:
-          path: '**/apps/web/out/**'
+          path: ${{ env.FRONTEND_OUTPUT_LOCATION }}
           key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
       - name: Cache Backend
         uses: actions/cache@v3
@@ -95,9 +95,9 @@ jobs:
           path: '**/apps/server/dist/**'
           key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
       - name: Print frontend build output
-        run: find './apps/web/out'
+        run: find ${{ env.FRONTEND_OUTPUT_LOCATION }}
       - name: Print backend build output
-        run: find './apps/server/out'
+        run: find './apps/server/dist'
 
   deploy-frontend:
     name: Frontend Deploy
@@ -111,10 +111,10 @@ jobs:
       - name: Load frontend
         uses: actions/cache@v3
         with:
-          path: '**/apps/web/out/**'
+          path: ${{ env.FRONTEND_OUTPUT_LOCATION }}
           key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
       - name: Print build output
-        run: find './apps/web/out'
+        run: find ${{ env.FRONTEND_OUTPUT_LOCATION }}
       - name: Deploy frontend
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
