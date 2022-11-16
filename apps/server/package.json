@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "npm start",
-    "build": "tsc && npx prisma generate",
+    "build": "tsc && cp package.json dist && cd dist && npm i",
     "watch": "tsc -w",
     "lint": "echo \"No Linting configured\"",
     "prestart": "npm run build",

@@ -85,9 +85,9 @@ jobs:
         run: |
           npm run build
           echo "Built frontend"
-          find ${{ env.FRONTEND_OUTPUT_LOCATION }}
+          find ${{ env.FRONTEND_OUTPUT_LOCATION }} -type f
           echo "Built backend"
-          find ${{ env.BACKEND_OUTPUT_LOCATION }}
+          find ${{ env.BACKEND_OUTPUT_LOCATION }} -type f
       - name: Cache Frontend
         uses: actions/cache@v3
         with:
