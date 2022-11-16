@@ -9,9 +9,19 @@ const httpTrigger: AzureFunction = async function (
 
   context.log(`[func-get-user] Finding user by id ${memorableId}`);
 
-  const user = await getUserByMemorableId(memorableId);
+  let responseBody;
 
-  context.log(`[func-get-user] Found user ${JSON.stringify(user)}`);
+  try {
+    const user = await getUserByMemorableId(memorableId);
+
+    context.log(`[func-get-user] Found user ${JSON.stringify(user)}`);
+
+    responseBody = user;
+  } catch (e) {
+    context.log(`[func-get-user] Error: ${e.message}`)
+    responseBody = e.message;
+  }
+
 
   context.res = {
     headers: {
@@ -19,7 +29,7 @@ const httpTrigger: AzureFunction = async function (
       'Access-Control-Allow-Methods': 'GET',
       'Content-Type': 'application/json',
     },
-    body: user,
+    body: responseBody,
   };
 };
 
