@@ -6,7 +6,10 @@ const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest,
 ): Promise<void> {
+  context.log(`[func-get-user] Function called, getting memorableId`);
   const { memorableId } = req.params;
+
+  context.log(`[func-get-user] Got memorableId: ${memorableId}`);
 
   let responseBody;
 
