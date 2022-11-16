@@ -12,6 +12,9 @@
     "test": "echo \"No tests yet...\"",
     "migrate:deploy": "npx prisma migrate deploy"
   },
+  "prisma": {
+    "seed": "npx ts-node prisma/seed.ts"
+  },
   "devDependencies": {
     "@azure/functions": "^3.0.0",
     "@types/node": "16.x",
