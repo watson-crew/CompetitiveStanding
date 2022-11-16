@@ -166,6 +166,8 @@ jobs:
         with:
           path: ${{ env.BACKEND_OUTPUT_LOCATION }}
           key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
+      - name: Generate prisma client
+        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npx prisma generate
       - name: Deploy azure functions
         uses: Azure/functions-action@v1
         id: fa
@@ -174,3 +176,4 @@ jobs:
           slot-name: ${{ env.BACKEND_SLOT }}
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
           publish-profile: ${{ env.BACKEND_PUBLISH_PROFILE }}
+
