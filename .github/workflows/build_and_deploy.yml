@@ -36,9 +36,9 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Node build
-        run: |
-          npm ci
-          npx prisma generate
+        run: npm ci
+      - name: Prisma Generate
+        run: cd ./apps/server && npx prisma generate
 
   lint:
     needs: install
@@ -148,7 +148,7 @@ jobs:
             **/migrations/**
       - name: Run database migration
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npx prisma generate && npm run migrate:deploy
+        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run migrate:deploy
 
   deploy-backend:
     name: Backend Deploy
@@ -168,8 +168,6 @@ jobs:
         with:
           path: ${{ env.BACKEND_OUTPUT_LOCATION }}
           key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
-      - name: Generate prisma client
-        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npx prisma generate
       - name: Deploy azure functions
         uses: Azure/functions-action@v1
         id: fa
