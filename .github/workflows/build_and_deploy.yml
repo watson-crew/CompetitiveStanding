@@ -36,7 +36,9 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Node build
-        run: npm ci
+        run: |
+          npm ci
+          npx prisma generate
 
   lint:
     needs: install
