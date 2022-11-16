@@ -1,5 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions';
-import users from '../src/db/userDb';
+import { getUserByMemorableId } from '../repository/userRepository';
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
@@ -9,7 +9,7 @@ const httpTrigger: AzureFunction = async function (
 
   context.log(`[func-get-user] Finding user by id ${memorableId}`);
 
-  const user = users.find(user => user.memorableId === memorableId);
+  const user = await getUserByMemorableId(memorableId);
 
   context.log(`[func-get-user] Found user ${JSON.stringify(user)}`);
 
