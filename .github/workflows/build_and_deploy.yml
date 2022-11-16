@@ -132,7 +132,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' # Only deploy main (TODO: Configure to deploy test for some branches, prod when on main)
     needs:
-      - test
+      - build
     steps:
       - uses: actions/checkout@v2
       - name: Load node_modules
