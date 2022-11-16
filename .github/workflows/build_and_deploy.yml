@@ -38,7 +38,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Node build
         run: npm ci
 
@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Lint
         run: npm run lint
 
@@ -66,7 +66,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Unit Test
         run: npm test
 
@@ -82,7 +82,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Build
         run: npm run build
       - name: Cache Frontend
@@ -136,7 +136,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Run production migration
         run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run migrate:deploy
         env:
