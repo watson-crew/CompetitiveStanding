@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Button, PlayerCard } from "ui";
 import HeadToHeadSection from "ui/HeadToHead/HeadToHeadSection";
 import getConfig from "next/config";
+import { AppClient, User } from 'schema/api'
 
 export default function Index() {
 
@@ -38,34 +39,21 @@ export default function Index() {
     // function to add match + players (if they dont exist)
   }
 
-  const [apiLoading, setApiLoading] = useState(true)
-  const [users, setUsers] = useState<any[]>([])
+  const [users, addUser] = useReducer((users: User[], newUser: User) => [...users, newUser], [] as User[])
 
-  const { apiBaseUrl } = getConfig().publicRuntimeConfig
   const userIds = ['jjp', 'pjm', 'stc', 'ad2', '4e8']
+
+  const client = new AppClient({BASE: getConfig().publicRuntimeConfig.apiBaseUrl }) 
 
   useEffect(() => {
 
-    console.log('called')
-
-    const fetchUsers = async () => {
-
-      const responses = await Promise.all(userIds
-        .map(userId => fetch(`${apiBaseUrl}/users/${userId}`).catch(() => null)
-        )
-      )
-
-      const users = await Promise.all(responses
-        .filter(response => response && response.status === 200)
-        .map(response => response!.json()))
-
-      setUsers(users)
-      setApiLoading(false)
-
-    }
-
-    fetchUsers()
-
+      userIds.forEach(async userId => {
+        try {
+          addUser(await client.user.getUserByMemorableId(userId))
+        } catch (err) {
+          console.error(err);
+        }
+      })
   }, [])
 
   return (
@@ -80,7 +68,7 @@ export default function Index() {
 
       <div className='md:flex'>
 
-        {!apiLoading && users.map(user => (<PlayerCard className='mx-5' key={user.memorableId} player={user} />))}
+        {users.map(user => (<PlayerCard className='mx-5' key={user.memorableId} player={user} />))}
     
       </div>
     </div>

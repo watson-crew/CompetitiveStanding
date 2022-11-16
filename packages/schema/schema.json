@@ -1,0 +1,231 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Competitive Standing Schema",
+    "description": "Schema for the CompetitiveStandingAPI to create and track the results of various games",
+    "version": "0.0.1"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "tags": [
+    {
+      "name": "user",
+      "description": "Operations about user"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Create a new user",
+        "operationId": "createUser",
+        "tags": ["user"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "required": ["id"],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "b99ec52b-e9e2-444c-8c73-fb577c25bf70"
+                        }
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{memorableId}": {
+      "get": {
+        "tags": ["user"],
+        "summary": "Get user by memorable id",
+        "operationId": "getUserByMemorableId",
+        "parameters": [
+          {
+            "name": "memorableId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "4e8"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/locations": {
+      "get": {
+        "tags": ["location"],
+        "operationId": "getAllLocations",
+        "summary": "Get all locations",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Location"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/locations/{locationId}": {
+      "get": {
+        "tags": ["location"],
+        "summary": "Get location by id",
+        "operationId": "getLocationById",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Location"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "required": ["id", "memorableId", "firstName", "lastName"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": ""
+          },
+          "memorableId": {
+            "type": "string",
+            "example": "abc"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "James"
+          },
+          "location": {
+            "type": "string",
+            "example": "London"
+          },
+          "profilePicture": {
+            "type": "string",
+            "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+          }
+        }
+      },
+      "Location": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "54268cee-3533-4134-a1ed-fdaae38188a3"
+          },
+          "name": {
+            "type": "string",
+            "example": "Nottingham"
+          },
+          "coverPhoto": {
+            "type": "string",
+            "example": "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg"
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "User": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["memorableId", "firstName", "lastName"],
+              "properties": {
+                "memorableId": {
+                  "type": "string",
+                  "example": "abc"
+                },
+                "firstName": {
+                  "type": "string",
+                  "example": "John"
+                },
+                "lastName": {
+                  "type": "string",
+                  "example": "James"
+                },
+                "profilePicture": {
+                  "type": "string",
+                  "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
