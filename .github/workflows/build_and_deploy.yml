@@ -126,7 +126,7 @@ jobs:
   migrate-database:
     name: Datbase Migration
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' # Only deploy main (TODO: Configure to deploy test for some branches, prod when on main)
+    # TODO: Only deploy to production when in main (TODO: Configure to deploy test for some branches, prod when on main)
     needs:
       - build
     steps:
@@ -139,7 +139,7 @@ jobs:
       - name: Run production migration
         run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run migrate:deploy
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
 
   deploy-backend:
     name: Backend Deploy
