@@ -88,8 +88,6 @@ jobs:
           find ${{ env.FRONTEND_OUTPUT_LOCATION }}
           echo "Built backend"
           find ${{ env.BACKEND_OUTPUT_LOCATION }}
-      - name: Prisma Generate
-        run: cd ./apps/server && npx prisma generate
       - name: Cache Frontend
         uses: actions/cache@v3
         with:
