@@ -168,7 +168,7 @@ jobs:
           key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
       - name: Deploy azure functions
         uses: Azure/functions-action@v1
-        id: fa
+        id: function-app-deploy
         with:
           app-name: 'BjssCompetitiveStandingBackend'
           slot-name: ${{ env.BACKEND_SLOT }}
