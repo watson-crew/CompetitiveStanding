@@ -16,8 +16,6 @@ cp package.json $OUTPUT_DIR
 
 (cd $OUTPUT_DIR && npm install --production)
 
-rm $OUTPUT_DIR/package.json
-
 # Generate the relevant Prisma code
 echo "Initialising Prisma client"
 npm run prisma:generate
