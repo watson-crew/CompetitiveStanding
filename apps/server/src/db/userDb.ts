@@ -29,6 +29,14 @@ const users = [
     profilePicture:
       'https://ca.slack-edge.com/T0KNVDB9Q-U0176UQC2BT-f5c3f8a1f990-72',
   },
+  {
+    firstName: 'Fabian',
+    lastName: 'McGibbon',
+    id: '400ae9d7-439a-4e8c-9918-44aa9475179c',
+    memorableId: '4e8',
+    profilePicture:
+      'https://ca.slack-edge.com/T0KNVDB9Q-U028KHZUF1C-2f7eb72c227f-512',
+  },
 ];
 
 export default users;
