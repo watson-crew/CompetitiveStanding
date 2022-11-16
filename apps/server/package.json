@@ -4,13 +4,14 @@
   "description": "",
   "scripts": {
     "dev": "npm start",
-    "build": "tsc && cp package.json dist && cd dist && npm install --production",
+    "build": "tsc && cp package.json dist && cd dist && npm install --production && cd .. && npx run prisma generate && cp -R node_modules/.prisma dist/node_modules",
     "watch": "tsc -w",
     "lint": "echo \"No Linting configured\"",
     "prestart": "npm run build",
     "start": "func start",
     "test": "echo \"No tests yet...\"",
-    "migrate:deploy": "npx prisma migrate deploy"
+    "migrate:deploy": "npx prisma migrate deploy",
+    "prisma:generate": "npx run prisma generate"
   },
   "prisma": {
     "seed": "npx ts-node prisma/seed.ts"
