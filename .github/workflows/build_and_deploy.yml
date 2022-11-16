@@ -38,10 +38,6 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-cache-node-modules-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       - name: Node build
         run: npm ci
 
@@ -91,17 +87,13 @@ jobs:
       - name: Cache Frontend
         uses: actions/cache@v3
         with:
-          path: ${{ env.FRONTEND_OUTPUT_LOCATION }}
+          path: '**/apps/web/out/**'
           key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-build-cache-frontend-
       - name: Cache Backend
         uses: actions/cache@v3
         with:
-          path: ${{ env.BACKEND_OUTPUT_LOCATION }}
+          path: '**/apps/server/dist/**'
           key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-build-cache-backend-
 
   deploy-frontend:
     name: Frontend Deploy
@@ -115,7 +107,7 @@ jobs:
       - name: Load frontend
         uses: actions/cache@v3
         with:
-          path: './apps/web/out'
+          path: '**/apps/web/out/**'
           key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
       - name: Deploy frontend
         id: builddeploy
@@ -137,7 +129,7 @@ jobs:
       - name: Load backend
         uses: actions/cache@v3
         with:
-          path: '**/apps/server/dist'
+          path: '**/apps/server/dist/**'
           key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
       - name: Deploy azure functions
         uses: Azure/functions-action@v1
