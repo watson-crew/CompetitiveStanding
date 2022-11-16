@@ -42,7 +42,7 @@ export default function Index() {
   const [users, setUsers] = useState<any[]>([])
 
   const { apiBaseUrl } = getConfig().publicRuntimeConfig
-  const userIds = ['jjp', 'pjm', 'stc', 'ad2']
+  const userIds = ['jjp', 'pjm', 'stc', 'ad2', '4e8']
 
   useEffect(() => {
 
