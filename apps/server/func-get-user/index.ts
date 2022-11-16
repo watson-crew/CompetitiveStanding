@@ -1,6 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions';
 // import { getUserByMemorableId } from '../repository/userRepository';
-//import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
@@ -15,20 +15,20 @@ const httpTrigger: AzureFunction = async function (
 
   try {
     context.log(`[func-get-user] Creating prisma client`);
-    //const prisma = new PrismaClient()
+    const prisma = new PrismaClient()
 
     context.log(`[func-get-user] Finding user by id ${memorableId}`);
 
     //const user = await getUserByMemorableId(memorableId);
-    // const user = await prisma.user.findFirst({
-    //   where: {
-    //       memorableId
-    //   }
-    // })
-    const user = {
-      id: 1,
-      content: "test"
-    }
+    const user = await prisma.user.findFirst({
+      where: {
+          memorableId
+      }
+    })
+    // const user = {
+    //   id: 1,
+    //   content: "test"
+    // }
 
     context.log(`[func-get-user] Found user ${JSON.stringify(user)}`);
 
