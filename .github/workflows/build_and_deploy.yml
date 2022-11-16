@@ -141,8 +141,7 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-cache-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Run production migration
-        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-        run: npm run migrate:deploy
+        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run migrate:deploy
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
