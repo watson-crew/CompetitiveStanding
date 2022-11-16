@@ -94,6 +94,10 @@ jobs:
         with:
           path: '**/apps/server/dist/**'
           key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
+      - name: Print frontend build output
+        run: find './apps/web/out'
+      - name: Print backend build output
+        run: find './apps/server/out'
 
   deploy-frontend:
     name: Frontend Deploy
@@ -109,6 +113,8 @@ jobs:
         with:
           path: '**/apps/web/out/**'
           key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
+      - name: Print build output
+        run: find './apps/web/out'
       - name: Deploy frontend
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -131,6 +137,8 @@ jobs:
         with:
           path: '**/apps/server/dist/**'
           key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
+      - name: Print build output
+        run: find './apps/server/dist'
       - name: Deploy azure functions
         uses: Azure/functions-action@v1
         id: fa
