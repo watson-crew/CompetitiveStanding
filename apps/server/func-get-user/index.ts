@@ -1,9 +1,9 @@
-import { User, operations } from 'schema';
+import { operations } from 'schema';
 import locations from '../src/db/locationDb';
 import users from '../src/db/userDb';
-import { ParameterizedAzureFunction } from '../src/types';
+import { PathParameterAzureFunction } from '../src/types';
 
-const httpTrigger: ParameterizedAzureFunction<
+const httpTrigger: PathParameterAzureFunction<
   operations['getUserByMemorableId']
 > = async function (context, req): Promise<void> {
   const { memorableId } = req.params;
@@ -34,7 +34,7 @@ const httpTrigger: ParameterizedAzureFunction<
     body: {
       ...user,
       location: locationName,
-    } as User,
+    },
   };
 };
 

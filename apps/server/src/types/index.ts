@@ -27,10 +27,17 @@ export type ParameterizedResponseContext<T extends RequestResponseType> = Omit<
   };
 };
 
-export type ParameterizedAzureFunction<
+// TODO: This can probably be cleaned up so we have a single types that supports all combination of requests
+
+export type PathParameterAzureFunction<
   T extends RequestRouteParams & RequestResponseType,
 > = (
   context: ParameterizedResponseContext<T>,
   req: ParameterizedHttpRequest<T>,
+  ...args: any[]
+) => Promise<any> | void;
+
+export type EmptyParameterAzureFunction<T extends RequestResponseType> = (
+  context: ParameterizedResponseContext<T>,
   ...args: any[]
 ) => Promise<any> | void;

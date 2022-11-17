@@ -2,7 +2,8 @@ import { useEffect, useReducer, useState } from "react";
 import { Button, PlayerCard } from "ui";
 import HeadToHeadSection from "ui/HeadToHead/HeadToHeadSection";
 import getConfig from "next/config";
-import { AppClient, User } from 'schema/api'
+import { AppClient, User } from 'schema'
+import { Location } from "schema";
 
 export default function Index() {
 
@@ -40,6 +41,7 @@ export default function Index() {
   }
 
   const [users, addUser] = useReducer((users: User[], newUser: User) => [...users, newUser], [] as User[])
+  const [locations, setLocations] = useState<Location[]>([])
 
   const userIds = ['jjp', 'pjm', 'stc', 'ad2', '4e8']
 
@@ -54,6 +56,17 @@ export default function Index() {
           console.error(err);
         }
       })
+
+      const fetchLocations = async () => {
+        try {
+          setLocations(await client.location.getAllLocations())
+        } catch (err) {
+          console.error(err)
+        }
+      }
+
+      fetchLocations()
+
   }, [])
 
   return (
@@ -69,6 +82,12 @@ export default function Index() {
       <div className='md:flex'>
 
         {users.map(user => (<PlayerCard className='mx-5' key={user.memorableId} player={user} />))}
+    
+      </div>
+
+      <div className='md:flex'>
+
+        {locations.map(location => (<p>{JSON.stringify(location)}</p>))}
     
       </div>
     </div>
