@@ -1,35 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions';
+import { return200, return404, return500 } from '../lib/utils';
 import { getUserByMemorableId } from '../repository/userRepository';
-
-// Have some utils to encapsulate default headers & setting responses in the context
-const defaultHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET',
-  'Content-Type': 'application/json',
-};
-
-const return404 = (context: Context) => {
-  context.res = {
-    headers: defaultHeaders,
-    statusCode: 404,
-  };
-};
-
-const return200 = (context: Context, body: any) => {
-  context.res = {
-    headers: defaultHeaders,
-    statusCode: 200,
-    body,
-  };
-};
-
-const return500 = (context: Context, error: Error) => {
-  context.res = {
-    headers: defaultHeaders,
-    statusCode: 500,
-    body: error.message,
-  };
-};
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
