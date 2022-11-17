@@ -186,5 +186,4 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Add Function appsettings
-        run: az functionapp config appsettings set --name ${{ env.FUNCTION_APP_NAME }} --slot ${{ env.BACKEND_SLOT }} --resource-group ${{ env.RESOURCE_GROUP }} --slot-settings DATABASE_URL=${{ env.DATABASE_URL }}
-
+        run: az functionapp config appsettings set --name ${{ env.FUNCTION_APP_NAME }} --slot ${{ env.BACKEND_SLOT }} --resource-group ${{ env.RESOURCE_GROUP }} --slot-settings DATABASE_URL="${{ env.DATABASE_URL }}"
