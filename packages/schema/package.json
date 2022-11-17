@@ -1,0 +1,17 @@
+{
+  "name": "schema",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate": "npm run generate:client && npm run generate:typescript-schema",
+    "generate:client": "openapi --input ./schema.json --output client --client axios --name AppClient",
+    "generate:typescript-schema": "openapi-typescript ./schema.json --output schema.ts --export-type --path-params-as-types --default-non-nullable"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "openapi-typescript": "^6.0.3",
+    "openapi-typescript-codegen": "^0.23.0"
+  }
+}

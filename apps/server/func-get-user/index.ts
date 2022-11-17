@@ -1,12 +1,13 @@
-import { AzureFunction, Context, HttpRequest } from '@azure/functions';
+import { operations } from 'schema';
+import locations from '../src/db/locationDb';
+import users from '../src/db/userDb';
+import { PathParameterAzureFunction } from '../src/types';
 import { return200, return404, return500 } from '../lib/utils';
 import { getUserByMemorableId } from '../repository/userRepository';
 
-const httpTrigger: AzureFunction = async function (
-  context: Context,
-  req: HttpRequest,
-): Promise<void> {
-  context.log(`[func-get-user] Function called, getting memorableId`);
+const httpTrigger: PathParameterAzureFunction<
+  operations['getUserByMemorableId']
+> = async function (context, req): Promise<void> {
   const { memorableId } = req.params;
 
   context.log(`[func-get-user] Got memorableId: ${memorableId}`);
@@ -21,7 +22,10 @@ const httpTrigger: AzureFunction = async function (
       return404(context);
     } else {
       context.log(`[func-get-user] Found user: ${user}`);
-      return200(context, user);
+      const locationName = locations.find(
+        location => location.id === user.homeLocation,
+      ).name;
+      return200(context, {...user, location: locationName});
     }
   } catch (e) {
     context.log(`[func-get-user] Error: ${e.message}`);

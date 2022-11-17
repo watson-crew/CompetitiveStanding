@@ -6,6 +6,7 @@ const users = [
     memorableId: 'jjp',
     profilePicture:
       'https://ca.slack-edge.com/T0KNVDB9Q-UMRQJD1HB-3ff344af0ee4-512',
+    homeLocation: '833bdc4a-5c98-40cb-ac94-9a48aecdf5e2',
   },
   {
     firstName: 'Pierce',
@@ -14,12 +15,14 @@ const users = [
     memorableId: 'pjm',
     profilePicture:
       'https://ca.slack-edge.com/T0KNVDB9Q-U016MJ6L014-0dfb1c282417-192',
+    homeLocation: '833bdc4a-5c98-40cb-ac94-9a48aecdf5e2',
   },
   {
     firstName: 'Stephen',
     lastName: 'Church',
     id: 'de7e7a59-29fc-41ea-b88d-be12a00da4cd',
     memorableId: 'stc',
+    homeLocation: '833bdc4a-5c98-40cb-ac94-9a48aecdf5e2',
   },
   {
     firstName: 'Tom',
@@ -28,6 +31,7 @@ const users = [
     memorableId: 'ad2',
     profilePicture:
       'https://ca.slack-edge.com/T0KNVDB9Q-U0176UQC2BT-f5c3f8a1f990-72',
+    homeLocation: '833bdc4a-5c98-40cb-ac94-9a48aecdf5e2',
   },
   {
     firstName: 'Fabian',
@@ -36,6 +40,7 @@ const users = [
     memorableId: '4e8',
     profilePicture:
       'https://ca.slack-edge.com/T0KNVDB9Q-U028KHZUF1C-2f7eb72c227f-512',
+    homeLocation: '833bdc4a-5c98-40cb-ac94-9a48aecdf5e2',
   },
 ];
 
