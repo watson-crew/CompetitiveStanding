@@ -1,4 +1,4 @@
-import { Location } from 'schema/api';
+import { Location } from 'schema';
 
 const locations = [
   {
