@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { User } from 'schema/api'
+import { User } from 'schema'
 
 const getFullName = (player: any) => `${player.firstName} ${player.lastName}`
 
