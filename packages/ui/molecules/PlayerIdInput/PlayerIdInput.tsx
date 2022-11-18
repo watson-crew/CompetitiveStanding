@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import OtpField from 'react-otp-field';
-import { Button } from '../../atoms/Button/Button';
 import Text from '../../atoms/Text/Text';
 
 type PlayerIdInputProps = {
@@ -19,7 +18,7 @@ export default function PlayerIdInput({ idLength = 3, title, onChange }: PlayerI
       onChange(value)
     }
 
-  }, [value])
+  }, [idLength, onChange, value])
 
   return (
     <section className='text-center'>

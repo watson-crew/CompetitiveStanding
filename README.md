@@ -12,11 +12,12 @@ Ensure you have:
 - Turborepo (installed globally)
 
 The project is a monorepo based off [turborepo](https://turborepo.org/) which accomodates for multiple apps to coexist in a single repository.
+
 ```
 npm install turbo -D
 ```
 
-Docker is necessary to locally connect to the postgres instance, install [here](https://docs.docker.com/get-docker/)
+Docker is necessary to locally connect to the sql instance, install [here](https://docs.docker.com/get-docker/)
 
 ### Apps and Packages
 
@@ -25,7 +26,15 @@ Docker is necessary to locally connect to the postgres instance, install [here](
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+#### Server
+
+A typescript project containing an azure function for each endpoint in our schema
+
+##### Database
+
+Prisma is used as an ORM to connect to our SQL databases. Our database schema can be seen in the below ERD:
+
+<img src="./apps/server/ERD.svg" width="500" height="500" />
 
 ### Utilities
 
@@ -56,14 +65,3 @@ Installing packages for a specific workspace
 ```
 npm install <package> -w=<workspace>
 ```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Pipelines](https://turborepo.org/docs/core-concepts/pipelines)
-- [Caching](https://turborepo.org/docs/core-concepts/caching)
-- [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching)
-- [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
-- [Configuration Options](https://turborepo.org/docs/reference/configuration)
-- [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)

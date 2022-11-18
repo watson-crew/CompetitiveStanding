@@ -5,6 +5,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+  output   = "./primsa-erd.svg"
+}
+
 datasource db {
   provider          = "sqlserver"
   url               = env("DATABASE_URL")
@@ -12,10 +17,10 @@ datasource db {
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   firstName      String
   lastName       String
-  memorableId    String   @unique
+  memorableId    String    @unique
   profilePicture String?
   location       Location? @relation(fields: [locationId], references: [id])
   locationId     Int?
