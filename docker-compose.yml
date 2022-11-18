@@ -1,19 +1,26 @@
 version: '3.8'
+
 services:
-  # web:
-  #   container_name: nextjs_container
-  #   build: .
-  #   command: tail -f /dev/null
-  #   ports:
-  #    - 3000:3000
-  #   depends_on:
-  #     - sql-server-db
-  sql-server-db:
-    container_name: sql-server-db
-    build: ./db-scripts/
+  mssql:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    command: /opt/mssql/bin/sqlservr
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Password1234!"
+    stdin_open: true
     ports:
-      - "1433:1433"
-#     volumes:
-#       - db-data:/var/opt/mssql/data
-# volumes:
-#   db-data:
+      - 1433:1433
+    networks:
+      - db_net
+  sqlcmd:
+    image: mcr.microsoft.com/mssql-tools:latest
+    command: /opt/mssql_scripts/initialize-db.sh
+    platform: linux/arm64
+    stdin_open: true
+    volumes:
+      - ./db-scripts:/opt/mssql_scripts
+    networks:
+      - db_net
+networks:
+  db_net:
+    name: db_net
