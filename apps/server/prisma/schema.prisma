@@ -17,8 +17,8 @@ model User {
   lastName       String
   memorableId    String   @unique
   profilePicture String?
-  location       Location @relation(fields: [locationId], references: [id])
-  locationId     Int
+  location       Location? @relation(fields: [locationId], references: [id])
+  locationId     Int?
 }
 
 model Location {
