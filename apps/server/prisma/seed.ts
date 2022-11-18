@@ -10,6 +10,11 @@ async function main () {
             memorableId: 'jjp',
             profilePicture:
             'https://ca.slack-edge.com/T0KNVDB9Q-UMRQJD1HB-3ff344af0ee4-512',
+            location: {
+              create: {
+                name: "Nottingham"
+              }
+            }
         }
     })
 }
