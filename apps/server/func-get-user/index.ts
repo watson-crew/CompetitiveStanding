@@ -22,10 +22,14 @@ const httpTrigger: PathParameterAzureFunction<
       return404(context);
     } else {
       context.log(`[func-get-user] Found user: ${user}`);
+
+      const homeLocationId =
+        user.homeLocation || '833bdc4a-5c98-40cb-ac94-9a48aecdf5e2';
+
       const locationName = locations.find(
-        location => location.id === user.homeLocation,
+        location => location.id === homeLocationId,
       ).name;
-      return200(context, {...user, location: locationName});
+      return200(context, { ...user, location: locationName });
     }
   } catch (e) {
     context.log(`[func-get-user] Error: ${e.message}`);
