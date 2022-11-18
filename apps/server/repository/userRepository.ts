@@ -25,7 +25,7 @@ export const getUserByMemorableId = async (id: string): Promise<User> => {
         memorableId: user.memorableId,
         firstName: user.firstName,
         lastName: user.lastName,
-        location: user.location.name, // Optional?
+        location: user.location?.name ?? 'default', // Optional?
         profilePicture: user.profilePicture // Optional?
     }
 
