@@ -1,4 +1,4 @@
-import { operations } from 'schema';
+import { operations, User } from 'schema';
 import locations from '../src/db/locationDb';
 import users from '../src/db/userDb';
 import { PathParameterAzureFunction } from '../src/types';
@@ -15,20 +15,14 @@ const httpTrigger: PathParameterAzureFunction<
   try {
     context.log(`[func-get-user] Finding user by id ${memorableId}`);
 
-    const user = await getUserByMemorableId(memorableId);
+    const user: User = await getUserByMemorableId(memorableId);
 
     if (!user) {
       context.log(`[func-get-user] No matching user with id: ${memorableId}`);
       return404(context);
     } else {
       context.log(`[func-get-user] Found user: ${user}`);
-
-      const homeLocationId = '833bdc4a-5c98-40cb-ac94-9a48aecdf5e2';
-
-      const locationName = locations.find(
-        location => location.id === homeLocationId,
-      ).name;
-      return200(context, { ...user, location: locationName });
+      return200(context, user);
     }
   } catch (e) {
     context.log(`[func-get-user] Error: ${e.message}`);
