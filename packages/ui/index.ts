@@ -8,6 +8,7 @@ import PlayerIdInput from './molecules/PlayerIdInput/PlayerIdInput';
 import HeadToHeadSection from './molecules/HeadToHead/HeadToHeadSection';
 import PlayerSelection from './organisms/PlayerSelection/PlayerSelection';
 import WithCloseButton from './atoms/WithCloseButton/WithCloseButton';
+import LoadingSpinner from './atoms/LoadingSpinner/LoadingSpinner';
 
 export {
   // Atoms
@@ -16,6 +17,7 @@ export {
   Banner,
   Text,
   WithCloseButton,
+  LoadingSpinner,
 
   // Molecules
   HeadToHeadSection,

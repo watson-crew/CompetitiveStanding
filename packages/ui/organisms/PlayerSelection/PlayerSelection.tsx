@@ -61,7 +61,7 @@ export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
 
   return (
     <section className="w-full my-20">
-      <section className="flex w-full justify-around align-middle">
+      <section className="flex w-full justify-around align-middle items-center min-h-full h-full">
         <PlayerSelectionCard 
           title="Player 1" 
           player={playerOne} 
@@ -69,21 +69,23 @@ export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
           isError={playerOneErrored}
           onIdSubmitted={id => onIdSet(id, playerOneDispatchers)} 
           clearPlayer={() => clearPlayer(playerOneDispatchers)}
+          className="basis-2/5 min-h-full"
         />
 
         <Text type="p">VS</Text>
 
         <PlayerSelectionCard 
-          title="Player 1" 
+          title="Player 2" 
           player={playerTwo} 
           loading={playerTwoLoading}
           isError={playerTwoErrored}
           onIdSubmitted={id => onIdSet(id, playerTwoDispatchers)} 
           clearPlayer={() => clearPlayer(playerTwoDispatchers)}
+          className="basis-2/5 min-h-full"
         />
 
       </section>
-      <div className="text-center">
+      <div className="text-center my-20">
         <Button text="Start Game" onClick={() => console.log('Start game')}/>
       </div>
     </section>

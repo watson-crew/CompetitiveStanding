@@ -27,7 +27,7 @@ export default function PlayerIdInput({ idLength = 3, title, onChange }: PlayerI
       <Text type='p'>Enter your id</Text>
 
       <OtpField
-          classNames='flex'
+          classNames='flex  justify-around'
           value={value}
           onChange={setValue}
           numInputs={idLength}
