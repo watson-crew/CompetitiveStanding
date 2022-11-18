@@ -12,6 +12,7 @@ Ensure you have:
 - Turborepo (installed globally)
 
 The project is a monorepo based off [turborepo](https://turborepo.org/) which accomodates for multiple apps to coexist in a single repository.
+
 ```
 npm install turbo -D
 ```
@@ -43,13 +44,29 @@ npm run build
 
 ### Develop
 
+#### Setting up local database
+
+To spin up a local SQL server using docker run:
+`docker-compose up --build -d`
+
+Then export the DB url as an environment variable:
+`export DATABASE_URL='sqlserver://[::1]:1433;database=CompetitiveStanding;user=SA;password=Password1234!;encrypt=true;trustServerCertificate=true'`
+
+You will then need to run the DB migrations:
+`npx prisma migrate dev`
+
+Followed by seeding the database:
+`npx prisma database seed`
+
+Your local database is now setup.
+
+#### Running the full app
+
 To develop all apps and packages, run the following command:
 
 ```
 npm run dev
 ```
-
-PG Admin is [hosted locally](http://localhost:8081/) as a DB GUI
 
 Installing packages for a specific workspace
 

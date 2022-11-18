@@ -23,8 +23,7 @@ const httpTrigger: PathParameterAzureFunction<
     } else {
       context.log(`[func-get-user] Found user: ${user}`);
 
-      const homeLocationId =
-        user.homeLocation || '833bdc4a-5c98-40cb-ac94-9a48aecdf5e2';
+      const homeLocationId = '833bdc4a-5c98-40cb-ac94-9a48aecdf5e2';
 
       const locationName = locations.find(
         location => location.id === homeLocationId,
