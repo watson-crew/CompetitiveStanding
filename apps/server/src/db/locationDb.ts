@@ -10,13 +10,13 @@ const locations = [
   {
     id: '1d2a715e-2b19-4812-a2e0-62eb2bc3d37f',
     name: 'BJSS Manchester',
-    coverPhoto: '',
+    coverPhoto: 'https://pbs.twimg.com/media/ELCpG0xXkAAmJet.jpg',
   },
   {
     id: '95e1050e-eb32-4236-b22a-a2b48c2aa99b',
     name: 'BJSS London',
     coverPhoto:
-      'https://www.telegraph.co.uk/content/dam/Travel/Destinations/Europe/United%20Kingdom/London/london-aerial-thames-guide.jpg',
+      'https://nicheprojects.net/index.php/assets/Uploads/_resampled/ScaleHeightWyI5MDAiXQ/Bjss-023.jpg',
   },
 ] as Location[];
 
