@@ -1,6 +1,16 @@
 import { prisma } from '../lib/prisma';
 
 async function main() {
+  const nottingham = await prisma.location.upsert({
+    where: {
+      id: 1,
+    },
+    update: {},
+    create: {
+      name: 'Nottingham',
+    },
+  });
+
   await prisma.user.upsert({
     where: { memorableId: 'jjp' },
     update: {},
@@ -10,11 +20,7 @@ async function main() {
       memorableId: 'jjp',
       profilePicture:
         'https://ca.slack-edge.com/T0KNVDB9Q-UMRQJD1HB-3ff344af0ee4-512',
-      location: {
-        create: {
-          name: 'Nottingham',
-        },
-      },
+      locationId: nottingham.id,
     },
   });
 
@@ -27,11 +33,7 @@ async function main() {
       memorableId: 'pjm',
       profilePicture:
         'https://ca.slack-edge.com/T0KNVDB9Q-U016MJ6L014-0dfb1c282417-192',
-      location: {
-        create: {
-          name: 'Nottingham',
-        },
-      },
+      locationId: nottingham.id,
     },
   });
 
@@ -42,11 +44,7 @@ async function main() {
       firstName: 'Stephen',
       lastName: 'Church',
       memorableId: 'stc',
-      location: {
-        create: {
-          name: 'Nottingham',
-        },
-      },
+      locationId: nottingham.id,
     },
   });
 
@@ -59,11 +57,7 @@ async function main() {
       memorableId: 'ad2',
       profilePicture:
         'https://ca.slack-edge.com/T0KNVDB9Q-U0176UQC2BT-f5c3f8a1f990-72',
-      location: {
-        create: {
-          name: 'Nottingham',
-        },
-      },
+      locationId: nottingham.id,
     },
   });
 
@@ -76,11 +70,7 @@ async function main() {
       memorableId: '4e8',
       profilePicture:
         'https://ca.slack-edge.com/T0KNVDB9Q-U028KHZUF1C-2f7eb72c227f-512',
-      location: {
-        create: {
-          name: 'Nottingham',
-        },
-      },
+      locationId: nottingham.id,
     },
   });
 }
