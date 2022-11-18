@@ -151,7 +151,7 @@ jobs:
           done
       - name: Run database migration
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run prisma:migrate-deploy
+        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run prisma:deploy
 
   deploy-backend:
     name: Backend Deploy
