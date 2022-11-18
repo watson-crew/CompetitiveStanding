@@ -185,5 +185,9 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Add Function appsettings
+      - if: ${{ env.BACKEND_SLOT }} != 'Production'
+        name: Add Function appsettings for non-production slot
         run: az functionapp config appsettings set --name ${{ env.FUNCTION_APP_NAME }} --slot ${{ env.BACKEND_SLOT }} --resource-group ${{ env.RESOURCE_GROUP }} --slot-settings DATABASE_URL="${{ env.DATABASE_URL }}"
+      - if: ${{ env.BACKEND_SLOT }} == 'Production'
+        name: Add Function appsettings for Production
+        run: az functionapp config appsettings set --name ${{ env.FUNCTION_APP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot-settings DATABASE_URL="${{ env.DATABASE_URL }}"
