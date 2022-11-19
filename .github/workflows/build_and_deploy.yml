@@ -130,7 +130,7 @@ jobs:
       - build
     env:
       DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
-      AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server'
+      DATABASE_PACKAGE_PATH: './packages/database'
     steps:
       - uses: actions/checkout@v2
       - name: Load node_modules
@@ -151,7 +151,7 @@ jobs:
           done
       - name: Run database migration
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run prisma:migrate-deploy
+        run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run prisma:deploy
 
   deploy-backend:
     name: Backend Deploy
