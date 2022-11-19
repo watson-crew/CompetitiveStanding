@@ -34,7 +34,7 @@ A typescript project containing an azure function for each endpoint in our schem
 
 Prisma is used as an ORM to connect to our SQL databases. Our database schema can be seen in the below ERD:
 
-<img src="./apps/server/ERD.svg" width="500" height="500" />
+<img src="./docs/database-erd.svg" width="500" height="500" />
 
 ### Utilities
 
