@@ -15,9 +15,7 @@ env:
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
 
 jobs:
-
   cancel-existing:
-    needs: hmm
     runs-on: ubuntu-latest
     name: Cancel Previous Pipeline Runs
     steps:
