@@ -15,7 +15,30 @@ env:
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
 
 jobs:
+
+  hmm:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_CONTEXT: ${{ toJson(github) }}
+    steps:
+      - name: Show GitHub context 
+        run: echo "$GITHUB_CONTEXT"
+      - name: Get changed files in the migrations folder
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v34
+        with:
+          files: "**/migrations/**"
+          sha: ${{ github.event.pull_request.head.sha }}
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changed-files-specific.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
+      - name: fail
+        run: exit 1
+
   cancel-existing:
+    needs: hmm
     runs-on: ubuntu-latest
     name: Cancel Previous Pipeline Runs
     steps:
@@ -126,7 +149,7 @@ jobs:
           app_location: ${{ env.FRONTEND_OUTPUT_LOCATION }}
 
   migrate-database:
-    name: Datbase Migration
+    name: Database Migration
     runs-on: ubuntu-latest
     needs:
       - build
