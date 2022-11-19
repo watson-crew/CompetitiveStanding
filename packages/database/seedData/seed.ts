@@ -1,4 +1,4 @@
-import { prisma } from '../lib/prisma';
+import { prisma } from '..';
 
 async function main() {
   const nottingham = await prisma.location.upsert({

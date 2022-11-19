@@ -1,0 +1,26 @@
+{
+  "name": "database",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "dev": "npm run prisma:studio",
+    "lint": "prisma validate",
+    "prisma:studio": "prisma studio",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push --skip-generate",
+    "prisma:seed": "prisma db seed",
+    "prisma:deploy": "prisma migrate deploy"
+  },
+  "prisma": {
+    "seed": "ts-node seedData/seed.ts"
+  },
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^9.2.2",
+    "prisma": "^4.6.1",
+    "prisma-erd-generator": "^1.2.4",
+    "ts-node": "^10.9.1"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.6.1"
+  }
+}
