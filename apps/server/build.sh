@@ -17,8 +17,8 @@ cp package.json $OUTPUT_DIR
 (cd $OUTPUT_DIR && npm install --production)
 
 # Generate the relevant Prisma code
-echo "Initialising Prisma client"
-npm run prisma:generate
+# echo "Initialising Prisma client"
+# npm run prisma:generate
 
 # Due to TurboRepo complicaitons this actually happens in the root node_modules.
 # So copy the updated .primsa file from there...

@@ -48,11 +48,8 @@ export type components = {
       profilePicture?: string;
     };
     Location: {
-      /**
-       * Format: uuid 
-       * @example 54268cee-3533-4134-a1ed-fdaae38188a3
-       */
-      id: string;
+      /** @example 1 */
+      id: number;
       /** @example Nottingham */
       name: string;
       /** @example https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg */
@@ -141,7 +138,7 @@ export type operations = {
     /** Get location by id */
     parameters: {
       path: {
-        locationId: string;
+        locationId: number;
       };
     };
     responses: {

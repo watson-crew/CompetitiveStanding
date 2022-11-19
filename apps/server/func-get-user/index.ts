@@ -1,6 +1,4 @@
 import { operations, User } from 'schema';
-import locations from '../src/db/locationDb';
-import users from '../src/db/userDb';
 import { PathParameterAzureFunction } from '../src/types';
 import { return200, return404, return500 } from '../lib/utils';
 import { getUserByMemorableId } from '../repository/userRepository';
