@@ -28,7 +28,7 @@ jobs:
         uses: tj-actions/changed-files@v34
         with:
           files: "**/migrations/**"
-          sha: ${{ github.event.pull_request.head.sha }}
+          sha: ${{ github.event.before }}
       - name: List all changed files
         run: |
           for file in ${{ steps.changed-files-specific.outputs.all_changed_files }}; do
