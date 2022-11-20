@@ -13,6 +13,7 @@ env:
   NODE_VERSION: '16.x'
   FRONTEND_OUTPUT_LOCATION: './apps/web/out'
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
+  DISABLE_ERD: true
 
 jobs:
   cancel-existing:
