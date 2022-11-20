@@ -1,13 +1,21 @@
 {
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^generate", "^build"],
       "outputs": ["dist/**", ".next/**"]
+    },
+    "clean": {
+      "outputs": []
     },
     "lint": {
       "outputs": []
     },
     "dev": {
+      "dependsOn": ["^generate"],
+      "cache": false
+    },
+    "generate": {
+      "dependsOn": ["^generate"],
       "cache": false
     },
     "test": {

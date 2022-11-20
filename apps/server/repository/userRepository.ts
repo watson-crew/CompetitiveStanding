@@ -1,17 +1,17 @@
-import prismaClient from '.';
+import { prisma } from 'database';
 import { User } from 'schema';
 import { mapUserWithLocation } from '../mappers/userMapper';
 
 export const getUsers = async () => {
-  return await prismaClient.user.findMany();
+  return await prisma.user.findMany();
 };
 
 export const getUserByMemorableId = async (id: string): Promise<User> => {
   console.log('CLient');
-  console.log(prismaClient);
+  console.log(prisma);
   console.log('Done');
 
-  const user = await prismaClient.user.findFirst({
+  const user = await prisma.user.findFirst({
     where: {
       memorableId: id,
     },

@@ -1,13 +1,13 @@
-import prismaClient from '.';
-import { Location } from 'database';
+import { Location } from 'schema';
+import { prisma } from 'database';
 import locationMapper from '../mappers/locationMapper';
 
 export const getLocations = async () => {
-  return await prismaClient.location.findMany();
+  return await prisma.location.findMany();
 };
 
 export const getLocationById = async (id: number): Promise<Location> => {
-  const location = await prismaClient.location.findFirst({
+  const location = await prisma.location.findFirst({
     where: {
       id: id,
     },

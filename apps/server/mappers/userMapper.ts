@@ -1,9 +1,7 @@
-import { User as PrismaUser, Location } from 'database';
+// import { User as PrismaUser, Location } from 'database';
 import { User as UserDto } from 'schema';
 
-export function mapUserWithLocation(
-  prismaUser: PrismaUser & { location: Location },
-): UserDto {
+export function mapUserWithLocation(prismaUser: any): UserDto {
   console.log(prismaUser);
 
   return {

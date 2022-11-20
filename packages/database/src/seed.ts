@@ -1,6 +1,4 @@
-import { PrismaClient } from '..';
-
-const prisma = new PrismaClient();
+import { prisma } from '.';
 
 async function main() {
   const nottingham = await prisma.location.upsert({
