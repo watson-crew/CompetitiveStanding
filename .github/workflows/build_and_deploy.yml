@@ -43,7 +43,7 @@ jobs:
     name: 'Lint source code'
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: 'sqlserver://' # prisma:validate needs a value
+      DATABASE_URL: 'sqlserver://' # prisma format needs a value
     steps:
       - uses: actions/checkout@v3
       - name: Load node_modules
@@ -148,7 +148,7 @@ jobs:
           base_sha: ${{ github.event.before }}
       - name: Run database migration
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run prisma:deploy
+        run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run deploy
 
   deploy-backend:
     name: Backend Deploy

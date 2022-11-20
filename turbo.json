@@ -5,7 +5,7 @@
       "outputs": ["dist/**", ".next/**"]
     },
     "clean": {
-      "outputs": []
+      "outputs": ["^clean"]
     },
     "lint": {
       "outputs": []

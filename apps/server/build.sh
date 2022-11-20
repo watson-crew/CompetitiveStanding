@@ -12,16 +12,11 @@ npm run ts:transpile
 # Add the relevant dependecies to the dist
 echo "Adding dependencies to output"
 
+mkdir -p $OUTPUT_DIR/node_modules/database
+
+# Azure functions don't play nice with turbo repo, we need to manually copy any generated dependencies ourselves...
+cp -R ../../packages/database/dist/. $OUTPUT_DIR/node_modules/database
+
 cp package.json $OUTPUT_DIR
 
 (cd $OUTPUT_DIR && npm install --production)
-
-# Generate the relevant Prisma code
-# echo "Initialising Prisma client"
-# npm run prisma:generate
-
-# Due to TurboRepo complicaitons this actually happens in the root node_modules.
-# So copy the updated .primsa file from there...
-
-cp -R ../../node_modules/.prisma $OUTPUT_DIR/node_modules
-

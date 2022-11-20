@@ -14,6 +14,6 @@ RUN mkdir -p /usr/src/app && cp -a /tmp/node_modules /usr/src/app
 
 COPY . /usr/src/app
 
-RUN npm run prisma:generate
+RUN npm run generate
 
-CMD echo $DATABASE_URL && sleep 20s && npm run prisma:deploy && npm run prisma:seed
+CMD echo $DATABASE_URL && sleep 20s && npm run deploy && npm run seed
