@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "clean": "turbo run clean",
+    "clean": "turbo run clean && npm run clean:root",
+    "clean:root": "rimraf node_modules",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",
