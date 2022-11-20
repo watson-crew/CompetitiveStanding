@@ -6,20 +6,22 @@ const locations: Omit<Location, 'id'>[] = [
   },
 ];
 
-function seedLocations(prisma: PrismaClient): Record<string, Location> {
+async function seedLocations(
+  prisma: PrismaClient,
+): Promise<Record<string, Location>> {
   const seededLocations: Record<string, Location> = {};
 
-  locations.forEach(async (location, index) => {
+  for (let i = 0; i < locations.length; i++) {
     const insertedLocation = await prisma.location.upsert({
       where: {
-        id: index + 1,
+        id: i + 1,
       },
       update: {},
-      create: location,
+      create: locations[i],
     });
 
     seededLocations[insertedLocation.name.toLowerCase()] = insertedLocation;
-  });
+  }
 
   return seededLocations;
 }

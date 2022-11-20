@@ -51,13 +51,13 @@ const users = (locations: Record<string, Location>): Omit<User, 'id'>[] => {
   ];
 };
 
-function seedUsers(
+async function seedUsers(
   prisma: PrismaClient,
   { locations }: SeedDependencies,
-): Record<string, User> {
+): Promise<Record<string, User>> {
   const seededUsers: Record<string, User> = {};
 
-  users(locations).forEach(async (user, index) => {
+  for (const user of users(locations)) {
     const insertedUser = await prisma.user.upsert({
       where: { memorableId: user.memorableId },
       update: {},
@@ -65,7 +65,7 @@ function seedUsers(
     });
 
     seededUsers[insertedUser.memorableId] = insertedUser;
-  });
+  }
 
   return seededUsers;
 }

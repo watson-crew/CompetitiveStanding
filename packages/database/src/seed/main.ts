@@ -7,10 +7,10 @@ async function main() {
   const seededLocations: Record<string, Location> = {};
 
   // Seed locations
-  const locations = seedLocations(prisma);
+  const locations = await seedLocations(prisma);
 
   // Seed users
-  seedUsers(prisma, { locations });
+  await seedUsers(prisma, { locations });
 }
 
 main()

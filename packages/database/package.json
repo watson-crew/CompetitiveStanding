@@ -27,6 +27,7 @@
     "seed": "ts-node src/seed/main.ts"
   },
   "devDependencies": {
+    "config": "*",
     "@mermaid-js/mermaid-cli": "^9.2.2",
     "prisma": "^4.6.1",
     "prisma-erd-generator": "^1.2.4",

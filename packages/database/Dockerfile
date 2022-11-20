@@ -16,4 +16,4 @@ COPY . /usr/src/app
 
 RUN npm run generate
 
-CMD echo $DATABASE_URL && sleep 20s && npm run deploy && npm run seed
+CMD sleep 20s && npm run deploy && npm run seed
