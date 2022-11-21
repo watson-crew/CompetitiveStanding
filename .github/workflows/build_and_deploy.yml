@@ -16,6 +16,17 @@ env:
   DISABLE_ERD: true
 
 jobs:
+  smoke:
+    name: 'Smoke tests'
+    runs-on: ubuntu-latest
+    env:
+      API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
+    steps:
+      - name: Backend smoke test
+        uses: wei/curl@master
+        with:
+          args: "--request GET '${{ env.API_BASE_URL }}/users/jjp' --header 'Accept: application/json' --fail"
+
   cancel-existing:
     runs-on: ubuntu-latest
     name: Cancel Previous Pipeline Runs
