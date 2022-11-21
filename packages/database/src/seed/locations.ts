@@ -3,6 +3,9 @@ import { Location, PrismaClient } from '@prisma/client';
 const locations: Omit<Location, 'id'>[] = [
   {
     name: 'Nottingham',
+    urlPath: 'nottingham',
+    coverPhoto:
+      'http://proici.co.uk/wp-content/uploads/2018/12/BJSS_Header.jpg',
   },
 ];
 

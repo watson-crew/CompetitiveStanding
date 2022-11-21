@@ -1,5 +1,7 @@
 import { Location } from 'schema';
 
+// TODO: Remove this file once we have fully configured our new prisma schema
+
 const locations = [
   {
     id: 1,
