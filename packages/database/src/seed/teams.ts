@@ -2,7 +2,7 @@ import { Team, User, PrismaClient, Prisma } from '@prisma/client';
 import { toId } from './maps';
 
 type SeedDependencies = {
-    users: User[]
+    users: Record<string, User>;
 }
 
 const userToTeam = (user: User): Prisma.TeamCreateInput => usersToTeam([user]);
@@ -22,7 +22,7 @@ async function seedTeams(
   const seededTeams: Record<string, Team> = {};
 
   // Each user in their own team for 1v1 games
-  const teamsData = users.map(userToTeam);
+  const teamsData = Object.values(users).map(userToTeam);
 
   for (let i = 0; i < teamsData.length; i++) {
     const insertedTeam = await prisma.team.upsert({

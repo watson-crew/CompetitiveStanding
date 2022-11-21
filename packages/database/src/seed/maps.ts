@@ -1,5 +1,7 @@
 import { Group, User, PrismaClient, Prisma } from '@prisma/client';
 
+export const toId = (model: any) => { return model.id }
+
 export async function addUsersToGroup(
     prisma: PrismaClient,
     group: Group,
@@ -7,7 +9,7 @@ export async function addUsersToGroup(
 ): Promise<Group> {
     const data: Prisma.GroupUpdateInput = {
         players: {
-            connect: users
+            connect: users.map(toId)
         }
     };
 
