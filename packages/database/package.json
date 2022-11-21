@@ -18,6 +18,7 @@
     "format": "prisma format",
     "studio": "prisma studio",
     "generate": "prisma generate",
+    "migrate": "prisma migrate dev",
     "push": "prisma db push --skip-generate",
     "seed": "prisma db seed",
     "deploy": "prisma migrate deploy"
