@@ -24,10 +24,50 @@ model User {
   profilePicture String?
   location       Location? @relation(fields: [locationId], references: [id])
   locationId     Int?
+  groups         Group[]
+  teams          Team[]
+}
+
+model Group {
+  id           Int     @id @default(autoincrement())
+  name         String
+  groupPicture String?
+  players      User[]
 }
 
 model Location {
-  id    Int    @id @default(autoincrement())
-  name  String
-  users User[]
+  id             Int          @id @default(autoincrement())
+  urlPath        String       @unique
+  name           String
+  coverPhoto     String?
+  availableGames GameType[]
+  users          User[]
+  gameResult     GameResult[]
+}
+
+model GameType {
+  id               Int          @id @default(autoincrement())
+  name             String       @unique
+  maxNumberOfTeams Int
+  locations        Location[]
+  gameResults      GameResult[]
+}
+
+model Team {
+  id          Int          @id @default(autoincrement())
+  players     User[]
+  gameResults GameResult[]
+  wonGames    GameResult[] @relation("WinningTeamRelation")
+}
+
+model GameResult {
+  id               Int      @id @default(autoincrement())
+  teams            Team[]
+  winningTeam      Team     @relation(name: "WinningTeamRelation", fields: [winningTeamId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  winningTeamId    Int
+  gameType         GameType @relation(fields: [gameTypeId], references: [id])
+  gameTypeId       Int
+  locationPlayed   Location @relation(fields: [locationPlayedId], references: [id])
+  locationPlayedId Int
+  timePlayed       DateTime
 }
