@@ -29,7 +29,7 @@ export class LocationService {
      * @throws ApiError
      */
     public getLocationById(
-        locationId: string,
+        locationId: number,
     ): CancelablePromise<Location> {
         return this.httpRequest.request({
             method: 'GET',

@@ -1,5 +1,5 @@
 import { operations } from 'schema';
-import locations from '../src/db/locationDb';
+import locations from '../src/repository/deprecated/locationDb';
 import { PathParameterAzureFunction } from '../src/types';
 
 const httpTrigger: PathParameterAzureFunction<operations['getLocationById']> =

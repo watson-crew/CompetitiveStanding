@@ -125,7 +125,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -182,9 +182,8 @@
         "required": ["id", "name"],
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "54268cee-3533-4134-a1ed-fdaae38188a3"
+            "type": "number",
+            "example": 1
           },
           "name": {
             "type": "string",

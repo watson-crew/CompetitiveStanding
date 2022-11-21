@@ -1,5 +1,5 @@
 import { operations } from 'schema';
-import locations from '../src/db/locationDb';
+import locations from '../src/repository/deprecated/locationDb';
 import { EmptyParameterAzureFunction } from '../src/types';
 
 const httpTrigger: EmptyParameterAzureFunction<operations['getAllLocations']> =

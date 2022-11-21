@@ -1,9 +1,11 @@
 import { operations, User } from 'schema';
-import locations from '../src/db/locationDb';
-import users from '../src/db/userDb';
 import { PathParameterAzureFunction } from '../src/types';
-import { return200, return404, return500 } from '../lib/utils';
-import { getUserByMemorableId } from '../repository/userRepository';
+import {
+  set200Response,
+  set404Response,
+  set500Response,
+} from '../src/utils/contextUtils';
+import { getUserByMemorableId } from '../src/repository/userRepository';
 
 const httpTrigger: PathParameterAzureFunction<
   operations['getUserByMemorableId']
@@ -19,14 +21,14 @@ const httpTrigger: PathParameterAzureFunction<
 
     if (!user) {
       context.log(`[func-get-user] No matching user with id: ${memorableId}`);
-      return404(context);
+      set404Response(context);
     } else {
       context.log(`[func-get-user] Found user: ${user}`);
-      return200(context, user);
+      set200Response(context, user);
     }
   } catch (e) {
     context.log(`[func-get-user] Error: ${e.message}`);
-    return500(context, e);
+    set500Response(context, e);
   }
 };
 

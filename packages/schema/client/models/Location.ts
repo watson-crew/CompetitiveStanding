@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 export type Location = {
-    id: string;
+    id: number;
     name: string;
     coverPhoto?: string;
 };

@@ -13,6 +13,7 @@ env:
   NODE_VERSION: '16.x'
   FRONTEND_OUTPUT_LOCATION: './apps/web/out'
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
+  DISABLE_ERD: true
 
 jobs:
   cancel-existing:
@@ -42,6 +43,8 @@ jobs:
     needs: install
     name: 'Lint source code'
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: 'sqlserver://' # prisma format needs a value
     steps:
       - uses: actions/checkout@v3
       - name: Load node_modules
@@ -124,13 +127,13 @@ jobs:
           app_location: ${{ env.FRONTEND_OUTPUT_LOCATION }}
 
   migrate-database:
-    name: Datbase Migration
+    name: Database Migration
     runs-on: ubuntu-latest
     needs:
       - build
     env:
       DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
-      AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server'
+      DATABASE_PACKAGE_PATH: './packages/database'
     steps:
       - uses: actions/checkout@v2
       - name: Load node_modules
@@ -143,22 +146,16 @@ jobs:
         uses: tj-actions/changed-files@v34
         with:
           files: "**/migrations/**"
-          fetch_depth: "1"
-      - name: List all changed files
-        run: |
-          for file in ${{ steps.changed-files-specific.outputs.all_changed_files }}; do
-            echo "$file was changed"
-          done
+          base_sha: ${{ github.event.before }}
       - name: Run database migration
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} && npm run prisma:deploy
+        run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run deploy
 
   deploy-backend:
     name: Backend Deploy
     runs-on: ubuntu-latest
     needs:
       - build
-      - migrate-database
     env:
       AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server'
       BACKEND_SLOT: ${{ github.ref == 'refs/heads/main' && 'Production' || 'qa' }}

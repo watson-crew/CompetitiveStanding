@@ -2,17 +2,16 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
+  "bundleDependencies": [
+    "database"
+  ],
   "scripts": {
-    "dev": "npm start && npm run prisma:studio",
+    "dev": "npm start",
     "build": "./build.sh",
+    "clean": "rimraf .turbo node_modules dist",
     "ts:transpile": "tsc",
-    "prisma:studio": "prisma studio",
-    "prisma:generate": "prisma generate",
-    "prisma:seed": "prisma db seed",
-    "prisma:deploy": "prisma migrate deploy",
     "watch": "tsc -w",
     "lint": "eslint --ext .ts,.tsx,.json .",
-    "lint:prisma": "prisma validate",
     "prestart": "npm run build",
     "start": "func start",
     "test": "echo \"No tests yet...\""
@@ -22,15 +21,13 @@
   },
   "devDependencies": {
     "@azure/functions": "^3.0.0",
-    "@mermaid-js/mermaid-cli": "^9.2.2",
     "@types/node": "16.x",
     "azure-functions-core-tools": "^4.x",
-    "prisma": "^4.6.1",
-    "prisma-erd-generator": "^1.2.4",
+    "rimraf": "^3.0.2",
     "schema": "*",
     "typescript": "^4.0.0"
   },
   "dependencies": {
-    "@prisma/client": "^4.6.1"
+    "database": "*"
   }
 }

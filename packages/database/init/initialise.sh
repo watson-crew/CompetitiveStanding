@@ -1,7 +1,7 @@
 #!/bin/bash
 # Wait to be sure that SQL Server came up
 
-CREATE_DATABASE_SCRIPT_NAME=create-database.sql
+CREATE_DATABASE_SCRIPT_NAME=initialise.sql
 
 echo "[DB-INITIALISATION] Waiting for DB to start up"
 

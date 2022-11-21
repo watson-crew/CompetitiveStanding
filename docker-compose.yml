@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # SQL databaes container
   mssql:
     image: mcr.microsoft.com/azure-sql-edge:latest
     command: /opt/mssql/bin/sqlservr
@@ -12,15 +13,24 @@ services:
       - 1433:1433
     networks:
       - db_net
+  # Temp SQLTools container to create DB
   sqlcmd:
     image: mcr.microsoft.com/mssql-tools:latest
-    command: /opt/mssql_scripts/initialize-db.sh
+    command: /opt/mssql_scripts/initialise.sh
     platform: linux/arm64
     stdin_open: true
     volumes:
-      - ./db-scripts:/opt/mssql_scripts
+      - ./packages/database/init:/opt/mssql_scripts
     networks:
       - db_net
+  # Temp Node container to run prisma commands
+  prisma:
+    build: './packages/database'
+    stdin_open: true
+    networks:
+      - db_net
+    depends_on:
+      - sqlcmd
 networks:
   db_net:
     name: db_net

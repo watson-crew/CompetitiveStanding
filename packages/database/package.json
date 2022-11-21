@@ -1,0 +1,43 @@
+{
+  "name": "database",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "./build.sh",
+    "ts:transpile": "tsup",
+    "clean": "rimraf .turbo node_modules dist",
+    "dev": "tsup --watch",
+    "lint": "npm run format",
+    "prebuild": "npm run generate",
+    "predev": "npm run generate",
+    "format": "prisma format",
+    "studio": "prisma studio",
+    "generate": "prisma generate",
+    "push": "prisma db push --skip-generate",
+    "seed": "prisma db seed",
+    "deploy": "prisma migrate deploy"
+  },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma",
+    "seed": "ts-node src/seed/main.ts"
+  },
+  "devDependencies": {
+    "config": "*",
+    "@mermaid-js/mermaid-cli": "^9.2.2",
+    "prisma": "^4.6.1",
+    "prisma-erd-generator": "^1.2.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "tsup": "^6.5.0",
+    "tsx": "^3.12.1",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.6.1"
+  }
+}
