@@ -8,8 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "clean": "turbo run clean && npm run clean:root",
-    "clean:root": "rimraf node_modules",
+    "clean": "turbo run clean",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "test": "turbo run test",
@@ -17,6 +16,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^9.2.2",
     "autoprefixer": "^10.4.7",
     "eslint-config-custom": "*",
     "postcss": "^8.4.14",

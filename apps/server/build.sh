@@ -20,3 +20,5 @@ cp -R ../../packages/database/dist/. $OUTPUT_DIR/node_modules/database
 cp package.json $OUTPUT_DIR
 
 (cd $OUTPUT_DIR && npm install --production)
+
+mv $OUTPUT_DIR/node_modules/database/node_modules/*/ $OUTPUT_DIR/node_modules
