@@ -4,8 +4,6 @@ import seedLocations from './locations';
 import seedUsers from './users';
 
 async function main() {
-  const seededLocations: Record<string, Location> = {};
-
   // Seed locations
   const locations = await seedLocations(prisma);
 
