@@ -54,20 +54,22 @@ model GameType {
 }
 
 model Team {
-  id          Int          @id @default(autoincrement())
-  players     User[]
-  gameResults GameResult[]
-  wonGames    GameResult[] @relation("WinningTeamRelation")
+  id               Int          @id @default(autoincrement())
+  cumulativeTeamId String       @unique
+  players          User[]
+  gameResults      GameResult[]
+  wonGames         GameResult[] @relation("WinningTeamRelation")
 }
 
 model GameResult {
-  id               Int      @id @default(autoincrement())
+  id               Int       @id @default(autoincrement())
   teams            Team[]
-  winningTeam      Team     @relation(name: "WinningTeamRelation", fields: [winningTeamId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  winningTeamId    Int
-  gameType         GameType @relation(fields: [gameTypeId], references: [id])
+  winningTeam      Team?     @relation(name: "WinningTeamRelation", fields: [winningTeamId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  winningTeamId    Int?
+  gameType         GameType  @relation(fields: [gameTypeId], references: [id])
   gameTypeId       Int
-  locationPlayed   Location @relation(fields: [locationPlayedId], references: [id])
+  locationPlayed   Location  @relation(fields: [locationPlayedId], references: [id])
   locationPlayedId Int
-  timePlayed       DateTime
+  startTime        DateTime
+  endTime          DateTime?
 }
