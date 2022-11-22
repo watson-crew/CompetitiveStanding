@@ -15,7 +15,7 @@ async function main() {
   const users = await seedUsers(prisma, { locations });
 
   // Seed game types
-  const gameTypes = await seedGameTypes(prisma);
+  const gameTypes = await seedGameTypes(prisma, { locations });
 
   // Seed groups
   const groups = await seedGroups(prisma, { users });
