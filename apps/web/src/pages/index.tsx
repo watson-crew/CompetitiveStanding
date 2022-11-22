@@ -10,7 +10,7 @@ export default function Index() {
 
   const client = new AppClient({BASE: getConfig().publicRuntimeConfig.apiBaseUrl }) 
 
-  const fetchUser = (userId: string) => client.user.getUserByMemorableId(userId)
+  const fetchUser = (userId: string) => client.user.getUserByMemorableId({ memorableId: userId })
 
   useEffect(() => {
 

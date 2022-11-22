@@ -24,13 +24,14 @@ export class LocationService {
 
     /**
      * Get location by id
-     * @param locationId
      * @returns Location successful operation
      * @throws ApiError
      */
-    public getLocationById(
+    public getLocationById({
+        locationId,
+    }: {
         locationId: number,
-    ): CancelablePromise<Location> {
+    }): CancelablePromise<Location> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/locations/{locationId}',

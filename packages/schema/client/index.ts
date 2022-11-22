@@ -9,6 +9,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { GameType } from './models/GameType';
 export type { Location } from './models/Location';
 export type { User } from './models/User';
 

@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 export type User = {
-    id: string;
+    id: number;
     memorableId: string;
     firstName: string;
     lastName: string;
