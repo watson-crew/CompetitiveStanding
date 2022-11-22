@@ -66,8 +66,22 @@ export type components = {
       availableGames?: (components["schemas"]["GameType"])[];
     };
     InitiateMatchResponse: {
+      /** @example 519 */
       matchId: number;
-      /** @description The historic results for each team participating in the match */
+      /**
+       * @description The historic results for each team participating in the match 
+       * @example {
+       *   "abcxyz": {
+       *     "wins": 2
+       *   },
+       *   "aaa": {
+       *     "wins": 8
+       *   },
+       *   "bbbyyyzzz": {
+       *     "wins": 9
+       *   }
+       * }
+       */
       historicResults: {
         [key: string]: components["schemas"]["TeamHistoricResult"] | undefined;
       };

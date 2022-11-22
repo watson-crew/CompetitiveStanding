@@ -16,5 +16,5 @@ export type { TeamHistoricResult } from './models/TeamHistoricResult';
 export type { User } from './models/User';
 
 export { LocationService } from './services/LocationService';
-export { MatchService } from './services/MatchService';
+export { MatchesService } from './services/MatchesService';
 export { UserService } from './services/UserService';

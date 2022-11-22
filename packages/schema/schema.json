@@ -154,7 +154,7 @@
     },
     "/matches": {
       "post": {
-        "tags": ["match"],
+        "tags": ["matches"],
         "summary": "Initiate a match between a number of teams",
         "operationId": "initiateNewMatch",
         "requestBody": {

@@ -6,7 +6,7 @@ import type { InitiateMatchResponse } from '../models/InitiateMatchResponse';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
 
-export class MatchService {
+export class MatchesService {
 
     constructor(public readonly httpRequest: BaseHttpRequest) {}
 
