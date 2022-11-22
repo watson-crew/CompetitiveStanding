@@ -6,7 +6,9 @@ import { set200Response, set404Response, set500Response } from '../src/utils/con
 const httpTrigger: PathParameterAzureFunction<
   operations['getLocationById']
 > = async function (context, req): Promise<void> {
-    const { locationId } = req.params;
+    let { locationId } = req.params;
+    locationId = +locationId; // Hack to turn string into number
+
 
     context.log(`[func-get-location] Finding Location by id ${locationId}`);
 
