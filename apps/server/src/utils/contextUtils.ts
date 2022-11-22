@@ -15,17 +15,21 @@ export const set404Response = (context: Context) => {
 };
 
 export const set200Response = (context: Context, body: any) => {
-  context.res = {
-    headers: defaultHeaders,
-    statusCode: 200,
-    body,
-  };
+  setResponseWithBody(200, context, body)
 };
 
+export const set201Response = (context: Context, body: any) => {
+  setResponseWithBody(201, context, body)
+}
+
 export const set500Response = (context: Context, error: Error) => {
+  setResponseWithBody(500, context, error.message)
+};
+
+const setResponseWithBody = (statusCode: number, context: Context, body: any) => {
   context.res = {
     headers: defaultHeaders,
-    statusCode: 500,
-    body: error.message,
-  };
-};
+    statusCode,
+    body
+  }
+}
