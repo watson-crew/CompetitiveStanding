@@ -1,6 +1,4 @@
-import { Group, User, PrismaClient, Prisma } from '@prisma/client';
-
-export const toId = (model: any) => { return model.id }
+export const toId = (model: any) => {return { id: model.id }}
 
 
 
