@@ -1,27 +1,29 @@
-import { operations } from 'schema';
-import locations from '../src/repository/deprecated/locationDb';
+import { operations, Location } from 'schema';
 import { PathParameterAzureFunction } from '../src/types';
+import { getLocationById } from '../src/repository/locationRepository';
+import { set200Response, set404Response, set500Response } from '../src/utils/contextUtils';
 
-const httpTrigger: PathParameterAzureFunction<operations['getLocationById']> =
-  async function (context, req): Promise<void> {
+const httpTrigger: PathParameterAzureFunction<
+  operations['getLocationById']
+> = async function (context, req): Promise<void> {
     const { locationId } = req.params;
 
     context.log(`[func-get-location] Finding Location by id ${locationId}`);
 
-    const location = locations.find(location => location.id === locationId);
+    try {
+      const location: Location = await getLocationById(locationId);
 
-    context.log(
-      `[func-get-location] Found Location ${JSON.stringify(location)}`,
-    );
-
-    context.res = {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET',
-        'Content-Type': 'application/json',
-      },
-      body: location,
-    };
+      if (!location) {
+        context.log(`[func-get-location] No matching location with id: ${locationId}`);
+        set404Response(context);
+      } else {
+        context.log(`[func-get-location] Found Location ${JSON.stringify(location)}`);
+        set200Response(context, location);
+      }
+    } catch (e) {
+      context.log(`[func-get-location] Error: ${e.message}`);
+      set500Response(context, e);
+    }
   };
 
 export default httpTrigger;
