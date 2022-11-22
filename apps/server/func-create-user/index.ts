@@ -1,5 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
-import { User } from 'schema'
+import { User, UserInput } from 'schema'
 import {
     set201Response,
     set500Response,
@@ -10,10 +10,11 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     // Is the return type of this the same as the input type?
     // Do we have a type definition in schema for the post details?
     try {
+        const userInput: UserInput = req.body;
         // Should map schema models to repository models
         //   OR assume schema models are the same as repository models
         // Then in repository map to prisma models
-        const user: User = await createUser(req.body);
+        const user: User = await createUser(userInput);
         set201Response(context, user);
     } catch (e) {
         context.log(`[func-create-user] Error: ${e.message}`)
