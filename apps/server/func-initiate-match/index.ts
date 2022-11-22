@@ -1,4 +1,3 @@
-import { AzureFunction, Context, HttpRequest } from '@azure/functions';
 import { operations } from 'schema';
 import { PostRequestAzureFunction } from '../src/types';
 
