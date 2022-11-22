@@ -1,12 +1,16 @@
 import { HttpRequest } from '@azure/functions';
 
+type Stringified<T> = {
+  [P in keyof T]: string;
+};
+
 type ParameterizedHttpRequest<PathParams, BodyParams, QueryParams> = Omit<
   HttpRequest,
   'params' | 'body' | 'query'
 > & {
-  query: QueryParams;
+  query: Stringified<QueryParams>;
   body: BodyParams;
-  params: PathParams;
+  params: Stringified<PathParams>;
 };
 
 export type HttpRequestForRequestBody<BodyType> = ParameterizedHttpRequest<
