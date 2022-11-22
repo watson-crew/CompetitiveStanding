@@ -31,11 +31,8 @@ export type paths = {
 export type components = {
   schemas: {
     User: {
-      /**
-       * Format: uuid 
-       * @example
-       */
-      id: string;
+      /** @example 1 */
+      id: number;
       /** @example abc */
       memorableId: string;
       /** @example John */
@@ -47,6 +44,14 @@ export type components = {
       /** @example https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg */
       profilePicture?: string;
     };
+    GameType: {
+      /** @example 1 */
+      id: number;
+      /** @example Pool */
+      name: string;
+      /** @example 1 */
+      maxNumberOfPlayers: number;
+    };
     Location: {
       /** @example 1 */
       id: number;
@@ -54,26 +59,12 @@ export type components = {
       name: string;
       /** @example https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg */
       coverPhoto?: string;
+      availableGames?: (components["schemas"]["GameType"])[];
     };
   };
   responses: never;
   parameters: never;
-  requestBodies: {
-    User?: {
-      content: {
-        "application/json": {
-          /** @example abc */
-          memorableId: string;
-          /** @example John */
-          firstName: string;
-          /** @example James */
-          lastName: string;
-          /** @example https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg */
-          profilePicture?: string;
-        };
-      };
-    };
-  };
+  requestBodies: never;
   headers: never;
   pathItems: never;
 };
@@ -84,22 +75,27 @@ export type operations = {
 
   createUser: {
     /** Create a new user */
-    requestBody?: {
+    requestBody: {
       content: {
-        "application/json": components["schemas"]["User"];
+        "application/json": {
+          /** @example abc */
+          memorableId: string;
+          /** @example John */
+          firstName: string;
+          /** @example James */
+          lastName: string;
+          /** @example https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg */
+          profilePictureUrl?: string;
+          /** @example 1 */
+          homeLocationId?: number;
+        };
       };
     };
     responses: {
       /** @description successful operation */
-      200: {
+      201: {
         content: {
-          "application/json": {
-            /**
-             * Format: uuid 
-             * @example b99ec52b-e9e2-444c-8c73-fb577c25bf70
-             */
-            id: string;
-          } & components["schemas"]["User"];
+          "application/json": components["schemas"]["User"];
         };
       };
     };

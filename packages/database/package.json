@@ -17,7 +17,7 @@
     "predev": "npm run generate",
     "format": "prisma format",
     "studio": "prisma studio",
-    "generate": "prisma generate",
+    "generate": "export DISABLE_ERD=true && prisma generate",
     "migrate": "prisma migrate dev",
     "push": "prisma db push --skip-generate",
     "seed": "prisma db seed",

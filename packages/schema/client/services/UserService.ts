@@ -12,15 +12,20 @@ export class UserService {
 
     /**
      * Create a new user
-     * @param requestBody
-     * @returns any successful operation
+     * @returns User successful operation
      * @throws ApiError
      */
-    public createUser(
-        requestBody?: User,
-    ): CancelablePromise<({
-        id: string;
-    } & User)> {
+    public createUser({
+        requestBody,
+    }: {
+        requestBody: {
+            memorableId: string;
+            firstName: string;
+            lastName: string;
+            profilePictureUrl?: string;
+            homeLocationId?: number;
+        },
+    }): CancelablePromise<User> {
         return this.httpRequest.request({
             method: 'POST',
             url: '/users',
@@ -31,13 +36,14 @@ export class UserService {
 
     /**
      * Get user by memorable id
-     * @param memorableId
      * @returns User successful operation
      * @throws ApiError
      */
-    public getUserByMemorableId(
+    public getUserByMemorableId({
+        memorableId,
+    }: {
         memorableId: string,
-    ): CancelablePromise<User> {
+    }): CancelablePromise<User> {
         return this.httpRequest.request({
             method: 'GET',
             url: '/users/{memorableId}',
