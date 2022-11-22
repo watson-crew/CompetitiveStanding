@@ -5,7 +5,7 @@ import seedUsers from './users';
 import seedGroups from './groups';
 import seedGameTypes from './gameTypes';
 import seedTeams from './teams';
-import { addUsersToGroup } from './maps'
+import seedGameResults from './gameResults';
 
 async function main() {
   // Seed locations
@@ -18,15 +18,13 @@ async function main() {
   const gameTypes = await seedGameTypes(prisma);
 
   // Seed groups
-  const groups = await seedGroups(prisma);
-
-  // Add players to groups - TODO: Move this into seedGroups for consistency
-  const watsonGroup = groups['watson crew']
-  const watsonGroupPlayers = [users['jjp'], users['pjm'], users['stc'], users['ad2'], users['4e8']]
-  await addUsersToGroup(prisma, watsonGroup, watsonGroupPlayers);
+  const groups = await seedGroups(prisma, { users });
 
   // Seed teams - each player in their own team
   const teams = await seedTeams(prisma, { users });
+
+  // Seed game results
+  const gameResults = await seedGameResults(prisma, { locations, gameTypes, teams });
 }
 
 main()

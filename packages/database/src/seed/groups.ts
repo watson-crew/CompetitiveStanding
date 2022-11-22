@@ -1,9 +1,8 @@
 import { Group, User, PrismaClient, Prisma } from '@prisma/client';
+import { toId } from './maps'
 
-const t: Prisma.GroupCreateInput = {
-  name: 'watson',
-  groupPicture: '',
-  players: {connect: []}
+type SeedDependencies = {
+  users: Record<string, User>
 }
 
 const groups: Omit<Group, "id">[] = [
@@ -19,8 +18,27 @@ const groups: Omit<Group, "id">[] = [
   }
 ];
 
+ async function addUsersToGroup(
+  prisma: PrismaClient,
+  group: Group,
+  users: User[]
+): Promise<Group> {
+  const data: Prisma.GroupUpdateInput = {
+      players: {
+          connect: users.map(toId)
+      }
+  };
+
+  const updatedGroup = await prisma.group.update({
+      where: {id: group.id},
+      data
+  });
+  return updatedGroup
+}
+
 async function seedGroups(
   prisma: PrismaClient,
+  { users }: SeedDependencies
 ): Promise<Record<string, Group>> {
   const seededGroups: Record<string, Group> = {};
 
@@ -35,6 +53,11 @@ async function seedGroups(
 
     seededGroups[insertedGroup.name.toLowerCase()] = insertedGroup;
   }
+
+  const watsonGroup = seededGroups['watson crew']
+  const watsonGroupPlayers = [users['jjp'], users['pjm'], users['stc'], users['ad2'], users['4e8']]
+  await addUsersToGroup(prisma, watsonGroup, watsonGroupPlayers);
+  seededGroups['watson crew'] = watsonGroup;
 
   return seededGroups;
 }
