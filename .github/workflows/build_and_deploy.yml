@@ -138,17 +138,18 @@ jobs:
       DATABASE_PACKAGE_PATH: './packages/database'
     steps:
       - uses: actions/checkout@v2
-      - name: Load node_modules
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Get changed files in the migrations folder
         id: changed-files-specific
         uses: tj-actions/changed-files@v34
         with:
           files: "**/migrations/**"
           base_sha: ${{ github.event.before }}
+      - name: Load node_modules
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Run database migration
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run deploy
@@ -202,9 +203,8 @@ jobs:
       API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
     steps:
       - name: Backend smoke test
-        run: curl '${{ env.API_BASE_URL }}/users/jjp' -f -s -S -o /dev/null
+        run: curl '${{ env.API_BASE_URL }}/users/jjp' -w "%{http_code}" -f -s -S -o /dev/null
       - name: Frontend smoke test
-        run:  curl ${{ needs.deploy-frontend.outputs.frontend_url }} -f -s -S -o /dev/null
+        run:  curl ${{ needs.deploy-frontend.outputs.frontend_url }} -w "%{http_code}" -f -s -S -o /dev/null
         
-
     
