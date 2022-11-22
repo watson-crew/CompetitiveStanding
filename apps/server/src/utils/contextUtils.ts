@@ -1,4 +1,7 @@
-import { Context } from '@azure/functions';
+import {
+  ContextForResponse as ErrorContext,
+  ContextForResponseBody,
+} from '../types/responses';
 
 // Have some utils to encapsulate default headers & setting responses in the context
 const defaultHeaders = {
@@ -7,14 +10,20 @@ const defaultHeaders = {
   'Content-Type': 'application/json',
 };
 
-export const set404Response = (context: Context) => {
+export const set404Response = (context: ErrorContext) => {
   context.res = {
     headers: defaultHeaders,
     statusCode: 404,
+    body: {
+      error: 'Not found',
+    },
   };
 };
 
-export const set200Response = (context: Context, body: any) => {
+export const set200Response = <T>(
+  context: ContextForResponseBody<T>,
+  body: T,
+) => {
   context.res = {
     headers: defaultHeaders,
     statusCode: 200,
@@ -22,10 +31,12 @@ export const set200Response = (context: Context, body: any) => {
   };
 };
 
-export const set500Response = (context: Context, error: Error) => {
+export const set500Response = (context: ErrorContext, error: Error) => {
   context.res = {
     headers: defaultHeaders,
     statusCode: 500,
-    body: error.message,
+    body: {
+      error: error.message,
+    },
   };
 };

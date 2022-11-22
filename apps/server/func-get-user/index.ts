@@ -1,15 +1,19 @@
-import { operations, User } from 'schema';
-import { PathParameterAzureFunction } from '../src/types';
+import { User } from 'schema';
 import {
   set200Response,
   set404Response,
   set500Response,
 } from '../src/utils/contextUtils';
 import { getUserByMemorableId } from '../src/repository/userRepository';
+import {
+  ContextForResponseBody,
+  HttpRequestForRequestParams,
+} from '../src/types/';
 
-type Foo = PathParameterAzureFunction<operations['getUserByMemorableId']>;
-
-const httpTrigger: Foo = async function (context, req): Promise<void> {
+const httpTrigger = async function (
+  context: ContextForResponseBody<User.GetUserByMemorableId.ResponseBody>,
+  req: HttpRequestForRequestParams<User.GetUserByMemorableId.RequestParams>,
+): Promise<void> {
   const { memorableId } = req.params;
 
   context.log(`[func-get-user] Got memorableId: ${memorableId}`);
