@@ -285,13 +285,25 @@
         "required": ["matchId", "historicResults"],
         "properties": {
           "matchId": {
-            "type": "integer"
+            "type": "integer",
+            "example": 519
           },
           "historicResults": {
             "type": "object",
             "description": "The historic results for each team participating in the match",
             "additionalProperties": {
               "$ref": "#/components/schemas/TeamHistoricResult"
+            },
+            "example": {
+              "abcxyz": {
+                "wins": 2
+              },
+              "aaa": {
+                "wins": 8
+              },
+              "bbbyyyzzz": {
+                "wins": 9
+              }
             }
           }
         }
