@@ -6,7 +6,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["get"],
-      "route": "locations/{locationId:guid}"
+      "route": "locations/{locationId:int}"
     },
     {
       "type": "http",
