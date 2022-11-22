@@ -70,9 +70,9 @@ export interface Location {
   name: string;
 }
 
-export type SetMatchWinnerData = any;
+export type RecordMatchResultsData = any;
 
-export interface SetMatchWinnerPayload {
+export interface RecordMatchResultsPayload {
   winningTeamId: number;
 }
 
@@ -180,18 +180,18 @@ export namespace Matches {
   /**
    * No description
    * @tags matches
-   * @name SetMatchWinner
-   * @summary Set the winner of a given match
+   * @name RecordMatchResults
+   * @summary Record the results of a given match
    * @request PUT:/matches/${matchId}
    */
-  export namespace SetMatchWinner {
+  export namespace RecordMatchResults {
     export type RequestParams = {
       matchId: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = SetMatchWinnerPayload;
+    export type RequestBody = RecordMatchResultsPayload;
     export type RequestHeaders = {};
-    export type ResponseBody = SetMatchWinnerData;
+    export type ResponseBody = RecordMatchResultsData;
   }
 }
 
@@ -466,16 +466,16 @@ export class ApiClient<
      * No description
      *
      * @tags matches
-     * @name SetMatchWinner
-     * @summary Set the winner of a given match
+     * @name RecordMatchResults
+     * @summary Record the results of a given match
      * @request PUT:/matches/${matchId}
      */
-    setMatchWinner: (
+    recordMatchResults: (
       matchId: string,
-      data: SetMatchWinnerPayload,
+      data: RecordMatchResultsPayload,
       params: RequestParams = {},
     ) =>
-      this.request<SetMatchWinnerData, any>({
+      this.request<RecordMatchResultsData, any>({
         path: `/matches/$${matchId}`,
         method: 'PUT',
         body: data,

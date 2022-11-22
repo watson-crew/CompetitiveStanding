@@ -1,26 +1,26 @@
 import { User } from 'schema';
 import {
   ContextForResponseBody,
+  FunctionName,
   HttpRequestForRequestBody,
   StatusCodes,
 } from '../src/types';
+import { setNotYetImplementedResponse } from '../src/utils/contextUtils';
+import { getFunctionLogger } from '../src/utils/logging';
 
 const httpTrigger = async function (
   context: ContextForResponseBody<User.CreateUser.ResponseBody>,
   req: HttpRequestForRequestBody<User.CreateUser.RequestBody>,
 ): Promise<void> {
-  context.log('HTTP trigger function processed a request.');
+  const log = getFunctionLogger(FunctionName.CreateUser, context);
+
+  log('HTTP trigger function processed a request.');
 
   const userInput = req.body;
 
-  context.log(userInput);
+  log(JSON.stringify(userInput));
 
-  context.res = {
-    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-    body: {
-      error: 'Not yet implemented',
-    },
-  };
+  setNotYetImplementedResponse(log, FunctionName.CreateUser, context);
 };
 
 export default httpTrigger;
