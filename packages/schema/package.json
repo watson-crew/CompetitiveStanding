@@ -4,14 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate": "npm run generate:client && npm run generate:typescript-schema",
-    "generate:client": "openapi --input ./schema.json --output client --client axios --name AppClient --useOptions",
-    "generate:typescript-schema": "openapi-typescript ./schema.json --output schema.ts --export-type --path-params-as-types --default-non-nullable"
+    "generate": "swagger-typescript-api -p ./schema.json --axios --name index --route-types --union-enums --extract-request-params --extract-request-body --extract-response-body --sort-types --extract-enums --module-name-first-tag --api-class-name ApiClient"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "openapi-typescript": "^6.0.3",
-    "openapi-typescript-codegen": "^0.23.0"
+    "openapi-typescript-codegen": "^0.23.0",
+    "swagger-typescript-api": "^12.0.2"
   }
 }
