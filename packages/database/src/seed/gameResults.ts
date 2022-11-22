@@ -19,20 +19,28 @@ type SeedDependencies = {
 type Game = {
   teams: number[];
   winningTeam: number;
+  start: Date,
+  end: Date
 };
 
 const games: Game[] = [
   {
     teams: [1, 2],
     winningTeam: 1,
+    start: new Date(2022, 11, 21, 10, 30),
+    end: new Date(2022, 11, 10, 45)
   },
   {
     teams: [1, 2],
     winningTeam: 2,
+    start: new Date(2022, 11, 21, 10, 47),
+    end: new Date(2022, 11, 11, 4)
   },
   {
     teams: [3, 5],
     winningTeam: 5,
+    start: new Date(2022, 11, 21, 16, 22),
+    end: new Date(2022, 11, 16, 35)
   },
 ];
 
@@ -41,6 +49,8 @@ const generateGameResultData = (
   gameType: GameType,
   teams: Team[],
   winningTeam: Team,
+  start: Date,
+  end: Date
 ): Omit<Prisma.GameResultUncheckedCreateInput, 'id'> => {
   return {
     teams: {
@@ -49,8 +59,8 @@ const generateGameResultData = (
     winningTeamId: winningTeam.id,
     gameTypeId: gameType.id,
     locationPlayedId: location.id,
-    startTime: '', // TODO: Generate start and end times
-    endTime: ''
+    startTime: start,
+    endTime: end
   };
 };
 
@@ -71,6 +81,8 @@ const gameResults = (
         pool,
         teamsInGame,
         teams[game.winningTeam],
+        game.start,
+        game.end
       ),
     );
   });
