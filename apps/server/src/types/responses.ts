@@ -26,7 +26,7 @@ type HttpErrorResponse = HttpResponse<
 
 type HttpSuccessResponse<BodyType> = HttpResponse<BodyType, SuccessStatusCodes>;
 
-type HttpNoContentResponse = HttpResponse<never, StatusCodes.NO_CONTENT>;
+type HttpNoContentResponse = HttpResponse<null, StatusCodes.NO_CONTENT>;
 
 export type ContextForResponse<T = any> = Omit<Context, 'res'> & {
   res: T | HttpErrorResponse;
