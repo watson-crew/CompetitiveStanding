@@ -22,36 +22,45 @@
         "operationId": "createUser",
         "tags": ["user"],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/User"
+                "type": "object",
+                "required": ["memorableId", "firstName", "lastName"],
+                "properties": {
+                  "memorableId": {
+                    "type": "string",
+                    "example": "abc"
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "example": "John"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "example": "James"
+                  },
+                  "profilePictureUrl": {
+                    "type": "string",
+                    "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+                  },
+                  "homeLocationId": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
               }
             }
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "allOf": [
-                    {
-                      "type": "object",
-                      "required": ["id"],
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "format": "uuid",
-                          "example": "b99ec52b-e9e2-444c-8c73-fb577c25bf70"
-                        }
-                      }
-                    },
-                    {
-                      "$ref": "#/components/schemas/User"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -125,7 +134,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "integer"
             }
           }
         ],
@@ -151,9 +160,8 @@
         "required": ["id", "memorableId", "firstName", "lastName"],
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": ""
+            "type": "integer",
+            "example": "1"
           },
           "memorableId": {
             "type": "string",
@@ -177,12 +185,31 @@
           }
         }
       },
+      "GameType": {
+        "type": "object",
+        "required": ["id", "name", "maxNumberOfPlayers"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Pool"
+          },
+          "maxNumberOfPlayers": {
+            "type": "integer",
+            "example": "1"
+          }
+        }
+      },
+
       "Location": {
         "type": "object",
         "required": ["id", "name"],
         "properties": {
           "id": {
-            "type": "number",
+            "type": "integer",
             "example": 1
           },
           "name": {
@@ -192,35 +219,11 @@
           "coverPhoto": {
             "type": "string",
             "example": "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg"
-          }
-        }
-      }
-    },
-    "requestBodies": {
-      "User": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": ["memorableId", "firstName", "lastName"],
-              "properties": {
-                "memorableId": {
-                  "type": "string",
-                  "example": "abc"
-                },
-                "firstName": {
-                  "type": "string",
-                  "example": "John"
-                },
-                "lastName": {
-                  "type": "string",
-                  "example": "James"
-                },
-                "profilePicture": {
-                  "type": "string",
-                  "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
-                }
-              }
+          },
+          "availableGames": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GameType"
             }
           }
         }
