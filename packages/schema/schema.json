@@ -204,6 +204,34 @@
           }
         }
       }
+    },
+    "/matches/${matchId}": {
+      "put": {
+        "tags": ["matches"],
+        "summary": "Set the winner of a given match",
+        "operationId": "setMatchWinner",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["winningTeamId"],
+                "properties": {
+                  "winningTeamId": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "successful update"
+          }
+        }
+      }
     }
   },
   "components": {
