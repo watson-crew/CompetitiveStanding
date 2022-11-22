@@ -6,7 +6,6 @@ import HeadToHeadPlayerSection from './molecules/HeadToHead/PlayerSection';
 import PlayerCard from './molecules/PlayerCard/PlayerCard';
 import PlayerIdInput from './molecules/PlayerIdInput/PlayerIdInput';
 import HeadToHeadSection from './molecules/HeadToHead/HeadToHeadSection';
-import PlayerSelection from './organisms/PlayerSelection/PlayerSelection';
 import WithCloseButton from './atoms/WithCloseButton/WithCloseButton';
 import LoadingSpinner from './atoms/LoadingSpinner/LoadingSpinner';
 
@@ -26,5 +25,4 @@ export {
   PlayerIdInput,
 
   // Organisms
-  PlayerSelection,
 };
