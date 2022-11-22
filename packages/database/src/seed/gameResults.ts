@@ -49,7 +49,8 @@ const generateGameResultData = (
     winningTeamId: winningTeam.id,
     gameTypeId: gameType.id,
     locationPlayedId: location.id,
-    timePlayed: '', // Generate a random time
+    startTime: '', // TODO: Generate start and end times
+    endTime: ''
   };
 };
 

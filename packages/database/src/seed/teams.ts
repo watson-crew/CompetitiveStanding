@@ -5,10 +5,17 @@ type SeedDependencies = {
     users: Record<string, User>;
 }
 
+const usersToCumulativeId = (users: User[]): string => {
+  const usersSortedAlphabetically = users.sort((a, b) => a.memorableId.localeCompare(b.memorableId))
+
+  return usersSortedAlphabetically.reduce((acc, currentUser) => acc + currentUser.memorableId, "");
+}
+
 const userToTeam = (user: User): Prisma.TeamCreateInput => usersToTeam([user]);
 
 const usersToTeam = (users: User[]): Prisma.TeamCreateInput => {
     return {
+        cumulativeTeamId: usersToCumulativeId(users),
         players: {
             connect: users.map(toId)
         }
