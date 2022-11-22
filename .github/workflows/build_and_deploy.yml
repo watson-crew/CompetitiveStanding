@@ -203,5 +203,8 @@ jobs:
     steps:
       - name: Backend smoke test
         run: curl '${{ env.API_BASE_URL }}/users/jjp' --fail
+      - name: Frontend smoke test
+        run: echo ${{needs.deploy-frontend.outputs.frontend_url}}
+        
 
     
