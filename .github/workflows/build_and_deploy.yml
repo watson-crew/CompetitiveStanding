@@ -202,9 +202,9 @@ jobs:
       API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
     steps:
       - name: Backend smoke test
-        run: curl '${{ env.API_BASE_URL }}/users/jjp' --fail
+        run: curl '${{ env.API_BASE_URL }}/users/jjp' -f -s -S -o /dev/null
       - name: Frontend smoke test
-        run: echo ${{needs.deploy-frontend.outputs.frontend_url}}
+        run:  curl ${{ needs.deploy-frontend.outputs.frontend_url }} -f -s -S -o /dev/null
         
 
     
