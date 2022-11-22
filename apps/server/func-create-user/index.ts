@@ -1,17 +1,26 @@
-import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import { User } from 'schema';
+import {
+  ContextForResponseBody,
+  FunctionName,
+  HttpRequestForRequestBody,
+  StatusCodes,
+} from '../src/types';
+import { setNotYetImplementedResponse } from '../src/utils/contextUtils';
+import { getFunctionLogger } from '../src/utils/logging';
 
-const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
-    const name = (req.query.name || (req.body && req.body.name));
-    const responseMessage = name
-        ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-        : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
+const httpTrigger = async function (
+  context: ContextForResponseBody<User.CreateUser.ResponseBody>,
+  req: HttpRequestForRequestBody<User.CreateUser.RequestBody>,
+): Promise<void> {
+  const log = getFunctionLogger(FunctionName.CreateUser, context);
 
-    context.res = {
-        // status: 200, /* Defaults to 200 */
-        body: responseMessage
-    };
+  log('HTTP trigger function processed a request.');
 
+  const userInput = req.body;
+
+  log(JSON.stringify(userInput));
+
+  setNotYetImplementedResponse(log, FunctionName.CreateUser, context);
 };
 
 export default httpTrigger;

@@ -1,27 +1,42 @@
-import { operations } from 'schema';
-import locations from '../src/repository/deprecated/locationDb';
-import { PathParameterAzureFunction } from '../src/types';
+import { Location } from 'schema';
+import {
+  ContextForResponseBody,
+  FunctionName,
+  HttpRequestForRequestParams,
+} from '../src/types';
+import { getLocationById } from '../src/repository/locationRepository';
+import {
+  set200Response,
+  set404Response,
+  set500Response,
+} from '../src/utils/contextUtils';
+import { getFunctionLogger } from '../src/utils/logging';
 
-const httpTrigger: PathParameterAzureFunction<operations['getLocationById']> =
-  async function (context, req): Promise<void> {
-    const { locationId } = req.params;
+const httpTrigger = async function (
+  context: ContextForResponseBody<Location.GetLocationById.ResponseBody>,
+  req: HttpRequestForRequestParams<Location.GetLocationById.RequestParams>,
+): Promise<void> {
+  const log = getFunctionLogger(FunctionName.GetLocation, context);
 
-    context.log(`[func-get-location] Finding Location by id ${locationId}`);
+  const locationId = parseInt(req.params.locationId);
 
-    const location = locations.find(location => location.id === locationId);
+  log(`Finding Location by id ${locationId}`);
 
-    context.log(
-      `[func-get-location] Found Location ${JSON.stringify(location)}`,
-    );
+  try {
+    const location: Location = await getLocationById(locationId);
 
-    context.res = {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET',
-        'Content-Type': 'application/json',
-      },
-      body: location,
-    };
-  };
+    if (!location) {
+      log(`No matching location with id: ${locationId}`);
+      set404Response(log, context);
+    } else {
+      context.log(
+        `[func-get-location] Found Location ${JSON.stringify(location)}`,
+      );
+      set200Response(log, context, location);
+    }
+  } catch (e) {
+    set500Response(log, context, e);
+  }
+};
 
 export default httpTrigger;

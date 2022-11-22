@@ -1,12 +1,8 @@
-import { useEffect, useState } from "react"
-import { ApiError, User } from "schema"
+import { useState } from "react"
+import { User } from "schema"
 import { Button } from "../../atoms/Button/Button"
 import Text from "../../atoms/Text/Text"
-import WithCloseButton from "../../atoms/WithCloseButton/WithCloseButton"
-import PlayerCard from "../../molecules/PlayerCard/PlayerCard"
-import PlayerIdInput from "../../molecules/PlayerIdInput/PlayerIdInput"
 import PlayerSelectionCard from "../../molecules/PlayerSelectionCard/PlayerSelectionCard"
-import { Dispatch } from 'react'
 import { StateDispatcher } from "../../types"
 
 type PlayerSelectionProps = {

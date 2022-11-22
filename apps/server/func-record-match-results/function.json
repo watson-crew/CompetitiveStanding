@@ -5,8 +5,8 @@
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
-      "methods": ["get"],
-      "route": "locations/{locationId:int}"
+      "methods": ["post"],
+      "route": "matches/{winningTeamId:int}"
     },
     {
       "type": "http",
@@ -14,5 +14,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/func-get-location/index.js"
+  "scriptFile": "../dist/func-record-match-results/index.js"
 }
