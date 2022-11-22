@@ -6,6 +6,7 @@ import type { OpenAPIConfig } from './core/OpenAPI';
 import { AxiosHttpRequest } from './core/AxiosHttpRequest';
 
 import { LocationService } from './services/LocationService';
+import { MatchesService } from './services/MatchesService';
 import { UserService } from './services/UserService';
 
 type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
@@ -13,6 +14,7 @@ type HttpRequestConstructor = new (config: OpenAPIConfig) => BaseHttpRequest;
 export class AppClient {
 
     public readonly location: LocationService;
+    public readonly matches: MatchesService;
     public readonly user: UserService;
 
     public readonly request: BaseHttpRequest;
@@ -31,6 +33,7 @@ export class AppClient {
         });
 
         this.location = new LocationService(this.request);
+        this.matches = new MatchesService(this.request);
         this.user = new UserService(this.request);
     }
 }

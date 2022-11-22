@@ -26,6 +26,10 @@ export type paths = {
     /** Get location by id */
     get: operations["getLocationById"];
   };
+  "/matches": {
+    /** Initiate a match between a number of teams */
+    post: operations["initiateNewMatch"];
+  };
 };
 
 export type components = {
@@ -60,6 +64,30 @@ export type components = {
       /** @example https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg */
       coverPhoto?: string;
       availableGames?: (components["schemas"]["GameType"])[];
+    };
+    InitiateMatchResponse: {
+      /** @example 519 */
+      matchId: number;
+      /**
+       * @description The historic results for each team participating in the match 
+       * @example {
+       *   "abcxyz": {
+       *     "wins": 2
+       *   },
+       *   "aaa": {
+       *     "wins": 8
+       *   },
+       *   "bbbyyyzzz": {
+       *     "wins": 9
+       *   }
+       * }
+       */
+      historicResults: {
+        [key: string]: components["schemas"]["TeamHistoricResult"] | undefined;
+      };
+    };
+    TeamHistoricResult: {
+      wins?: number;
     };
   };
   responses: never;
@@ -144,6 +172,38 @@ export type operations = {
           "application/json": components["schemas"]["Location"];
         };
       };
+    };
+  };
+  initiateNewMatch: {
+    /** Initiate a match between a number of teams */
+    /** @description The details of the match to be initiated */
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @example 1 */
+          gameTypeId: number;
+          /** @example 1 */
+          locationId: number;
+          /**
+           * @example [
+           *   "abcxyz",
+           *   "aaa",
+           *   "bbbyyyzzz"
+           * ]
+           */
+          participatingTeams: (string)[];
+        };
+      };
+    };
+    responses: {
+      /** @description Successful operation */
+      201: {
+        content: {
+          "application/json": components["schemas"]["InitiateMatchResponse"];
+        };
+      };
+      /** @description Bad request */
+      400: never;
     };
   };
 };

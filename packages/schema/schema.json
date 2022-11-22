@@ -151,6 +151,59 @@
           }
         }
       }
+    },
+    "/matches": {
+      "post": {
+        "tags": ["matches"],
+        "summary": "Initiate a match between a number of teams",
+        "operationId": "initiateNewMatch",
+        "requestBody": {
+          "required": true,
+          "description": "The details of the match to be initiated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["gameTypeId", "locationId", "participatingTeams"],
+                "properties": {
+                  "gameTypeId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "locationId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "participatingTeams": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "The cumulative teamId",
+                      "example": "abcxyz"
+                    },
+                    "example": ["abcxyz", "aaa", "bbbyyyzzz"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitiateMatchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -203,7 +256,6 @@
           }
         }
       },
-
       "Location": {
         "type": "object",
         "required": ["id", "name"],
@@ -225,6 +277,43 @@
             "items": {
               "$ref": "#/components/schemas/GameType"
             }
+          }
+        }
+      },
+      "InitiateMatchResponse": {
+        "type": "object",
+        "required": ["matchId", "historicResults"],
+        "properties": {
+          "matchId": {
+            "type": "integer",
+            "example": 519
+          },
+          "historicResults": {
+            "type": "object",
+            "description": "The historic results for each team participating in the match",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TeamHistoricResult"
+            },
+            "example": {
+              "abcxyz": {
+                "wins": 2
+              },
+              "aaa": {
+                "wins": 8
+              },
+              "bbbyyyzzz": {
+                "wins": 9
+              }
+            }
+          }
+        }
+      },
+      "TeamHistoricResult": {
+        "type": "object",
+        "required": ["win"],
+        "properties": {
+          "wins": {
+            "type": "integer"
           }
         }
       }

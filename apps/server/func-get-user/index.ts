@@ -7,9 +7,9 @@ import {
 } from '../src/utils/contextUtils';
 import { getUserByMemorableId } from '../src/repository/userRepository';
 
-const httpTrigger: PathParameterAzureFunction<
-  operations['getUserByMemorableId']
-> = async function (context, req): Promise<void> {
+type Foo = PathParameterAzureFunction<operations['getUserByMemorableId']>;
+
+const httpTrigger: Foo = async function (context, req): Promise<void> {
   const { memorableId } = req.params;
 
   context.log(`[func-get-user] Got memorableId: ${memorableId}`);
