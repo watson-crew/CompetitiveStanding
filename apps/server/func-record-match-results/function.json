@@ -14,5 +14,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/func-set-match-winner/index.js"
+  "scriptFile": "../dist/func-record-match-results/index.js"
 }

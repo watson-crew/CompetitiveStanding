@@ -12,8 +12,6 @@ import {
 } from '../src/types/';
 import { getFunctionLogger, logForFunction } from '../src/utils/logging';
 
-const functionName = FunctionName.GetUser;
-
 const httpTrigger = async function (
   context: ContextForResponseBody<User.GetUserByMemorableId.ResponseBody>,
   req: HttpRequestForRequestParams<User.GetUserByMemorableId.RequestParams>,

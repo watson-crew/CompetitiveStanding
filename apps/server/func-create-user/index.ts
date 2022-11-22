@@ -5,6 +5,7 @@ import {
   HttpRequestForRequestBody,
   StatusCodes,
 } from '../src/types';
+import { setNotYetImplementedResponse } from '../src/utils/contextUtils';
 import { getFunctionLogger } from '../src/utils/logging';
 
 const httpTrigger = async function (
@@ -19,12 +20,7 @@ const httpTrigger = async function (
 
   log(JSON.stringify(userInput));
 
-  context.res = {
-    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-    body: {
-      error: 'Not yet implemented',
-    },
-  };
+  setNotYetImplementedResponse(log, FunctionName.CreateUser, context);
 };
 
 export default httpTrigger;

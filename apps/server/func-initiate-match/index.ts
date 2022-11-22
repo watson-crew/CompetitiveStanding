@@ -1,30 +1,27 @@
 import { Matches } from 'schema';
 import {
   ContextForResponseBody,
+  FunctionName,
   HttpRequestForRequestBody,
-  StatusCodes,
 } from '../src/types';
+import { setNotYetImplementedResponse } from '../src/utils/contextUtils';
+import { getFunctionLogger } from '../src/utils/logging';
 
 const httpTrigger = async function (
   context: ContextForResponseBody<Matches.InitiateNewMatch.ResponseBody>,
   req: HttpRequestForRequestBody<Matches.InitiateNewMatch.RequestBody>,
 ): Promise<void> {
-  context.log('HTTP trigger function processed a request.');
+  const log = getFunctionLogger(FunctionName.InitiateMatch, context);
+
+  log('HTTP trigger function processed a request.');
 
   const { gameTypeId, locationId, participatingTeams } = req.body;
 
-  context.log(`[func-initiate-match] Got gameTypeId: ${gameTypeId}`);
-  context.log(`[func-initiate-match] Got locationId: ${locationId}`);
-  context.log(
-    `[func-initiate-match] Got participatingTeams: ${participatingTeams}`,
-  );
+  log(`Got gameTypeId: ${gameTypeId}`);
+  log(`Got locationId: ${locationId}`);
+  log(`Got participatingTeams: ${participatingTeams}`);
 
-  context.res = {
-    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-    body: {
-      error: '[func-initiate-match] Is not yet implemented',
-    },
-  };
+  setNotYetImplementedResponse(log, FunctionName.InitiateMatch, context);
 };
 
 export default httpTrigger;

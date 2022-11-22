@@ -1,4 +1,4 @@
-import { StatusCodes } from '../types';
+import { FunctionName, StatusCodes } from '../types';
 import {
   ContextForResponse as ErrorContext,
   ContextForResponseBody,
@@ -51,6 +51,22 @@ export const set500Response = (
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     body: {
       error: error.message,
+    },
+  };
+};
+
+export const setNotYetImplementedResponse = (
+  log: Logger,
+  functionName: FunctionName,
+  context: ErrorContext,
+) => {
+  log('Function not implemented');
+
+  context.res = {
+    headers: defaultHeaders,
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    body: {
+      error: `${functionName} is not implemented`,
     },
   };
 };

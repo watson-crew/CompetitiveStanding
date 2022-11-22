@@ -208,8 +208,8 @@
     "/matches/${matchId}": {
       "put": {
         "tags": ["matches"],
-        "summary": "Set the winner of a given match",
-        "operationId": "setMatchWinner",
+        "summary": "Record the results of a given match",
+        "operationId": "recordMatchResults",
         "requestBody": {
           "required": true,
           "content": {
