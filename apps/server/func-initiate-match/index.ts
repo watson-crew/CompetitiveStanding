@@ -16,7 +16,9 @@ const httpTrigger: PostRequestAzureFunction<operations['initiateNewMatch']> =
 
     context.res = {
       statusCode: 500,
-      body: '[func-initiate-match] Is not yet implemented',
+      body: {
+        message: '[func-initiate-match] Is not yet implemented',
+      },
     };
   };
 
