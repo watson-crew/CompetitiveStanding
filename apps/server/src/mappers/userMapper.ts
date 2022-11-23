@@ -1,11 +1,11 @@
 // import { User as PrismaUser, Location } from 'database';
 import { User as UserDto, UserInput as UserInputDto } from 'schema';
-import { PrismaTypes, UserWithRelations as PrismaUser } from 'database'
+import { PrismaTypes, UserWithLocation as PrismaUserWithLocation } from 'database'
 import { Mapper } from './generics'
 
 // Not PrismaUser, what model do we need>
-export const UserGetMapper: Mapper<PrismaUser, UserDto> = {
-  map: (prismaModel: PrismaUser) => {
+export const UserGetMapper: Mapper<PrismaUserWithLocation, UserDto> = {
+  map: (prismaModel: PrismaUserWithLocation) => {
     let user: UserDto = {
       id: prismaModel.id,
       memorableId: prismaModel.memorableId,
@@ -16,7 +16,7 @@ export const UserGetMapper: Mapper<PrismaUser, UserDto> = {
 
     // TODO: This will need doing for other relationships on the user, i.e group and team
     // May be a nicer way to do this
-    if (prismaModel.location) // Type says it's non-null but we are using it as optional
+    if (prismaModel.location)
     {
       user.location = prismaModel.location.name;
     }

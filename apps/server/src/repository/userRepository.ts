@@ -1,29 +1,26 @@
-import { prismaClient as prisma, PrismaTypes, UserWithRelations } from 'database';
+import { prismaClient as prisma, PrismaTypes, UserWithLocation } from 'database';
 import { User as UserDto, UserInput as UserInputDto } from 'schema';
+import { StringDecoder } from 'string_decoder';
 import { UserGetMapper, UserCreateMapper } from '../mappers/userMapper';
 
 export const getUsers = async () => {
   return await prisma.user.findMany();
 };
 
-// Could declare types like this and be more explicit with our functions
-type UsersWithLocations = PrismaTypes.PromiseReturnType<typeof getUsersWithLocations>
-export const getUsersWithLocations = async () => {
+export const getUsersWithLocations = async (): Promise<UserWithLocation[]> => {
   return await prisma.user.findMany({include: {location: true}});
 }
 
 // TODO: Add types for UserWithLocation, User (without location) etc.
 export const getUserByMemorableId = async (id: string): Promise<UserDto> => {
-  const user: UserWithRelations = await prisma.user.findFirst({
+  const user: UserWithLocation = await prisma.user.findFirst({
     where: {
       memorableId: id,
     },
     include: {
       location: true,
     },
-  }) as UserWithRelations;
-
-  console.log(user);
+  });
 
   if (!user) {
     return null;
