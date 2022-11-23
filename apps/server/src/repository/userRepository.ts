@@ -1,6 +1,5 @@
 import { prismaClient as prisma, PrismaTypes, UserWithLocation } from 'database';
 import { User as UserDto, UserInput as UserInputDto } from 'schema';
-import { StringDecoder } from 'string_decoder';
 import { UserGetMapper, UserCreateMapper } from '../mappers/userMapper';
 
 export const getUsers = async () => {
@@ -11,7 +10,6 @@ export const getUsersWithLocations = async (): Promise<UserWithLocation[]> => {
   return await prisma.user.findMany({include: {location: true}});
 }
 
-// TODO: Add types for UserWithLocation, User (without location) etc.
 export const getUserByMemorableId = async (id: string): Promise<UserDto> => {
   const user: UserWithLocation = await prisma.user.findFirst({
     where: {
