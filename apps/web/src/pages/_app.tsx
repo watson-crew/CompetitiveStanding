@@ -7,9 +7,9 @@ import "../../styles/globals.css"
 
 function MyApp({ Component, pageProps }: AppProps) {
 
-const apiInstance = new ApiClient({
-  baseURL: getConfig().publicRuntimeConfig.apiBaseUrl,
-});
+  const apiInstance = new ApiClient({
+    baseURL: getConfig().publicRuntimeConfig.apiBaseUrl,
+  });
 
   return (
     <ApiContext.Provider value={apiInstance}>
