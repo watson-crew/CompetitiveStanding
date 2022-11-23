@@ -1,14 +1,14 @@
 import { User } from 'schema';
 import {
-  ContextForResponseBody,
+  ContextForNoContentResponse,
   FunctionName,
   HttpRequestForRequestBody,
 } from '@src/types';
-import { setNotYetImplementedResponse } from '@utils/contextUtils';
+import { set204Response } from '@utils/contextUtils';
 import { getFunctionLogger } from '@utils/logging';
 
 const httpTrigger = async function (
-  context: ContextForResponseBody<User.CreateUser.ResponseBody>,
+  context: ContextForNoContentResponse,
   req: HttpRequestForRequestBody<User.CreateUser.RequestBody>,
 ): Promise<void> {
   const log = getFunctionLogger(FunctionName.CreateUser, context);
@@ -19,7 +19,7 @@ const httpTrigger = async function (
 
   log(JSON.stringify(userInput));
 
-  setNotYetImplementedResponse(log, FunctionName.CreateUser, context);
+  set204Response(log, context);
 };
 
 export default httpTrigger;
