@@ -1,9 +1,8 @@
 import { Location } from 'schema';
-import { getLocations } from '../src/repository/locationRepository';
-import { FunctionName } from '../src/types';
-import { ContextForResponseBody } from '../src/types/responses';
-import { set200Response, set500Response } from '../src/utils/contextUtils';
-import { getFunctionLogger } from '../src/utils/logging';
+import { getLocations } from '@repository/locationRepository';
+import { FunctionName, ContextForResponseBody } from '@src/types';
+import { set200Response, set500Response } from '@utils/contextUtils';
+import { getFunctionLogger } from '@utils/logging';
 
 const httpTrigger = async function (
   context: ContextForResponseBody<Location.GetAllLocations.ResponseBody>,

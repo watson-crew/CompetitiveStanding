@@ -3,14 +3,14 @@ import {
   set200Response,
   set404Response,
   set500Response,
-} from '../src/utils/contextUtils';
-import { getUserByMemorableId } from '../src/repository/userRepository';
+} from '@utils/contextUtils';
+import { getUserByMemorableId } from '@repository/userRepository';
 import {
   ContextForResponseBody,
   FunctionName,
   HttpRequestForRequestParams,
-} from '../src/types/';
-import { getFunctionLogger, logForFunction } from '../src/utils/logging';
+} from '@src/types';
+import { getFunctionLogger, logForFunction } from '@utils/logging';
 
 const httpTrigger = async function (
   context: ContextForResponseBody<User.GetUserByMemorableId.ResponseBody>,

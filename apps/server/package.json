@@ -10,6 +10,7 @@
     "build": "./build.sh",
     "clean": "rimraf .turbo node_modules dist",
     "ts:transpile": "tsc",
+    "ts:resolve-alias": "tsc-alias -p tsconfig.json",
     "watch": "tsc -w",
     "lint": "eslint --ext .ts,.tsx,.json .",
     "prestart": "npm run build",
@@ -25,6 +26,7 @@
     "azure-functions-core-tools": "^4.x",
     "rimraf": "^3.0.2",
     "schema": "*",
+    "tsc-alias": "^1.7.1",
     "typescript": "^4.0.0"
   },
   "dependencies": {
