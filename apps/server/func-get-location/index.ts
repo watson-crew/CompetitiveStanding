@@ -3,14 +3,14 @@ import {
   ContextForResponseBody,
   FunctionName,
   HttpRequestForRequestParams,
-} from '../src/types';
-import { getLocationById } from '../src/repository/locationRepository';
+} from '@src/types';
+import { getLocationById } from '@repository/locationRepository';
 import {
   set200Response,
   set404Response,
   set500Response,
-} from '../src/utils/contextUtils';
-import { getFunctionLogger } from '../src/utils/logging';
+} from '@utils/contextUtils';
+import { getFunctionLogger } from '@utils/logging';
 
 const httpTrigger = async function (
   context: ContextForResponseBody<Location.GetLocationById.ResponseBody>,
