@@ -5,10 +5,8 @@ import WithCloseButton from "../../atoms/WithCloseButton/WithCloseButton"
 import PlayerCard from "../../molecules/PlayerCard/PlayerCard"
 import PlayerIdInput from "../../molecules/PlayerIdInput/PlayerIdInput"
 import { WithDefaultProps } from "../../types"
-import ClipLoader from "react-spinners/ClipLoader"
 import { twMerge } from 'tailwind-merge'
 import Card from "../../atoms/Card/Card"
-import React from "react"
 import LoadingSpinner from "../../atoms/LoadingSpinner/LoadingSpinner"
 
 type PlayerSelectionCardProps = WithDefaultProps<{
@@ -24,8 +22,6 @@ type PlayerSelectionCardProps = WithDefaultProps<{
 export default function PlayerSelectionCard({ title, player, playerNotFound, isError, loading, onIdSubmitted, clearPlayer, className}: PlayerSelectionCardProps) {
 
   const containerClasses = twMerge("bg-slate-100 w-full min-h-full h-full flex justify-center items-center flex-col", className)
-
-
 
   if (loading) {
     

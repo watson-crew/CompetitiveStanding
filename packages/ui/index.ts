@@ -8,6 +8,9 @@ import PlayerIdInput from './molecules/PlayerIdInput/PlayerIdInput';
 import HeadToHeadSection from './molecules/HeadToHead/HeadToHeadSection';
 import WithCloseButton from './atoms/WithCloseButton/WithCloseButton';
 import LoadingSpinner from './atoms/LoadingSpinner/LoadingSpinner';
+import PlayerSelectionCard from './molecules/PlayerSelectionCard/PlayerSelectionCard';
+
+export * from './types';
 
 export {
   // Atoms
@@ -22,6 +25,7 @@ export {
   HeadToHeadSection,
   PlayerCard,
   HeadToHeadPlayerSection,
+  PlayerSelectionCard,
   PlayerIdInput,
 
   // Organisms

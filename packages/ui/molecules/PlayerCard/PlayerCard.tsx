@@ -22,7 +22,7 @@ export default function PlayerCard({ player, className }: PlayerCardProps) {
       
       <section className='pl-10'>
         <p className='text-sky-500 dark:text-sky-400'>{fullName}</p>
-        <p><em>{player.memorableId}</em></p>
+        <p className='text-#ff3e00'>{player.memorableId}</p>
         <p>{player.location}</p>
       </section>
 
