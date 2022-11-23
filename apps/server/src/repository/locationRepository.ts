@@ -1,10 +1,10 @@
 import { Location } from 'schema';
 import { prismaClient as prisma } from 'database';
-import { mapLocation } from '../mappers/locationMapper';
+import { LocationGetMapper } from '../mappers/locationMapper';
 
 export const getLocations = async (): Promise<Location[]> => {
   const locations = await prisma.location.findMany();
-  return locations.map(mapLocation);
+  return locations.map(LocationGetMapper.map);
 };
 
 export const getLocationById = async (id: number): Promise<Location> => {
@@ -18,5 +18,5 @@ export const getLocationById = async (id: number): Promise<Location> => {
     return null;
   }
 
-  return mapLocation(location);
+  return LocationGetMapper.map(location);
 };

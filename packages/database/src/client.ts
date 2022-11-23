@@ -1,5 +1,6 @@
 import { PrismaClient, Prisma as Prisma } from '@prisma/client';
 export {Prisma as PrismaTypes} from '@prisma/client'
+export type { Location } from '@prisma/client'
 
 // TODO: Understand how this works
 const userWithLocation = Prisma.validator<Prisma.UserArgs>()({
