@@ -13,15 +13,16 @@ type TextWithIconProps = WithDefaultProps<{
 export default function TextWithIcon({ icon, textProps, children }: TextWithIconProps) {
 
   const iconProps: IconBaseProps = {
-    size: 20
+    size: 24,
+    className: 'mr-2'
   }
 
   const iconToRender = React.createElement(icon, iconProps)
 
   return (
-  <section className="flex align-middle">
+  <span className="flex align-middle">
     {iconToRender}
     <Text {...textProps}>{children}</Text>
-  </section>
+  </span>
   )
 }

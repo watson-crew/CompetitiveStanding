@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import PlayerSelection from "../components/organisms/PlayerSelection/PlayerSelection";
+import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import getConfig from "next/config";
 import { ApiClient, User } from 'schema'
 import { Location } from "schema";
