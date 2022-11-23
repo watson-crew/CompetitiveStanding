@@ -1,5 +1,4 @@
 import { Location, PrismaClient, User } from '@prisma/client';
-import { prisma } from '..';
 
 type SeedDependencies = {
   locations: Record<string, Location>;

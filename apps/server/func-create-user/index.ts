@@ -1,25 +1,29 @@
 import { User } from 'schema';
 import {
-  ContextForResponseBody,
+  ContextForNoContentResponse,
   FunctionName,
   HttpRequestForRequestBody,
 } from '@src/types';
-import { setNotYetImplementedResponse } from '@utils/contextUtils';
 import { getFunctionLogger } from '@utils/logging';
+import { createUser } from '@src/repository/userRepository';
+import { set204Response, set500Response } from '@src/utils/contextUtils';
 
 const httpTrigger = async function (
-  context: ContextForResponseBody<User.CreateUser.ResponseBody>,
+  context: ContextForNoContentResponse,
   req: HttpRequestForRequestBody<User.CreateUser.RequestBody>,
 ): Promise<void> {
   const log = getFunctionLogger(FunctionName.CreateUser, context);
-
-  log('HTTP trigger function processed a request.');
-
   const userInput = req.body;
 
   log(JSON.stringify(userInput));
 
-  setNotYetImplementedResponse(log, FunctionName.CreateUser, context);
-};
+  try{
+    const userCreated: boolean = await createUser(userInput);
+    set204Response(log, context);
+  } catch (e) {
+    context.log(`[func-create-user] Error: ${e.message}`)
+    set500Response(log, context, e)
+  }
+ };
 
 export default httpTrigger;
