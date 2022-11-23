@@ -1,21 +1,23 @@
-import { operations, Location } from 'schema';
-import { getLocations } from '../src/repository/locationRepository';
-import { EmptyParameterAzureFunction } from '../src/types';
-import { set200Response, set500Response } from '../src/utils/contextUtils';
+import { Location } from 'schema';
+import { getLocations } from '@repository/locationRepository';
+import { FunctionName, ContextForResponseBody } from '@src/types';
+import { set200Response, set500Response } from '@utils/contextUtils';
+import { getFunctionLogger } from '@utils/logging';
 
-const httpTrigger: EmptyParameterAzureFunction<
-  operations['getAllLocations']
-> = async function (context): Promise<void> {
-    context.log(`[func-get-locations] Returning all locations`);
+const httpTrigger = async function (
+  context: ContextForResponseBody<Location.GetAllLocations.ResponseBody>,
+): Promise<void> {
+  const log = getFunctionLogger(FunctionName.GetLocations, context);
 
-    try {
-      const locations: Location[] = await getLocations();
-      context.log(`[func-get-locations] Found ${locations.length} locations`);
-      set200Response(context, locations);
-    } catch (e) {
-      context.log(`[func-get-location] Error: ${e.message}`);
-      set500Response(context, e);
-    }
-  };
+  log('Returning all locations');
+
+  try {
+    const locations: Location[] = await getLocations();
+    log(`Found ${locations.length} locations`);
+    set200Response(log, context, locations);
+  } catch (e) {
+    set500Response(log, context, e);
+  }
+};
 
 export default httpTrigger;

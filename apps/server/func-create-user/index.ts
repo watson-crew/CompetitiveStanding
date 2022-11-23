@@ -1,20 +1,29 @@
-import { AzureFunction, Context, HttpRequest } from "@azure/functions"
-import { User, UserInput } from 'schema'
+import { User } from 'schema';
 import {
-    set204Response,
-    set500Response,
-  } from '../src/utils/contextUtils';
-import { createUser } from '../src/repository/userRepository'
+  ContextForNoContentResponse,
+  FunctionName,
+  HttpRequestForRequestBody,
+} from '@src/types';
+import { getFunctionLogger } from '@utils/logging';
+import { createUser } from '@src/repository/userRepository';
+import { set204Response, set500Response } from '@src/utils/contextUtils';
 
-const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    try {
-        const userInput: UserInput = req.body;
-        const userCreated: boolean = await createUser(userInput);
-        set204Response(context);
-    } catch (e) {
-        context.log(`[func-create-user] Error: ${e.message}`)
-        set500Response(context, e)
-    }
-};
+const httpTrigger = async function (
+  context: ContextForNoContentResponse,
+  req: HttpRequestForRequestBody<User.CreateUser.RequestBody>,
+): Promise<void> {
+  const log = getFunctionLogger(FunctionName.CreateUser, context);
+  const userInput = req.body;
+
+  log(JSON.stringify(userInput));
+
+  try{
+    const userCreated: boolean = await createUser(userInput);
+    set204Response(log, context);
+  } catch (e) {
+    context.log(`[func-create-user] Error: ${e.message}`)
+    set500Response(log, context, e)
+  }
+ };
 
 export default httpTrigger;

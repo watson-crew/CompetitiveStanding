@@ -1,4 +1,10 @@
-import { Context } from '@azure/functions';
+import { FunctionName, StatusCodes } from '../types';
+import {
+  ContextForNoContentResponse,
+  ContextForResponse as ErrorContext,
+  ContextForResponseBody,
+} from '../types/responses';
+import { Logger } from './logging';
 
 // Have some utils to encapsulate default headers & setting responses in the context
 const defaultHeaders = {
@@ -7,41 +13,74 @@ const defaultHeaders = {
   'Content-Type': 'application/json',
 };
 
-type ContextResponse = {
-  headers: any,
-  statusCode: number,
-  body?: any
-}
+export const set200Response = <T>(
+  log: Logger,
+  context: ContextForResponseBody<T>,
+  body: T,
+) => {
+  log(`Returning 200 response`);
 
-const setResponse = (statusCode: number, context: Context, body?: any) => {
-  let res: ContextResponse = {
+  context.res = {
     headers: defaultHeaders,
-    statusCode
-  }
-
-  if (body) {
-    res.body = body;
-  }
-
-  context.res = res;
-}
-
-export const set404Response = (context: Context) => {
-  setResponse(404, context);
+    statusCode: StatusCodes.OK,
+    body,
+  };
 };
 
-export const set200Response = (context: Context, body: any) => {
-  setResponse(200, context, body)
+export const set204Response = <T>(
+  log: Logger,
+  context: ContextForNoContentResponse,
+) => {
+  log(`Returning 200 response`);
+
+  context.res = {
+    headers: defaultHeaders,
+    statusCode: StatusCodes.NO_CONTENT,
+    body: null,
+  };
 };
 
-export const set201Response = (context: Context, body: any) => {
-  setResponse(201, context, body)
-}
+export const set404Response = (log: Logger, context: ErrorContext) => {
+  log(`Returning 404 response`);
 
-export const set204Response = (context: Context) => {
-  setResponse(204, context)
-}
+  context.res = {
+    headers: defaultHeaders,
+    statusCode: StatusCodes.NOT_FOUND,
+    body: {
+      error: 'Not found',
+    },
+  };
+};
 
-export const set500Response = (context: Context, error: Error) => {
-  setResponse(500, context, error.message)
+export const set500Response = (
+  log: Logger,
+  context: ErrorContext,
+  error: Error,
+) => {
+  log(`Error: ${error.message}`);
+  log(`Returning 500 response`);
+
+  context.res = {
+    headers: defaultHeaders,
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    body: {
+      error: error.message,
+    },
+  };
+};
+
+export const setNotYetImplementedResponse = (
+  log: Logger,
+  functionName: FunctionName,
+  context: ErrorContext,
+) => {
+  log('Function not implemented');
+
+  context.res = {
+    headers: defaultHeaders,
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    body: {
+      error: `${functionName} is not implemented`,
+    },
+  };
 };

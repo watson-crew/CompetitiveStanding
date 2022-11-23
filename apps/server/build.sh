@@ -24,3 +24,5 @@ cp package.json $OUTPUT_DIR
 mv $OUTPUT_DIR/node_modules/database/node_modules/*/ $OUTPUT_DIR/node_modules
 
 mv $OUTPUT_DIR/node_modules/database/node_modules/.prisma $OUTPUT_DIR/node_modules/.prisma
+
+npm run ts:resolve-alias
