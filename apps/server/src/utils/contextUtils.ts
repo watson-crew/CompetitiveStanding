@@ -1,5 +1,6 @@
 import { FunctionName, StatusCodes } from '../types';
 import {
+  ContextForNoContentResponse,
   ContextForResponse as ErrorContext,
   ContextForResponseBody,
 } from '../types/responses';
@@ -10,18 +11,6 @@ const defaultHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET',
   'Content-Type': 'application/json',
-};
-
-export const set404Response = (log: Logger, context: ErrorContext) => {
-  log(`Returning 404 response`);
-
-  context.res = {
-    headers: defaultHeaders,
-    statusCode: StatusCodes.NOT_FOUND,
-    body: {
-      error: 'Not found',
-    },
-  };
 };
 
 export const set200Response = <T>(
@@ -35,6 +24,31 @@ export const set200Response = <T>(
     headers: defaultHeaders,
     statusCode: StatusCodes.OK,
     body,
+  };
+};
+
+export const set204Response = <T>(
+  log: Logger,
+  context: ContextForNoContentResponse,
+) => {
+  log(`Returning 200 response`);
+
+  context.res = {
+    headers: defaultHeaders,
+    statusCode: StatusCodes.NO_CONTENT,
+    body: null,
+  };
+};
+
+export const set404Response = (log: Logger, context: ErrorContext) => {
+  log(`Returning 404 response`);
+
+  context.res = {
+    headers: defaultHeaders,
+    statusCode: StatusCodes.NOT_FOUND,
+    body: {
+      error: 'Not found',
+    },
   };
 };
 

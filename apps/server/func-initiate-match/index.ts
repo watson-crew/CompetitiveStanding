@@ -4,7 +4,7 @@ import {
   FunctionName,
   HttpRequestForRequestBody,
 } from '../src/types';
-import { setNotYetImplementedResponse } from '../src/utils/contextUtils';
+import { set200Response } from '../src/utils/contextUtils';
 import { getFunctionLogger } from '../src/utils/logging';
 
 const httpTrigger = async function (
@@ -21,7 +21,17 @@ const httpTrigger = async function (
   log(`Got locationId: ${locationId}`);
   log(`Got participatingTeams: ${participatingTeams}`);
 
-  setNotYetImplementedResponse(log, FunctionName.InitiateMatch, context);
+  const mockResponse: Matches.InitiateNewMatch.ResponseBody = {
+    matchId: Math.ceil(Math.random() * 1000),
+    historicResults: Object.fromEntries(
+      participatingTeams.map(team => [
+        team,
+        { wins: Math.ceil(Math.random() * 25) },
+      ]),
+    ),
+  };
+
+  set200Response(log, context, mockResponse);
 };
 
 export default httpTrigger;

@@ -4,7 +4,7 @@ import {
   FunctionName,
   HttpRequestForRequestBody,
 } from '../src/types';
-import { setNotYetImplementedResponse } from '../src/utils/contextUtils';
+import { set204Response } from '../src/utils/contextUtils';
 import { getFunctionLogger } from '../src/utils/logging';
 
 const httpTrigger = async function (
@@ -19,7 +19,7 @@ const httpTrigger = async function (
 
   log(`Got winningTeamId: ${winningTeamId}`);
 
-  setNotYetImplementedResponse(log, FunctionName.RecordMatchResults, context);
+  set204Response(log, context);
 };
 
 export default httpTrigger;

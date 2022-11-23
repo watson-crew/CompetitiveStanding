@@ -13,7 +13,7 @@
     "watch": "tsc -w",
     "lint": "eslint --ext .ts,.tsx,.json .",
     "prestart": "npm run build",
-    "start": "func start",
+    "start": "func start --typescript",
     "test": "echo \"No tests yet...\""
   },
   "prisma": {
