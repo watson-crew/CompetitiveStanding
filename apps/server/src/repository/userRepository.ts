@@ -1,5 +1,5 @@
 import { prismaClient as prisma, PrismaTypes, UserWithLocation } from 'database';
-import { User as UserDto, CreateUserPayload as UserInputDto } from 'schema';
+import { User as UserDto, UserInput as UserInputDto } from 'schema';
 import { UserGetMapper, UserCreateMapper } from '../mappers/userMapper';
 
 export const getUsers = async () => {

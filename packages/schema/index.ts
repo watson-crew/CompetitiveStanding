@@ -11,19 +11,6 @@
 
 export type CreateUserData = User;
 
-export interface CreateUserPayload {
-  /** @example "abc" */
-  memorableId: string;
-  /** @example "John" */
-  firstName: string;
-  /** @example "James" */
-  lastName: string;
-  /** @example "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg" */
-  profilePictureUrl?: string;
-  /** @example 1 */
-  homeLocationId?: number;
-}
-
 export interface GameType {
   /** @example 1 */
   id: number;
@@ -95,6 +82,19 @@ export interface User {
   profilePicture?: string;
 }
 
+export interface UserInput {
+  /** @example "John" */
+  firstName: string;
+  /** @example 1 */
+  homeLocationId?: number;
+  /** @example "James" */
+  lastName: string;
+  /** @example "abc" */
+  memorableId: string;
+  /** @example "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg" */
+  profilePictureUrl?: string;
+}
+
 export namespace User {
   /**
    * No description
@@ -106,7 +106,7 @@ export namespace User {
   export namespace CreateUser {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = CreateUserPayload;
+    export type RequestBody = UserInput;
     export type RequestHeaders = {};
     export type ResponseBody = CreateUserData;
   }
@@ -386,7 +386,7 @@ export class ApiClient<
      * @summary Create a new user
      * @request POST:/users
      */
-    createUser: (data: CreateUserPayload, params: RequestParams = {}) =>
+    createUser: (data: UserInput, params: RequestParams = {}) =>
       this.request<CreateUserData, any>({
         path: `/users`,
         method: 'POST',
