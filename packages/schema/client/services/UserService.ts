@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { User } from '../models/User';
+import type { UserInput } from '../models/UserInput';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import type { BaseHttpRequest } from '../core/BaseHttpRequest';
@@ -18,13 +19,7 @@ export class UserService {
     public createUser({
         requestBody,
     }: {
-        requestBody: {
-            memorableId: string;
-            firstName: string;
-            lastName: string;
-            profilePictureUrl?: string;
-            homeLocationId?: number;
-        },
+        requestBody: UserInput,
     }): CancelablePromise<User> {
         return this.httpRequest.request({
             method: 'POST',

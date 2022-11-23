@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate": "npm run generate:client && npm run generate:typescript-schema",
+    "generate": "npm run generate:client",
     "generate:client": "openapi --input ./schema.json --output client --client axios --name AppClient --useOptions",
     "generate:typescript-schema": "openapi-typescript ./schema.json --output schema.ts --export-type --path-params-as-types --default-non-nullable"
   },

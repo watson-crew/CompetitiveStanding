@@ -7,13 +7,8 @@ import {
 import { createUser } from '../src/repository/userRepository'
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    // Is the return type of this the same as the input type?
-    // Do we have a type definition in schema for the post details?
     try {
         const userInput: UserInput = req.body;
-        // Should map schema models to repository models
-        //   OR assume schema models are the same as repository models
-        // Then in repository map to prisma models
         const user: User = await createUser(userInput);
         set201Response(context, user);
     } catch (e) {

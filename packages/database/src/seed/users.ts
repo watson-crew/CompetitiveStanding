@@ -1,4 +1,4 @@
-import { Location, PrismaClient, User } from '@prisma/client';
+import { Location, PrismaClient, User, Prisma } from '@prisma/client';
 import { prisma } from '..';
 
 type SeedDependencies = {
@@ -63,6 +63,15 @@ async function seedUsers(
       update: {},
       create: user,
     });
+
+    const user = await prisma.user.findFirst({
+      where: {
+        memorableId: "jjp",
+      },
+      include: {
+        location: true
+      }
+    })
 
     seededUsers[insertedUser.memorableId] = insertedUser;
   }

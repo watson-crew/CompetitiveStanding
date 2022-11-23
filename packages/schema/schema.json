@@ -25,32 +25,8 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["memorableId", "firstName", "lastName"],
-                "properties": {
-                  "memorableId": {
-                    "type": "string",
-                    "example": "abc"
-                  },
-                  "firstName": {
-                    "type": "string",
-                    "example": "John"
-                  },
-                  "lastName": {
-                    "type": "string",
-                    "example": "James"
-                  },
-                  "profilePictureUrl": {
-                    "type": "string",
-                    "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
-                  },
-                  "homeLocationId": {
-                    "type": "integer",
-                    "example": 1
-                  }
-                }
-              }
+              "schema":                  { "$ref": "#/components/schemas/UserInput"}
+
             }
           }
         },
@@ -182,6 +158,32 @@
           "profilePicture": {
             "type": "string",
             "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+          }
+        }
+      },
+      "UserInput": {
+        "type": "object",
+        "required": ["memorableId", "firstName", "lastName"],
+        "properties": {
+          "memorableId": {
+            "type": "string",
+            "example": "abc"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "James"
+          },
+          "profilePictureUrl": {
+            "type": "string",
+            "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+          },
+          "homeLocationId": {
+            "type": "integer",
+            "example": 1
           }
         }
       },

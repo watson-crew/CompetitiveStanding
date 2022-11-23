@@ -1,6 +1,6 @@
 import { prisma } from 'database';
 import { User as UserDto, UserInput as UserInputDto } from 'schema';
-import { mapUserWithLocation, mapUser, mapUserInputToPrismaUserInput } from '../mappers/userMapper';
+import { mapUserWithLocation, mapUser, mapUserInputToPrismaUserInput, UserGetMapper } from '../mappers/userMapper';
 
 export const getUsers = async () => {
   return await prisma.user.findMany();
@@ -37,5 +37,6 @@ export const createUser = async (user: UserInputDto): Promise<UserDto> => {
     data: mapUserInputToPrismaUserInput(user)
   });
 
-  return mapUser(insertedUser)
+  // return mapUser(insertedUser)
+  return UserGetMapper.toSchema(insertedUser)
 }
