@@ -1,9 +1,6 @@
 import { useState } from "react"
 import { User } from "schema"
-import { Button } from "../../atoms/Button/Button"
-import Text from "../../atoms/Text/Text"
-import PlayerSelectionCard from "../../molecules/PlayerSelectionCard/PlayerSelectionCard"
-import { StateDispatcher } from "../../types"
+import { Button, PlayerSelectionCard, Text, StateDispatcher } from "ui"
 
 type PlayerSelectionProps = {
   fetchPlayer: (id: string) => Promise<User>
