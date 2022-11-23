@@ -55,7 +55,7 @@ async function seedGroups(
   }
 
   const watsonGroup = seededGroups['watson crew']
-  const watsonGroupPlayers = [users['jjp'], users['pjm'], users['stc'], users['ad2'], users['4e8']]
+  const watsonGroupPlayers = [users['jjp'], users['pjm'], users['stc'], users['ad2'], users['4e8'], users['rua']]
   await addUsersToGroup(prisma, watsonGroup, watsonGroupPlayers);
   seededGroups['watson crew'] = watsonGroup;
 
