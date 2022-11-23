@@ -1,5 +1,5 @@
 import { Location } from 'schema';
-import { prisma } from 'database';
+import { prismaClient as prisma } from 'database';
 import { mapLocation } from '../mappers/locationMapper';
 
 export const getLocations = async (): Promise<Location[]> => {

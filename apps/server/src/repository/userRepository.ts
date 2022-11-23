@@ -1,25 +1,27 @@
-import { prisma } from 'database';
+import { prismaClient as prisma, PrismaTypes, UserWithRelations } from 'database';
 import { User as UserDto, UserInput as UserInputDto } from 'schema';
-import { mapUserWithLocation, mapUser, mapUserInputToPrismaUserInput, UserGetMapper } from '../mappers/userMapper';
+import { UserGetMapper, UserCreateMapper } from '../mappers/userMapper';
 
 export const getUsers = async () => {
   return await prisma.user.findMany();
 };
 
+// Could declare types like this and be more explicit with our functions
+type UsersWithLocations = PrismaTypes.PromiseReturnType<typeof getUsersWithLocations>
+export const getUsersWithLocations = async () => {
+  return await prisma.user.findMany({include: {location: true}});
+}
+
 // TODO: Add types for UserWithLocation, User (without location) etc.
 export const getUserByMemorableId = async (id: string): Promise<UserDto> => {
-  console.log('CLient');
-  console.log(prisma);
-  console.log('Done');
-
-  const user = await prisma.user.findFirst({
+  const user: UserWithRelations = await prisma.user.findFirst({
     where: {
       memorableId: id,
     },
     include: {
       location: true,
     },
-  });
+  }) as UserWithRelations;
 
   console.log(user);
 
@@ -27,16 +29,13 @@ export const getUserByMemorableId = async (id: string): Promise<UserDto> => {
     return null;
   }
 
-  return mapUserWithLocation(user);
+  return UserGetMapper.map(user);
 };
 
-// TODO: Sort out mappings between prisma models and schema models
-//       Including different models for get/create
-export const createUser = async (user: UserInputDto): Promise<UserDto> => {
+export const createUser = async (user: UserInputDto): Promise<boolean> => {
   const insertedUser = await prisma.user.create({
-    data: mapUserInputToPrismaUserInput(user)
+    data: UserCreateMapper.map(user)
   });
 
-  // return mapUser(insertedUser)
-  return UserGetMapper.toSchema(insertedUser)
+  return true;
 }

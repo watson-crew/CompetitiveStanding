@@ -7,29 +7,41 @@ const defaultHeaders = {
   'Content-Type': 'application/json',
 };
 
-export const set404Response = (context: Context) => {
-  context.res = {
+type ContextResponse = {
+  headers: any,
+  statusCode: number,
+  body?: any
+}
+
+const setResponse = (statusCode: number, context: Context, body?: any) => {
+  let res: ContextResponse = {
     headers: defaultHeaders,
-    statusCode: 404,
-  };
+    statusCode
+  }
+
+  if (body) {
+    res.body = body;
+  }
+
+  context.res = res;
+}
+
+export const set404Response = (context: Context) => {
+  setResponse(404, context);
 };
 
 export const set200Response = (context: Context, body: any) => {
-  setResponseWithBody(200, context, body)
+  setResponse(200, context, body)
 };
 
 export const set201Response = (context: Context, body: any) => {
-  setResponseWithBody(201, context, body)
+  setResponse(201, context, body)
+}
+
+export const set204Response = (context: Context) => {
+  setResponse(204, context)
 }
 
 export const set500Response = (context: Context, error: Error) => {
-  setResponseWithBody(500, context, error.message)
+  setResponse(500, context, error.message)
 };
-
-const setResponseWithBody = (statusCode: number, context: Context, body: any) => {
-  context.res = {
-    headers: defaultHeaders,
-    statusCode,
-    body
-  }
-}
