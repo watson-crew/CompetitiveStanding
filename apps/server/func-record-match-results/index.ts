@@ -3,9 +3,9 @@ import {
   ContextForNoContentResponse,
   FunctionName,
   HttpRequestForRequestBody,
-} from '../src/types';
-import { setNotYetImplementedResponse } from '../src/utils/contextUtils';
-import { getFunctionLogger } from '../src/utils/logging';
+} from '@src/types';
+import { setNotYetImplementedResponse } from '@utils/contextUtils';
+import { getFunctionLogger } from '@utils/logging';
 
 const httpTrigger = async function (
   context: ContextForNoContentResponse,
