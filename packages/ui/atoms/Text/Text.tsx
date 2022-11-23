@@ -1,7 +1,7 @@
 import React from "react"
 import { WithDefaultProps } from "../../types"
 
-type TextProps = WithDefaultProps<{
+export type TextProps = WithDefaultProps<{
   type: 'h1' | 'h2' | 'h3' | 'h4' | 'p'
 }>
 

@@ -1,5 +1,7 @@
+import TextWithIcon from '../TextWithIcon/TextWithIcon'
 import Image from 'next/image'
 import { User } from 'schema'
+import { CommonIcons } from '../../types/icons'
 import Card from '../../atoms/Card/Card'
 import { WithDefaultProps } from '../../types'
 
@@ -22,8 +24,9 @@ export default function PlayerCard({ player, className }: PlayerCardProps) {
       
       <section className='pl-10'>
         <p className='text-sky-500 dark:text-sky-400'>{fullName}</p>
-        <p className='text-#ff3e00'>{player.memorableId}</p>
-        <p>{player.location}</p>
+        <p className='text-[#ff3e00] font-bold'>{player.memorableId}</p>
+        <TextWithIcon icon={CommonIcons.HomeLocation} textProps={{ type: 'p' }}>{player.location}</TextWithIcon>
+        <p></p>
       </section>
 
     </Card>
