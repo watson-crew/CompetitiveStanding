@@ -219,7 +219,7 @@
                 "required": ["winningTeamId"],
                 "properties": {
                   "winningTeamId": {
-                    "type": "number"
+                    "type": "integer"
                   }
                 }
               }
