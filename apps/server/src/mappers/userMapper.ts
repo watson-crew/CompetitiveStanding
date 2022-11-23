@@ -1,5 +1,5 @@
 // import { User as PrismaUser, Location } from 'database';
-import { User as UserDto, UserInput as UserInputDto } from 'schema';
+import { User as UserDto, CreateUserPayload as UserInputDto } from 'schema';
 import { PrismaTypes, UserWithLocation as PrismaUserWithLocation } from 'database'
 import { Mapper } from './generics'
 
