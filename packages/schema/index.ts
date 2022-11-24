@@ -201,7 +201,6 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
-  HeadersDefaults,
   ResponseType,
 } from 'axios';
 
@@ -281,10 +280,7 @@ export class HttpClient<SecurityDataType = unknown> {
       ...params1,
       ...(params2 || {}),
       headers: {
-        ...((method &&
-          this.instance.defaults.headers[
-            method.toLowerCase() as keyof HeadersDefaults
-          ]) ||
+        ...((method && this.instance.defaults.headers[method.toLowerCase()]) ||
           {}),
         ...(params1.headers || {}),
         ...((params2 && params2.headers) || {}),
