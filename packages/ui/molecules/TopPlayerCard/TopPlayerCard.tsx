@@ -1,4 +1,3 @@
-import Skeleton from "react-loading-skeleton"
 import { twMerge } from "tailwind-merge"
 import Card from "../../atoms/Card/Card"
 import { WithDefaultProps } from "../../types"

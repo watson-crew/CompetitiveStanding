@@ -1,6 +1,4 @@
-import Skeleton from "react-loading-skeleton";
 import { WithDefaultProps } from "../../types";
-import 'react-loading-skeleton/dist/skeleton.css'
 import Card from "../../atoms/Card/Card";
 import ResultCard from "../../molecules/ResultCard.tsx/ResultCard";
 import { twMerge } from "tailwind-merge";
