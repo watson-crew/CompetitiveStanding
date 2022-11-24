@@ -3,7 +3,6 @@ import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import getConfig from "next/config";
 import { ApiClient, User } from 'schema'
 import { Location } from "schema";
-import { Text } from 'ui'
 
 export default function Index() {
 
@@ -29,7 +28,9 @@ export default function Index() {
 
   return (
     <div className="flex h-screen flex-col items-center">
-      <Text type='h1' className="text-3xl font-bold underline">Competitive standing</Text>
+      <h1 className="text-3xl font-bold underline">Competitive standing</h1>
+
+      <PlayerSelection fetchPlayer={fetchUser} />
 
     </div>
   );

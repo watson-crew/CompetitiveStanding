@@ -35,7 +35,7 @@ export interface GameType {
 
 export type GetAllLocationsData = Location[];
 
-export type GetLocationByIdData = Location;
+export type GetLocationByUrlData = Location;
 
 export type GetUserByMemorableIdData = User;
 
@@ -68,6 +68,8 @@ export interface Location {
   id: number;
   /** @example "Nottingham" */
   name: string;
+  /** @example "nottingham" */
+  urlPath: string;
 }
 
 export type RecordMatchResultsData = any;
@@ -147,18 +149,18 @@ export namespace Location {
   /**
    * No description
    * @tags location
-   * @name GetLocationById
-   * @summary Get location by id
-   * @request GET:/locations/{locationId}
+   * @name GetLocationByUrl
+   * @summary Get location by urlPath
+   * @request GET:/locations/{urlPath}
    */
-  export namespace GetLocationById {
+  export namespace GetLocationByUrl {
     export type RequestParams = {
-      locationId: number;
+      urlPath: string;
     };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = GetLocationByIdData;
+    export type ResponseBody = GetLocationByUrlData;
   }
 }
 
@@ -430,13 +432,13 @@ export class ApiClient<
      * No description
      *
      * @tags location
-     * @name GetLocationById
-     * @summary Get location by id
-     * @request GET:/locations/{locationId}
+     * @name GetLocationByUrl
+     * @summary Get location by urlPath
+     * @request GET:/locations/{urlPath}
      */
-    getLocationById: (locationId: number, params: RequestParams = {}) =>
-      this.request<GetLocationByIdData, any>({
-        path: `/locations/${locationId}`,
+    getLocationByUrl: (urlPath: string, params: RequestParams = {}) =>
+      this.request<GetLocationByUrlData, any>({
+        path: `/locations/${urlPath}`,
         method: 'GET',
         ...params,
       }),

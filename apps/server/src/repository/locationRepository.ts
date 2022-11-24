@@ -7,10 +7,10 @@ export const getLocations = async (): Promise<Location[]> => {
   return locations.map(LocationGetMapper.map);
 };
 
-export const getLocationById = async (id: number): Promise<Location> => {
+export const getLocationByUrl = async (urlPath: string): Promise<Location> => {
   const location = await prisma.location.findFirst({
     where: {
-      id: id,
+      urlPath: urlPath,
     },
   });
 

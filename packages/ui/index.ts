@@ -16,6 +16,10 @@ import PlayerSelectionCard from './molecules/PlayerSelectionCard/PlayerSelection
 export { PlayerCard, PlayerIdInput, PlayerSelectionCard };
 
 // Organisms
-export {};
+import AvailableGamesOverview from './organisms/AvailableGamesOverview/AvailableGamesOverview';
+import RecentMatchesOverview from './organisms/RecentMatchesOverview/RecentMatchesOverview';
+import TopPlayersOverview from './organisms/TopPlayersOverview/TopPlayersOverview';
+
+export { AvailableGamesOverview, RecentMatchesOverview, TopPlayersOverview };
 
 export * from './types';
