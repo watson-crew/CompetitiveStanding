@@ -2,8 +2,7 @@ import Image from 'next/image'
 import { User } from 'schema'
 import { twMerge } from 'tailwind-merge'
 import { WithCloseButton, Text, CommonIcons, Card, WithDefaultProps, TextWithIcon, LoadingSpinner } from 'ui'
-
-import useSWR from 'swr'
+import { useState, useEffect } from 'react'
 
 const getFullName = (player: any) => `${player.firstName} ${player.lastName}`
 
@@ -14,14 +13,24 @@ type PlayerCardProps = WithDefaultProps<{
 }>
 
 export default function PlayerCard({ playerId, onClose, fetchPlayer }: PlayerCardProps) {
-  // Make sure this key does not clash
-  const { data: player, error, isValidating } = useSWR(
-    `${playerId}`,
-    fetchPlayer,
-    {
-      dedupingInterval: 10000 // 10 seconds.
+  const [player, setPlayer] = useState<User>()
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  // Load players on mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setPlayer(await fetchPlayer(playerId))
+        setLoading(false)
+      } catch (err) {
+        console.error(err)
+        setError(true)
+      }
     }
-  )
+
+    loadData()
+  }, [])
 
   const className = "" // TODO: Fill this in with something from parent component
   const containerClasses = twMerge("bg-slate-100 w-full min-h-full h-full flex justify-center items-center flex-col", className)
@@ -29,13 +38,12 @@ export default function PlayerCard({ playerId, onClose, fetchPlayer }: PlayerCar
   if (error) {
     return (
       <WithCloseButton onClose={onClose}>
-        <p>ERROR...</p>
-        <p>{error.message}</p>
+        <p>ERROR LOADING PLAYER</p>
       </WithCloseButton>
     )
   }
 
-  if (isValidating) {
+  if (loading) {
     return (
       <Card className={containerClasses}>
         <LoadingSpinner />
