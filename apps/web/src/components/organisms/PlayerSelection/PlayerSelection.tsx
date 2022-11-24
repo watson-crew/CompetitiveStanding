@@ -4,18 +4,18 @@ import { Button, Text, StateDispatcher } from "ui"
 import PlayerSelectionCard from "@molecules/PlayerSelectionCard/PlayerSelectionCard"
 
 type PlayerSelectionProps = {
-
+  fetchPlayer: (id: string) => Promise<User>
 }
 
-export default function PlayerSelection({}: PlayerSelectionProps) {
+export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
   return (
     <section className="w-full my-20">
       <section className="flex w-full justify-around align-middle items-center min-h-full h-full">
-        <PlayerSelectionCard />
+        <PlayerSelectionCard fetchPlayer={fetchPlayer}/>
 
         <Text type="p">VS</Text>
 
-        <PlayerSelectionCard />
+        <PlayerSelectionCard fetchPlayer={fetchPlayer}/>
 
       </section>
       <div className="text-center my-20">

@@ -12,20 +12,14 @@ const getFullName = (player: any) => `${player.firstName} ${player.lastName}`
 type PlayerCardProps = WithDefaultProps<{
   playerId: string,
   onClose: () => any,
+  fetchPlayer: (id: string) => Promise<User>
 }>
 
-export default function PlayerCard({ playerId, onClose }: PlayerCardProps) {
-  const apiClient = useContext(ApiContext)!;
-
-  const fetchUser = async (userId: string): Promise<User> => {
-    const response = await apiClient.user.getUserByMemorableId(userId)
-    return response.data
-  }
-
+export default function PlayerCard({ playerId, onClose, fetchPlayer }: PlayerCardProps) {
   // Make sure this key does not clash
   const { data: player, error, isValidating } = useSWR(
     `${playerId}`,
-    fetchUser,
+    fetchPlayer,
     {
       dedupingInterval: 10000 // 10 seconds.
     }

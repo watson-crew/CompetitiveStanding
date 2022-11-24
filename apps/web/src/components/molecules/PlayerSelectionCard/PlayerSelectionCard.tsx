@@ -1,13 +1,18 @@
-import { PlayerIdInput, WithDefaultProps, Card } from "ui"
+import { User } from "schema"
+import { PlayerIdInput, WithDefaultProps, Card, LoadingSpinner } from "ui"
 import { twMerge } from 'tailwind-merge'
 
 import { useState } from "react"
 import PlayerCard from "@molecules/PlayerCard/PlayerCard"
 
+import useSWR from 'swr'
+import { ApiContext } from '@src/context/ApiContext';
 
-type PlayerSelectionCardProps = WithDefaultProps<{}>
+type PlayerSelectionCardProps = WithDefaultProps<{
+  fetchPlayer: (id: string) => Promise<User>
+}>
 
-export default function PlayerSelectionCard({}: PlayerSelectionCardProps) {
+export default function PlayerSelectionCard({fetchPlayer}: PlayerSelectionCardProps) {
   const title = "Test player title"
   const [playerId, setPlayerId] = useState('')
   const className = "" // TODO: Fill this in with something from parent component
@@ -23,9 +28,10 @@ export default function PlayerSelectionCard({}: PlayerSelectionCardProps) {
 
   return (
     <Card className={containerClasses}>
+      {/* {isError && <Banner type="error" onClose={clearPlayer}><Text type="p">Oops an error occurred</Text></Banner>} */}
       {!playerId && <PlayerIdInput title={title} onChange={id => onIdSubmitted(id)} /> }
       {playerId &&
-        <PlayerCard playerId={playerId} onClose={clearPlayer} />
+        <PlayerCard playerId={playerId} onClose={clearPlayer} fetchPlayer={fetchPlayer} />
       }
     </Card>
   )
