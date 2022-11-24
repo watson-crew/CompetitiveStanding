@@ -36,7 +36,7 @@ export default function PlayerSelectionCard({ title, player, playerNotFound, isE
     <Card className={containerClasses}>
       {playerNotFound && <Banner type="info" onClose={clearPlayer}><Text type="p">No player exits for id</Text></Banner>}
       {isError && <Banner type="error" onClose={clearPlayer}><Text type="p">Oops an error occurred</Text></Banner>}
-      {!player && <PlayerIdInput title={title} onChange={id => onIdSubmitted(id)} /> }
+      {!player && <PlayerIdInput title={title} subtitle="Enter your ID" onChange={id => onIdSubmitted(id)} /> }
       {player && 
         <WithCloseButton onClose={clearPlayer}>
           <PlayerCard player={player} /> 

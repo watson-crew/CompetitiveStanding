@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import { Location } from "schema";
+import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import { ApiContext } from "@src/context/ApiContext";
 
 export default function Index() {
