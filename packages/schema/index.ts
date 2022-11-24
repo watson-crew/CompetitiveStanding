@@ -200,7 +200,6 @@ export namespace Matches {
 import axios, {
   AxiosInstance,
   AxiosRequestConfig,
-  HeadersDefaults,
   ResponseType,
 } from 'axios';
 
@@ -282,7 +281,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...((method &&
           this.instance.defaults.headers[
-            method.toLowerCase() as keyof HeadersDefaults
+            method.toLowerCase()
           ]) ||
           {}),
         ...(params1.headers || {}),
