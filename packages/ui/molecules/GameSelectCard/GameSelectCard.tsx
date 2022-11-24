@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 // Remove partial later on
 type GameSelectCardProps = WithDefaultProps<Partial<GameType>>
 
-export default function GameSelectCard({ name, maxNumberOfPlayers, className }: GameSelectCardProps) {
+export default function GameSelectCard({ className }: GameSelectCardProps) {
 
 
   return (

@@ -5,9 +5,7 @@ import TopPlayersCard from "../../molecules/TopPlayerCard/TopPlayerCard"
 import { WithDefaultProps } from "../../types"
 
 
-type TopPlayersOverviewProps = WithDefaultProps<{
-
-}>
+type TopPlayersOverviewProps = WithDefaultProps<unknown>
 
 export default function TopPlayersOverview({ className }: TopPlayersOverviewProps) {
 

@@ -14,7 +14,7 @@ type PlayerSelectionCardProps = WithDefaultProps<{
   player?: User
   loading: boolean
   onIdSubmitted: (id: string) => Promise<void>
-  clearPlayer: () => any
+  clearPlayer: () => void
   playerNotFound?: boolean
   isError?: boolean
 }>

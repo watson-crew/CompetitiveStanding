@@ -1,7 +1,6 @@
-import Card from '../../atoms/Card/Card';
 import { WithDefaultProps } from '../../types';
 
-type ResultCardProps = WithDefaultProps<{}>;
+type ResultCardProps = WithDefaultProps<unknown>;
 
 export default function ResultCard({}: ResultCardProps) {
   return (

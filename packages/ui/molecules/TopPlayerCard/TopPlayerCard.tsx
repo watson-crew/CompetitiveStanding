@@ -1,5 +1,4 @@
 import { twMerge } from "tailwind-merge"
-import Card from "../../atoms/Card/Card"
 import { WithDefaultProps } from "../../types"
 
 
@@ -8,7 +7,7 @@ type TopPlayersCardProps = WithDefaultProps<{
   isLoading: boolean
 }>
 
-export default function TopPlayersCard({ playerName, isLoading, className }: TopPlayersCardProps) {
+export default function TopPlayersCard({ className }: TopPlayersCardProps) {
 
   return (
     <div className={twMerge("mx-auto w-full rounded-md border border-blue-300 p-4 shadow", className)}>

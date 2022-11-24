@@ -27,7 +27,7 @@ export const set200Response = <T>(
   };
 };
 
-export const set204Response = <T>(
+export const set204Response = (
   log: Logger,
   context: ContextForNoContentResponse,
 ) => {

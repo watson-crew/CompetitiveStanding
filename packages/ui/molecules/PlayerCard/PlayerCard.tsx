@@ -7,7 +7,7 @@ import { WithDefaultProps } from '../../types'
 import { twMerge } from 'tailwind-merge'
 import Text from '../../atoms/Text/Text'
 
-const getFullName = (player: any) => `${player.firstName} ${player.lastName}`
+const getFullName = (player: User) => `${player.firstName} ${player.lastName}`
 
 type PlayerCardProps = WithDefaultProps<{
   player: User

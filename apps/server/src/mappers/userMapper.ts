@@ -6,7 +6,7 @@ import { Mapper } from './generics'
 // Not PrismaUser, what model do we need>
 export const UserGetMapper: Mapper<PrismaUserWithLocation, UserDto> = {
   map: (prismaModel: PrismaUserWithLocation) => {
-    let user: UserDto = {
+    const user: UserDto = {
       id: prismaModel.id,
       memorableId: prismaModel.memorableId,
       firstName: prismaModel.firstName,

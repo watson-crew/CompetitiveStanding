@@ -3,7 +3,7 @@ import { WithDefaultProps } from "../../types";
 type ButtonProps = WithDefaultProps<{
   text: string,
   disabled?: boolean
-  onClick: () => any
+  onClick: () => void
 }>
 
 export default function Button({ text, onClick, disabled, className = '' }: ButtonProps) {
@@ -13,4 +13,4 @@ export default function Button({ text, onClick, disabled, className = '' }: Butt
     className={`bg-slate-400 hover:bg-slate-200 h-16 px-8 rounded-xl ${className}`} onClick={onClick}
       >{ text }
   </button>;
-};
+}
