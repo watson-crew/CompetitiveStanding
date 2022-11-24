@@ -5,7 +5,7 @@ import { ApiContext } from "@src/context/ApiContext";
 export default function Index() {
 
   const client = useContext(ApiContext)
-  const fetchUser = async (userId: string) => (await client.user.getUserByMemorableId(userId)).data
+  const fetchUser = async (userId: string) => client.user.getUserByMemorableId(userId)
 
   return (
     <div className="flex h-screen flex-col items-center">
