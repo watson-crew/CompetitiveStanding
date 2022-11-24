@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import getConfig from "next/config";
-import { ApiClient, User } from 'schema'
+import { ApiClient } from 'schema'
 import { Location } from "schema";
 
 export default function Index() {

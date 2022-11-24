@@ -4,8 +4,6 @@ import { twMerge } from 'tailwind-merge'
 import { WithCloseButton, Text, CommonIcons, Card, WithDefaultProps, TextWithIcon, LoadingSpinner } from 'ui'
 
 import useSWR from 'swr'
-import { ApiContext } from '@src/context/ApiContext';
-import { useContext } from 'react'
 
 const getFullName = (player: any) => `${player.firstName} ${player.lastName}`
 

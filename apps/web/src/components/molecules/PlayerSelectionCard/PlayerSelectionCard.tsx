@@ -1,12 +1,10 @@
 import { User } from "schema"
-import { PlayerIdInput, WithDefaultProps, Card, LoadingSpinner } from "ui"
+import { PlayerIdInput, WithDefaultProps, Card } from "ui"
 import { twMerge } from 'tailwind-merge'
 
 import { useState } from "react"
 import PlayerCard from "@molecules/PlayerCard/PlayerCard"
 
-import useSWR from 'swr'
-import { ApiContext } from '@src/context/ApiContext';
 
 type PlayerSelectionCardProps = WithDefaultProps<{
   fetchPlayer: (id: string) => Promise<User>

@@ -1,6 +1,5 @@
-import { useState } from "react"
 import { User } from "schema"
-import { Button, Text, StateDispatcher } from "ui"
+import { Button, Text } from "ui"
 import PlayerSelectionCard from "@molecules/PlayerSelectionCard/PlayerSelectionCard"
 
 type PlayerSelectionProps = {
