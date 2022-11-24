@@ -182,11 +182,11 @@ export namespace Matches {
    * @tags matches
    * @name RecordMatchResults
    * @summary Record the results of a given match
-   * @request PUT:/matches/${matchId}
+   * @request PUT:/matches/{matchId}
    */
   export namespace RecordMatchResults {
     export type RequestParams = {
-      matchId: string;
+      matchId: number;
     };
     export type RequestQuery = {};
     export type RequestBody = RecordMatchResultsPayload;
@@ -468,15 +468,15 @@ export class ApiClient<
      * @tags matches
      * @name RecordMatchResults
      * @summary Record the results of a given match
-     * @request PUT:/matches/${matchId}
+     * @request PUT:/matches/{matchId}
      */
     recordMatchResults: (
-      matchId: string,
+      matchId: number,
       data: RecordMatchResultsPayload,
       params: RequestParams = {},
     ) =>
       this.request<RecordMatchResultsData, any>({
-        path: `/matches/$${matchId}`,
+        path: `/matches/${matchId}`,
         method: 'PUT',
         body: data,
         type: ContentType.Json,

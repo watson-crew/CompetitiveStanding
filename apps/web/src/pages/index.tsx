@@ -5,12 +5,16 @@ import { ApiContext } from "@src/context/ApiContext";
 import { useSelector, useDispatch } from 'react-redux'
 import { connect } from "react-redux";
 import { fetchLocations, setLocations } from '@src/stores/actions/locations'
+import { useGetAllLocationsQuery } from '@src/stores/competitiveStandingApi'
 
-function Index() {
+export default function Index() {
   const dispatch = useDispatch()
 
   // TODO: Proper types
-  const locations = useSelector<any>(state => state.locations) as Location[]
+  //const locations = useSelector<any>(state => state.locations) as Location[]
+
+  const { data: locations, error, isLoading, isFetching, isSuccess } = useGetAllLocationsQuery()
+  console.log(locations);
 
   // const [locations, setLocations] = useState<Location[]>([])
 
@@ -20,10 +24,10 @@ function Index() {
     return (await client.user.getUserByMemorableId(userId)).data
   }
 
-  useEffect(() => {
-    console.log("Fetching locations")
-    fetchLocations()(dispatch); // TODO: Refactor this
-  }, [])
+  // useEffect(() => {
+  //   console.log("Fetching locations")
+  //   // fetchLocations()(dispatch); // TODO: Refactor this
+  // }, [])
 
   // useEffect(() => {
 
@@ -45,7 +49,7 @@ function Index() {
 
       {/* <PlayerSelection fetchPlayer={fetchUser}/> */}
 
-      {locations.map(location => <p>{JSON.stringify(location)}</p>)}
+      {locations && locations.map(location => <p>{JSON.stringify(location)}</p>)}
 
     </div>
   );
@@ -53,4 +57,4 @@ function Index() {
 
 
 // TODO: Understand this and if we need it
-export default connect(null, { fetchLocations })(Index)
+//export default connect(null, { fetchLocations })(Index)
