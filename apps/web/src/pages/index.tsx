@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import getConfig from "next/config";
-import { ApiClient, User } from 'schema'
+import { ApiClient } from 'schema'
 import { Location } from "schema";
 
 export default function Index() {
@@ -9,11 +9,6 @@ export default function Index() {
   const [locations, setLocations] = useState<Location[]>([])
 
   const client = new ApiClient({ baseURL: getConfig().publicRuntimeConfig.apiBaseUrl })
-
-  const fetchUserFromApi = async (userId: string) => {
-    // TODO: Handle the URLwhich will container userId if using SWR
-    return (await client.user.getUserByMemorableId(userId)).data
-  }
 
   useEffect(() => {
 
@@ -33,7 +28,7 @@ export default function Index() {
     <div className="flex h-screen flex-col items-center mt-20">
       <h1 className="text-3xl font-bold underline">Competitive standing</h1>
 
-      <PlayerSelection fetchPlayer={fetchUserFromApi} />
+      <PlayerSelection />
 
     </div>
   );

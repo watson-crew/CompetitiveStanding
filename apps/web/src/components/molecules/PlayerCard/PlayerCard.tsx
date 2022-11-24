@@ -12,7 +12,6 @@ const getFullName = (player: any) => `${player.firstName} ${player.lastName}`
 type PlayerCardProps = WithDefaultProps<{
   playerId: string,
   onClose: () => any,
-  //fetchUser: (userId: string) => any
 }>
 
 export default function PlayerCard({ playerId, onClose }: PlayerCardProps) {
@@ -23,10 +22,7 @@ export default function PlayerCard({ playerId, onClose }: PlayerCardProps) {
     return response.data
   }
 
-  // TODO: Look at other caching alternatives
-
-  // TODO: Look at what the keys should be, the fetchUser function expects a userId
-  //       But useSWR is supposed to work with direct URLs as the key
+  // Make sure this key does not clash
   const { data: player, error, isValidating } = useSWR(
     `${playerId}`,
     fetchUser,
@@ -34,8 +30,6 @@ export default function PlayerCard({ playerId, onClose }: PlayerCardProps) {
       dedupingInterval: 10000 // 10 seconds.
     }
   )
-
-  //const { data: player, error, isValidating } = fetchUser(playerId);
 
   const className = "" // TODO: Fill this in with something from parent component
   const containerClasses = twMerge("bg-slate-100 w-full min-h-full h-full flex justify-center items-center flex-col", className)
