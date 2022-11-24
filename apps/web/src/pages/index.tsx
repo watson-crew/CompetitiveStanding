@@ -1,14 +1,13 @@
-import { useEffect, useReducer, useState } from "react";
-import { PlayerSelection } from "ui";
-import getConfig from "next/config";
-import { ApiClient, User } from 'schema'
+import { useContext, useEffect, useState } from "react";
+import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import { Location } from "schema";
+import { ApiContext } from "@src/context/ApiContext";
 
 export default function Index() {
 
   const [locations, setLocations] = useState<Location[]>([])
 
-  const client = new ApiClient({ baseURL: getConfig().publicRuntimeConfig.apiBaseUrl }) 
+  const client = useContext(ApiContext)
 
   const fetchUser = async (userId: string) => (await client.user.getUserByMemorableId(userId)).data
 

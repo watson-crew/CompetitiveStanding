@@ -3,9 +3,9 @@ import {
   ContextForNoContentResponse,
   FunctionName,
   HttpRequestForRequestBody,
-} from '../src/types';
-import { setNotYetImplementedResponse } from '../src/utils/contextUtils';
-import { getFunctionLogger } from '../src/utils/logging';
+} from '@src/types';
+import { set204Response } from '@src/utils/contextUtils';
+import { getFunctionLogger } from '@src/utils/logging';
 
 const httpTrigger = async function (
   context: ContextForNoContentResponse,
@@ -19,7 +19,7 @@ const httpTrigger = async function (
 
   log(`Got winningTeamId: ${winningTeamId}`);
 
-  setNotYetImplementedResponse(log, FunctionName.RecordMatchResults, context);
+  set204Response(log, context);
 };
 
 export default httpTrigger;

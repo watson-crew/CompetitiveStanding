@@ -6,7 +6,7 @@ type ButtonProps = WithDefaultProps<{
   onClick: () => any
 }>
 
-export const Button = ({ text, onClick, disabled, className = '' }: ButtonProps) => {
+export default function Button({ text, onClick, disabled, className = '' }: ButtonProps) {
   return <button 
     type="button"
     disabled={disabled}

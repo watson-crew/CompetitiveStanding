@@ -1,17 +1,17 @@
-import { prisma } from 'database';
-import { User } from 'schema';
-import { mapUserWithLocation } from '../mappers/userMapper';
+import { prismaClient as prisma, PrismaTypes, UserWithLocation } from 'database';
+import { User as UserDto, CreateUserPayload as UserInputDto } from 'schema';
+import { UserGetMapper, UserCreateMapper } from '../mappers/userMapper';
 
 export const getUsers = async () => {
   return await prisma.user.findMany();
 };
 
-export const getUserByMemorableId = async (id: string): Promise<User> => {
-  console.log('CLient');
-  console.log(prisma);
-  console.log('Done');
+export const getUsersWithLocations = async (): Promise<UserWithLocation[]> => {
+  return await prisma.user.findMany({include: {location: true}});
+}
 
-  const user = await prisma.user.findFirst({
+export const getUserByMemorableId = async (id: string): Promise<UserDto> => {
+  const user: UserWithLocation = await prisma.user.findFirst({
     where: {
       memorableId: id,
     },
@@ -20,11 +20,17 @@ export const getUserByMemorableId = async (id: string): Promise<User> => {
     },
   });
 
-  console.log(user);
-
   if (!user) {
     return null;
   }
 
-  return mapUserWithLocation(user);
+  return UserGetMapper.map(user);
 };
+
+export const createUser = async (user: UserInputDto): Promise<boolean> => {
+  const insertedUser = await prisma.user.create({
+    data: UserCreateMapper.map(user)
+  });
+
+  return true;
+}

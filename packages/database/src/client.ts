@@ -1,9 +1,20 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma as Prisma } from '@prisma/client';
+export {Prisma as PrismaTypes} from '@prisma/client'
+export type { Location } from '@prisma/client'
+
+const userWithLocation = Prisma.validator<Prisma.UserArgs>()({
+  include: {
+    location: true,
+  },
+})
+
+export type UserWithLocation = Prisma.UserGetPayload<typeof userWithLocation>
 
 declare global {
-  var prisma: PrismaClient | undefined;
+  var prismaClient: PrismaClient | undefined;
 }
 
-export const prisma = global.prisma || new PrismaClient();
+export const prismaClient = global.prismaClient || new PrismaClient();
 
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
+if (process.env.NODE_ENV !== 'production') global.prismaClient = prismaClient
+

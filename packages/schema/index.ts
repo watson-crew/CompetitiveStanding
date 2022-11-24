@@ -9,7 +9,7 @@
  * ---------------------------------------------------------------
  */
 
-export type CreateUserData = User;
+export type CreateUserData = any;
 
 export interface CreateUserPayload {
   /** @example "abc" */

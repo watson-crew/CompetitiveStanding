@@ -55,15 +55,8 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
+          "204": {
+            "description": "successful operation"
           }
         }
       }
@@ -219,7 +212,7 @@
                 "required": ["winningTeamId"],
                 "properties": {
                   "winningTeamId": {
-                    "type": "number"
+                    "type": "integer"
                   }
                 }
               }

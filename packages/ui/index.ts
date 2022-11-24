@@ -1,30 +1,21 @@
-import { Button } from './atoms/Button/Button';
-import Card from './atoms/Card/Card';
+// Atoms
 import Banner from './atoms/Banner/Banner';
+import Button from './atoms/Button/Button';
+import Card from './atoms/Card/Card';
+import LoadingSpinner from './atoms/LoadingSpinner/LoadingSpinner';
+import WithCloseButton from './atoms/WithCloseButton/WithCloseButton';
 import Text from './atoms/Text/Text';
-import HeadToHeadPlayerSection from './molecules/HeadToHead/PlayerSection';
+
+export { Banner, Button, Card, LoadingSpinner, WithCloseButton, Text };
+
+// Molecules
 import PlayerCard from './molecules/PlayerCard/PlayerCard';
 import PlayerIdInput from './molecules/PlayerIdInput/PlayerIdInput';
-import HeadToHeadSection from './molecules/HeadToHead/HeadToHeadSection';
-import PlayerSelection from './organisms/PlayerSelection/PlayerSelection';
-import WithCloseButton from './atoms/WithCloseButton/WithCloseButton';
-import LoadingSpinner from './atoms/LoadingSpinner/LoadingSpinner';
+import PlayerSelectionCard from './molecules/PlayerSelectionCard/PlayerSelectionCard';
 
-export {
-  // Atoms
-  Button,
-  Card,
-  Banner,
-  Text,
-  WithCloseButton,
-  LoadingSpinner,
+export { PlayerCard, PlayerIdInput, PlayerSelectionCard };
 
-  // Molecules
-  HeadToHeadSection,
-  PlayerCard,
-  HeadToHeadPlayerSection,
-  PlayerIdInput,
+// Organisms
+export {};
 
-  // Organisms
-  PlayerSelection,
-};
+export * from './types';

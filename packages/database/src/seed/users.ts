@@ -1,5 +1,4 @@
 import { Location, PrismaClient, User } from '@prisma/client';
-import { prisma } from '..';
 
 type SeedDependencies = {
   locations: Record<string, Location>;
@@ -46,6 +45,14 @@ const users = (locations: Record<string, Location>): Omit<User, 'id'>[] => {
       memorableId: '4e8',
       profilePicture:
         'https://ca.slack-edge.com/T0KNVDB9Q-U028KHZUF1C-2f7eb72c227f-512',
+      locationId: nottingham.id,
+    },
+    {
+      firstName: 'Ruairidh',
+      lastName: 'Taylor',
+      memorableId: 'rua',
+      profilePicture:
+        'https://ca.slack-edge.com/T0KNVDB9Q-U03FHDHDXV3-cab7a2f87fff-48',
       locationId: nottingham.id,
     },
   ];
