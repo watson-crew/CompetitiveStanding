@@ -9,11 +9,10 @@ import Text from './atoms/Text/Text';
 export { Banner, Button, Card, LoadingSpinner, WithCloseButton, Text };
 
 // Molecules
-import PlayerCard from './molecules/PlayerCard/PlayerCard';
 import PlayerIdInput from './molecules/PlayerIdInput/PlayerIdInput';
-import PlayerSelectionCard from './molecules/PlayerSelectionCard/PlayerSelectionCard';
+import TextWithIcon from './molecules/TextWithIcon/TextWithIcon';
 
-export { PlayerCard, PlayerIdInput, PlayerSelectionCard };
+export { PlayerIdInput, TextWithIcon };
 
 // Organisms
 export {};
