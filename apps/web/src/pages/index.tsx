@@ -2,10 +2,17 @@ import { useContext, useEffect, useState } from "react";
 import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import { Location } from "schema";
 import { ApiContext } from "@src/context/ApiContext";
+import { useSelector, useDispatch } from 'react-redux'
+import { connect } from "react-redux";
+import { fetchLocations, setLocations } from '@src/stores/actions/locations'
 
-export default function Index() {
+function Index() {
+  const dispatch = useDispatch()
 
-  const [locations, setLocations] = useState<Location[]>([])
+  // TODO: Proper types
+  const locations = useSelector<any>(state => state.locations) as Location[]
+
+  // const [locations, setLocations] = useState<Location[]>([])
 
   const client = useContext(ApiContext)
 
@@ -14,25 +21,36 @@ export default function Index() {
   }
 
   useEffect(() => {
-
-      const fetchLocations = async () => {
-        try {
-          setLocations((await client.location.getAllLocations()).data)
-        } catch (err) {
-          console.error(err)
-        }
-      }
-
-      fetchLocations()
-
+    console.log("Fetching locations")
+    fetchLocations()(dispatch); // TODO: Refactor this
   }, [])
+
+  // useEffect(() => {
+
+  //     const fetchLocations = async () => {
+  //       try {
+  //         setLocations((await client.location.getAllLocations()).data)
+  //       } catch (err) {
+  //         console.error(err)
+  //       }
+  //     }
+
+  //     fetchLocations()
+
+  // }, [])
 
   return (
     <div className="flex h-screen flex-col items-center mt-20">
       <h1 className="text-3xl font-bold underline">Competitive standing</h1>
 
-      <PlayerSelection fetchPlayer={fetchUser}/>
+      {/* <PlayerSelection fetchPlayer={fetchUser}/> */}
+
+      {locations.map(location => <p>{JSON.stringify(location)}</p>)}
 
     </div>
   );
 }
+
+
+// TODO: Understand this and if we need it
+export default connect(null, { fetchLocations })(Index)

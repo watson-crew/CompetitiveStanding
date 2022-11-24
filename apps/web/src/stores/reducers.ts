@@ -14,9 +14,12 @@ const initialState = {
 // //   filters: filtersReducer
 // })
 
+
 // TODO: Add correct types
 const rootReducer = (state = initialState, action: any) => {
     switch (action.type) {
+        case 'set_locations':
+            return { locations: action.payload }
         default:
             return state
     }
