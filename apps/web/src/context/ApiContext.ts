@@ -15,7 +15,6 @@ export const ApiContext = React.createContext<ApiClient<unknown>>(
  */
 export function getApiInstance(): ApiClient<unknown> {
   if (!globalInstance) {
-    // Create `axios-cache-adapter` instance
     const cache = setupCache({
       maxAge: 15 * 60 * 1000,
     });
