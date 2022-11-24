@@ -23,7 +23,6 @@
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.25",
     "config": "*",
-    "eslint": "7.32.0",
     "eslint-config-custom": "*",
     "next-transpile-modules": "^10.0.0",
     "rimraf": "^3.0.2",

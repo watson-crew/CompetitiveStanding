@@ -5,7 +5,7 @@ import Text from '../../atoms/Text/Text';
 type PlayerIdInputProps = {
   title: string
   idLength?: number
-  onChange: (id: string) => any
+  onChange: (id: string) => void
 }
 
 export default function PlayerIdInput({ idLength = 3, title, onChange }: PlayerIdInputProps) {

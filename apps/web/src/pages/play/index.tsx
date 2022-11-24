@@ -1,30 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
-import getConfig from "next/config";
-import { ApiClient, User } from 'schema'
-import { Location } from "schema";
+import { ApiContext } from "@src/context/ApiContext";
 
 export default function Index() {
 
-  const [locations, setLocations] = useState<Location[]>([])
-
-  const client = new ApiClient({ baseURL: getConfig().publicRuntimeConfig.apiBaseUrl }) 
-
+  const client = useContext(ApiContext)
   const fetchUser = async (userId: string) => (await client.user.getUserByMemorableId(userId)).data
-
-  useEffect(() => {
-
-      const fetchLocations = async () => {
-        try {
-          setLocations((await client.location.getAllLocations()).data)
-        } catch (err) {
-          console.error(err)
-        }
-      }
-
-      fetchLocations()
-
-  }, [])
 
   return (
     <div className="flex h-screen flex-col items-center">

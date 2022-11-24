@@ -10,7 +10,7 @@ import {
   FunctionName,
   HttpRequestForRequestParams,
 } from '@src/types';
-import { getFunctionLogger, logForFunction } from '@utils/logging';
+import { getFunctionLogger } from '@utils/logging';
 
 const httpTrigger = async function (
   context: ContextForResponseBody<User.GetUserByMemorableId.ResponseBody>,

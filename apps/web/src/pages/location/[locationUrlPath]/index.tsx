@@ -1,4 +1,4 @@
-import { ApiClient, Location } from "schema";
+import { Location } from "schema";
 import { GetStaticPathsContext, GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next'
 import { AvailableGamesOverview, Card, RecentMatchesOverview, Text, TopPlayersOverview } from 'ui'
 import { getApiInstance } from "@src/context/ApiContext";

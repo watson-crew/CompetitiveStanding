@@ -1,5 +1,4 @@
 import Card, { CardProps } from "../Card/Card";
-import Text from "../Text/Text";
 import { MdError } from 'react-icons/md'
 import { IoMdCloseCircleOutline } from 'react-icons/io'
 import { twMerge } from 'tailwind-merge'
@@ -8,7 +7,7 @@ type BannerType = 'info' | 'error'
 
 export type BannerCardProps = CardProps & {
   type: BannerType
-  onClose?: () => any
+  onClose?: () => void
 }
 
 const styles: Record<BannerType, string> = {
