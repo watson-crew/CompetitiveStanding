@@ -58,7 +58,7 @@ export default function Index({ location }: LocationPageProps) {
 
         <RecentMatchesOverview
           className="row-span-4 h-full w-full"
-          isLoading={true}
+          loading={true}
         />
       </Card>
     </div>
