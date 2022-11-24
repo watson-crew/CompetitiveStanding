@@ -1,5 +1,7 @@
 import { ApiClient } from '@src/../../../packages/schema';
+import { store } from '@src/stores'
 import { ApiContext } from '@src/context/ApiContext';
+import { StoreContext } from '@src/context/StoreContext';
 import { AppProps } from 'next/app';
 import getConfig from 'next/config';
 import { Component } from 'react';
@@ -12,9 +14,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   });
 
   return (
-    <ApiContext.Provider value={apiInstance}>
-      <Component {...pageProps} />
-    </ApiContext.Provider>
+    <StoreContext.Provider value={store}>
+      <ApiContext.Provider value={apiInstance}>
+        <Component {...pageProps} />
+      </ApiContext.Provider>
+    </StoreContext.Provider>
+
   )
 }
 
