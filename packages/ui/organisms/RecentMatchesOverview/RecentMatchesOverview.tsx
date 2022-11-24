@@ -14,7 +14,7 @@ type RecentMatchesOverviewProps = WithDefaultProps<{
 export default function RecentMatchesOverview({ isLoading, className }: RecentMatchesOverviewProps) {
 
 
-  const count = 4
+  const count = 8
 
 
   const cardsToRender = []
@@ -25,7 +25,7 @@ export default function RecentMatchesOverview({ isLoading, className }: RecentMa
 
   if (isLoading) {
     return (
-    <Card color="slate-200" className={twMerge("w-full h-full flex flex-col", className)}>
+    <Card color="slate-200" className={twMerge("w-full h-full flex flex-col overflow-scroll", className)}>
       <Text type="h2">Recent matches</Text>
       <div className="w-full h-full flex flex-col"> {cardsToRender}</div>
     </Card>

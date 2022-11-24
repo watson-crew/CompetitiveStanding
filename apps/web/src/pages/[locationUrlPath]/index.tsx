@@ -51,14 +51,11 @@ export default function Index({ location }: LocationPageProps) {
 
       <Card className="w-full h-full grid grid-rows-4 grid-flow-col gap-4" isFlex={false}>
 
-          <AvailableGamesOverview availableGames={[]} className="row-span-2 col-span-2 w-full h-full" />
-          <TopPlayersOverview className="row-span-2 col-span-2 w-full h-full" />
-          <RecentMatchesOverview className="row-span-4 w-full h-full" isLoading={true} />
+          <AvailableGamesOverview availableGames={[]} className="row-span-2 col-span-2 bg-red-100" />
 
-        {/* <Card color="slate-200" className="row-span-4 w-full h-full" isFlex={false}>
-          <Text type="h2">Recent matches here</Text>
-          <RecentMatchesOverview isLoading={true} />
-        </Card> */}
+          <TopPlayersOverview className="row-span-2 col-span-2 w-full h-full" />
+          
+          <RecentMatchesOverview className="row-span-4 w-full h-full" isLoading={true} />
       </Card>
     </div>
   );

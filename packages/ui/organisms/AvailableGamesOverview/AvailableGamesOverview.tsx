@@ -19,9 +19,9 @@ export default function AvailableGamesOverview({ className }: AvailableGamesOver
   }
 
   return (
-    <Card color="slate-200" className={twMerge("col-span-2 row-span-2 h-full w-full flex flex-col", className)}>
+    <Card color="slate-200" className={twMerge("h-full w-full flex flex-col max-2-lg", className)}>
       <Text type="h2" className='block'>Start a game...</Text>
-      <div className="h-full w-full flex-row flex">{cardsToRender}</div>
+      <div className="h-full w-full flex-row flex overflow-scroll">{cardsToRender}</div>
     </Card>
   )
 }
