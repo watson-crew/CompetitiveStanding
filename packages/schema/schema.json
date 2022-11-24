@@ -116,18 +116,18 @@
         }
       }
     },
-    "/locations/{locationId}": {
+    "/locations/{urlPath}": {
       "get": {
         "tags": ["location"],
-        "summary": "Get location by id",
-        "operationId": "getLocationById",
+        "summary": "Get location by urlPath",
+        "operationId": "getLocationByUrl",
         "parameters": [
           {
-            "name": "locationId",
+            "name": "urlPath",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "string"
             }
           }
         ],
@@ -279,11 +279,15 @@
       },
       "Location": {
         "type": "object",
-        "required": ["id", "name"],
+        "required": ["id", "name", "urlPath"],
         "properties": {
           "id": {
             "type": "integer",
             "example": 1
+          },
+          "urlPath": {
+            "type": "string",
+            "example": "nottingham"
           },
           "name": {
             "type": "string",

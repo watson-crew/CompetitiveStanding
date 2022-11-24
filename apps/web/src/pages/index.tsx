@@ -1,36 +1,31 @@
-import { useContext, useEffect, useState } from "react";
-import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import { Location } from "schema";
-import { ApiContext } from "@src/context/ApiContext";
+import { Text } from 'ui'
+import { getApiInstance } from "@src/context/ApiContext";
+import { GetStaticPropsContext, GetStaticPropsResult } from "next";
 
-export default function Index() {
+type RootPageProps = {
+  locations: Location[]
+}
 
-  const [locations, setLocations] = useState<Location[]>([])
+export async function getStaticProps(_context: GetStaticPropsContext): Promise<GetStaticPropsResult<RootPageProps>> {
+  
+  const location = (await getApiInstance().location.getAllLocations()).data
+  // Fetch necessary data for the blog post using params.id
+  return {
+    props: {
+      locations: location
+    }
+  }
+}
+export default function Index({ locations }: RootPageProps) {
 
-  const client = useContext(ApiContext)
-
-  const fetchUser = async (userId: string) => (await client.user.getUserByMemorableId(userId)).data
-
-  useEffect(() => {
-
-      const fetchLocations = async () => {
-        try {
-          setLocations((await client.location.getAllLocations()).data)
-        } catch (err) {
-          console.error(err)
-        }
-      }
-
-      fetchLocations()
-
-  }, [])
 
   return (
-    <div className="flex h-screen flex-col items-center mt-20">
-      <h1 className="text-3xl font-bold underline">Competitive standing</h1>
+    <div className="flex h-screen flex-col items-center">
+      <Text type='h1' className="text-3xl font-bold underline">Competitive standing</Text>
 
-      <PlayerSelection fetchPlayer={fetchUser} />
 
+      {locations.map(location => <Text type='h2'>{JSON.stringify(location)}</Text>)}
     </div>
   );
 }

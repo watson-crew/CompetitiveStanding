@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "next:build": "next build && next export",
     "clean": "rimraf .turbo .next node_modules out",
     "start": "next start",
     "lint": "next lint",
