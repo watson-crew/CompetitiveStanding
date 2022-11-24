@@ -8,17 +8,14 @@ type RootPageProps = {
 }
 
 export async function getStaticProps(_context: GetStaticPropsContext): Promise<GetStaticPropsResult<RootPageProps>> {
-  
-  const location = (await getApiInstance().location.getAllLocations()).data
-  // Fetch necessary data for the blog post using params.id
   return {
     props: {
-      locations: location
+      locations: await getApiInstance().location.getAllLocations()
     }
   }
 }
-export default function Index({ locations }: RootPageProps) {
 
+export default function Index({ locations }: RootPageProps) {
 
   return (
     <div className="flex h-screen flex-col items-center">
