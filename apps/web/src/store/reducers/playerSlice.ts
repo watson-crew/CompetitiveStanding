@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { User } from 'schema'
+import { RootState } from '@src/store/reducers'
 
 export type PlayerState = {
     recentlyPlayed: User[]
@@ -21,6 +22,10 @@ export const playerSlice = createSlice({
 })
 
 export const { addRecentlyPlayed } = playerSlice.actions
-export const selectRecentlyPlayed = (state: PlayerState) => state.recentlyPlayed
 
 export default playerSlice.reducer
+
+// SELECTORS: Rely on RootState
+export const selectRecentlyPlayed = (state: RootState) => {
+    return state.players.recentlyPlayed
+}
