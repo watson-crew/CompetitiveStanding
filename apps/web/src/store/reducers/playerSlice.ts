@@ -21,5 +21,6 @@ export const playerSlice = createSlice({
 })
 
 export const { addRecentlyPlayed } = playerSlice.actions
+export const selectRecentlyPlayed = (state: PlayerState) => state.recentlyPlayed
 
 export default playerSlice.reducer
