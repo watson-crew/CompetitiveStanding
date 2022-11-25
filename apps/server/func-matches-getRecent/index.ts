@@ -1,5 +1,4 @@
-import { Location, Matches } from 'schema';
-import { getLocations } from '@repository/locationRepository';
+import { Matches } from 'schema';
 import {
   FunctionName,
   ContextForResponseBody,
