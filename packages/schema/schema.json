@@ -232,13 +232,14 @@
       "get": {
         "tags": ["matches"],
         "summary": "Get all recent matches at a given location",
+        "operationId": "getRecentMatches",
         "parameters": [
           {
-            "name": "location",
+            "name": "locationId",
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           },
           {
@@ -329,8 +330,8 @@
             "example": ["abcxyz", "aaa", "bbbyyyzzz"]
           },
           "winningTeamId": {
-            "type": "integer",
-            "example": 1
+            "type": "string",
+            "example": "abcdef"
           },
           "startTime": {
             "type": "string",

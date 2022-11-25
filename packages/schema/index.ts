@@ -45,8 +45,8 @@ export interface GameResult {
    * @example "2022-11-25T09:12:28Z"
    */
   startTime?: string;
-  /** @example 1 */
-  winningTeamId?: number;
+  /** @example "abcdef" */
+  winningTeamId?: string;
 }
 
 export interface GameType {
@@ -61,6 +61,14 @@ export interface GameType {
 export type GetAllLocationsData = Location[];
 
 export type GetLocationByUrlData = Location;
+
+export interface GetRecentMatchesData {
+  results?: GameResult[];
+  resources?: {
+    /** @example {"abc":{"id":1,"memorableId":"abc","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"},"xyz":{"id":2,"memorableId":"xyz","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"}} */
+    players?: Record<string, User>;
+  };
+}
 
 export type GetUserByMemorableIdData = User;
 
@@ -100,14 +108,6 @@ export interface Location {
   name: string;
   /** @example "nottingham" */
   urlPath: string;
-}
-
-export interface RecentListData {
-  results?: GameResult[];
-  resources?: {
-    /** @example {"abc":{"id":1,"memorableId":"abc","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"},"xyz":{"id":2,"memorableId":"xyz","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"}} */
-    players?: Record<string, User>;
-  };
 }
 
 export type RecordMatchResultsData = any;
@@ -248,26 +248,27 @@ export namespace Matches {
   /**
    * No description
    * @tags matches
-   * @name RecentList
+   * @name GetRecentMatches
    * @summary Get all recent matches at a given location
    * @request GET:/matches/recent
    */
-  export namespace RecentList {
+  export namespace GetRecentMatches {
     export type RequestParams = {};
     export type RequestQuery = {
-      location: string;
+      locationId: number;
       offset?: number;
       total?: number;
     };
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = RecentListData;
+    export type ResponseBody = GetRecentMatchesData;
   }
 }
 
 import axios, {
   AxiosInstance,
   AxiosRequestConfig,
+  HeadersDefaults,
   ResponseType,
 } from 'axios';
 
@@ -349,7 +350,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...((method &&
           this.instance.defaults.headers[
-            method.toLowerCase()
+            method.toLowerCase() as keyof HeadersDefaults
           ]) ||
           {}),
         ...(params1.headers || {}),
@@ -557,19 +558,19 @@ export class ApiClient<
      * No description
      *
      * @tags matches
-     * @name RecentList
+     * @name GetRecentMatches
      * @summary Get all recent matches at a given location
      * @request GET:/matches/recent
      */
-    recentList: (
+    getRecentMatches: (
       query: {
-        location: string;
+        locationId: number;
         offset?: number;
         total?: number;
       },
       params: RequestParams = {},
     ) =>
-      this.request<RecentListData, any>({
+      this.request<GetRecentMatchesData, any>({
         path: `/matches/recent`,
         method: 'GET',
         query: query,
