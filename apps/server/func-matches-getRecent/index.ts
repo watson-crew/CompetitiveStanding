@@ -16,7 +16,7 @@ const httpTrigger = async function (
 
   const log = getFunctionLogger(FunctionName.GetLocations, context);
 
-  log('Returning all locations');
+  log(`Returning recent matches for location '${locationId}'`);
 
   try {
     const recentMatches = await getResultsForLocation(
@@ -25,7 +25,7 @@ const httpTrigger = async function (
       parseInt(total) || undefined,
     );
 
-    // log(`Found ${locations.length} locations`);
+    log(`Found ${recentMatches.results.length} locations`);
     set200Response(log, context, recentMatches);
   } catch (e) {
     set500Response(log, context, e);

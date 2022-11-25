@@ -1,4 +1,4 @@
-import { GetResultsForLocationResult } from '@src/repository/gameResultRepository';
+import { GetResultsForLocationResult } from '@src/types';
 import { TeamWithPlayers } from 'database';
 import { GameResult, GetRecentMatchesData, User } from 'schema';
 import { Mapper } from './generics';
