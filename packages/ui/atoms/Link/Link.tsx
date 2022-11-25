@@ -18,7 +18,7 @@ export default function Link({ href, className = '', children }: LinkProps) {
         <a
             href={href}
             onClick={handleClick}
-            className={`${className}`}
+            className={`bg-slate-400 hover:bg-slate-200 h-16 px-8 rounded-xl ${className}`}
         >
             {children}
         </a>
