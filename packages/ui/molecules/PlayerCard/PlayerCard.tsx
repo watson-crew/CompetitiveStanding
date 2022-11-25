@@ -19,7 +19,7 @@ export default function PlayerCard({ player, className }: PlayerCardProps) {
   const imageUrl = player.profilePicture ?? 'https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg'
   
   return (
-    <Card className={twMerge('bg-slate-200', className)}>
+    <Card className={twMerge('bg-slate-200 flex', className)}>
       <div className="h-24 w-24 relative">
         <Image src={imageUrl} alt={`${fullName}'s picture`} fill={true} sizes="" className="rounded-full" />
       </div>

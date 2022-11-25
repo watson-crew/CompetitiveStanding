@@ -11,7 +11,7 @@ export default function TopPlayersOverview({ className }: TopPlayersOverviewProp
 
 
   return (
-    <Card className={twMerge("w-full h-full pt-2", className)} color="blue-100" isFlex={false}>
+    <Card className={twMerge("w-full h-full pt-2", className)} color="blue-100">
       <Text type="h2">Who&apos;s on top</Text>
       <section className="w-full h-full grid grid-rows-6 grid-flow-col gap-1">
         <TopPlayersCard playerName="a" isLoading={true} className="row-span-6 col-span-2 bg-yellow-400" />
