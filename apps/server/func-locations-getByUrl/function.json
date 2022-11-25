@@ -6,7 +6,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["get"],
-      "route": "users/{memorableId:regex(^[a-z0-9]+$)}"
+      "route": "locations/{urlPath:alpha}"
     },
     {
       "type": "http",
@@ -14,5 +14,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/func-get-user/index.js"
+  "scriptFile": "../dist/func-locations-getByUrl/index.js"
 }

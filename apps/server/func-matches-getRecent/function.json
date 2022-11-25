@@ -6,7 +6,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["get"],
-      "route": "locations/{urlPath:alpha}"
+      "route": "matches/recent"
     },
     {
       "type": "http",
@@ -14,5 +14,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/func-get-location/index.js"
+  "scriptFile": "../dist/func-matches-getRecent/index.js"
 }
