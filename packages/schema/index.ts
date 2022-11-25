@@ -37,8 +37,9 @@ export interface GameResult {
   /**
    * @minItems 2
    * @uniqueItems true
+   * @example ["abcxyz","aaa","bbbyyyzzz"]
    */
-  participatingTeams?: Team[];
+  participatingTeams?: string[];
   /**
    * @format date-time
    * @example "2022-11-25T09:12:28Z"
@@ -99,6 +100,14 @@ export interface Location {
   name: string;
   /** @example "nottingham" */
   urlPath: string;
+}
+
+export interface RecentListData {
+  results?: GameResult[];
+  resources?: {
+    /** @example {"abc":{"id":1,"memorableId":"abc","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"},"xyz":{"id":2,"memorableId":"xyz","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"}} */
+    players?: Record<string, User>;
+  };
 }
 
 export type RecordMatchResultsData = any;
@@ -235,6 +244,24 @@ export namespace Matches {
     export type RequestBody = RecordMatchResultsPayload;
     export type RequestHeaders = {};
     export type ResponseBody = RecordMatchResultsData;
+  }
+  /**
+   * No description
+   * @tags matches
+   * @name RecentList
+   * @summary Get all recent matches at a given location
+   * @request GET:/matches/recent
+   */
+  export namespace RecentList {
+    export type RequestParams = {};
+    export type RequestQuery = {
+      location: string;
+      offset?: number;
+      total?: number;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = RecentListData;
   }
 }
 
@@ -523,6 +550,29 @@ export class ApiClient<
         method: 'PUT',
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags matches
+     * @name RecentList
+     * @summary Get all recent matches at a given location
+     * @request GET:/matches/recent
+     */
+    recentList: (
+      query: {
+        location: string;
+        offset?: number;
+        total?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<RecentListData, any>({
+        path: `/matches/recent`,
+        method: 'GET',
+        query: query,
         ...params,
       }),
   };

@@ -227,6 +227,87 @@
           }
         }
       }
+    },
+    "/matches/recent": {
+      "get": {
+        "tags": ["matches"],
+        "summary": "Get all recent matches at a given location",
+        "parameters": [
+          {
+            "name": "location",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "total",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GameResult"
+                      }
+                    },
+                    "resources": {
+                      "type": "object",
+                      "properties": {
+                        "players": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "$ref": "#/components/schemas/User"
+                          },
+                          "example": {
+                            "abc": {
+                              "id": 1,
+                              "memorableId": "abc",
+                              "firstName": "John",
+                              "lastName": "James",
+                              "location": "London",
+                              "profilePicture": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+                            },
+                            "xyz": {
+                              "id": 2,
+                              "memorableId": "xyz",
+                              "firstName": "John",
+                              "lastName": "James",
+                              "location": "London",
+                              "profilePicture": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -243,8 +324,9 @@
             "minItems": 2,
             "uniqueItems": true,
             "items": {
-              "$ref": "#/components/schemas/Team"
-            }
+              "type": "string"
+            },
+            "example": ["abcxyz", "aaa", "bbbyyyzzz"]
           },
           "winningTeamId": {
             "type": "integer",
