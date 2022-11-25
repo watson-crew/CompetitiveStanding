@@ -3,8 +3,8 @@ import { PlayerCard, Text } from 'ui'
 import { getApiInstance } from "@src/context/ApiContext";
 import { GetStaticPropsContext, GetStaticPropsResult } from "next";
 
-import { useSelector, useDispatch } from 'react-redux'
-import { addRecentlyPlayed, selectRecentlyPlayed } from '@src/store/reducers/playerSlice'
+import { useSelector } from 'react-redux'
+import { selectRecentlyPlayed } from '@src/store/reducers/playerSlice'
 // TODO: Look at connect() - what would we use this for?
 
 type RootPageProps = {
@@ -21,12 +21,6 @@ export async function getStaticProps(_context: GetStaticPropsContext): Promise<G
 
 export default function Index({ locations }: RootPageProps) {
   const recentlyPlayedUsers = useSelector(selectRecentlyPlayed)
-  const dispatch = useDispatch()
-
-  const addJoshToRecentlyPlayed = async () => {
-    const josh = await getApiInstance().user.getUserByMemorableId('jjp')
-    dispatch(addRecentlyPlayed(josh))
-  }
 
   return (
     <div className="flex h-screen flex-col items-center">
@@ -39,11 +33,6 @@ export default function Index({ locations }: RootPageProps) {
       <h1>Recently Played</h1>
       {recentlyPlayedUsers && recentlyPlayedUsers.map(user => <PlayerCard player={user}/>)}
 
-      <button
-        onClick={addJoshToRecentlyPlayed}
-      >
-        Add Josh to recently played
-      </button>
     </div>
   );
 }
