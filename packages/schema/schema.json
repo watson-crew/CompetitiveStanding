@@ -276,6 +276,7 @@
                     },
                     "resources": {
                       "type": "object",
+                      "required": ["players"],
                       "properties": {
                         "players": {
                           "type": "object",
@@ -316,6 +317,14 @@
     "schemas": {
       "GameResult": {
         "type": "object",
+        "required": [
+          "id",
+          "participatingTeams",
+          "winningTeamId",
+          "startTime",
+          "endTime",
+          "locationPlayed"
+        ],
         "properties": {
           "id": {
             "type": "integer",

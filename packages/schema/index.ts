@@ -29,24 +29,24 @@ export interface GameResult {
    * @format date-time
    * @example "2022-11-25T09:19:43Z"
    */
-  endTime?: string;
+  endTime: string;
   /** @example 1 */
-  id?: number;
+  id: number;
   /** @example "Nottingham" */
-  locationPlayed?: string;
+  locationPlayed: string;
   /**
    * @minItems 2
    * @uniqueItems true
    * @example ["abcxyz","aaa","bbbyyyzzz"]
    */
-  participatingTeams?: string[];
+  participatingTeams: string[];
   /**
    * @format date-time
    * @example "2022-11-25T09:12:28Z"
    */
-  startTime?: string;
+  startTime: string;
   /** @example "abcdef" */
-  winningTeamId?: string;
+  winningTeamId: string;
 }
 
 export interface GameType {
@@ -63,10 +63,10 @@ export type GetAllLocationsData = Location[];
 export type GetLocationByUrlData = Location;
 
 export interface GetRecentMatchesData {
-  results?: GameResult[];
-  resources?: {
+  results: GameResult[];
+  resources: {
     /** @example {"abc":{"id":1,"memorableId":"abc","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"},"xyz":{"id":2,"memorableId":"xyz","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"}} */
-    players?: Record<string, User>;
+    players: Record<string, User>;
   };
 }
 
