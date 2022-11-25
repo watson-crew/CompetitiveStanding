@@ -47,7 +47,6 @@ export default function Index({ location }: LocationPageProps) {
 
       <Card
         className="grid h-full w-full grid-flow-col grid-rows-4 gap-4"
-        isFlex={false}
       >
         <AvailableGamesOverview
           availableGames={[]}
@@ -58,7 +57,7 @@ export default function Index({ location }: LocationPageProps) {
 
         <RecentMatchesOverview
           className="row-span-4 h-full w-full"
-          isLoading={true}
+          loading={true}
         />
       </Card>
     </div>
