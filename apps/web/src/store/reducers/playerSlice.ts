@@ -16,12 +16,17 @@ export const playerSlice = createSlice({
     initialState,
     reducers: {
         addRecentlyPlayed: (state, action: PayloadAction<User>) => {
-            state.recentlyPlayed.push(action.payload)
+            const user = action.payload
+            state.recentlyPlayed = state.recentlyPlayed.filter((u) => u.id != user.id)
+            state.recentlyPlayed.push(user)
         },
+        clearRecentlyPlayed: (state) => {
+            state.recentlyPlayed = []
+        }
     }
 })
 
-export const { addRecentlyPlayed } = playerSlice.actions
+export const { addRecentlyPlayed, clearRecentlyPlayed } = playerSlice.actions
 
 export default playerSlice.reducer
 
