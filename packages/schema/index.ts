@@ -24,6 +24,30 @@ export interface CreateUserPayload {
   homeLocationId?: number;
 }
 
+export interface GameResult {
+  /**
+   * @format date-time
+   * @example "2022-11-25T09:19:43Z"
+   */
+  endTime?: string;
+  /** @example 1 */
+  id?: number;
+  /** @example "Nottingham" */
+  locationPlayed?: string;
+  /**
+   * @minItems 2
+   * @uniqueItems true
+   */
+  participatingTeams?: Team[];
+  /**
+   * @format date-time
+   * @example "2022-11-25T09:12:28Z"
+   */
+  startTime?: string;
+  /** @example 1 */
+  winningTeamId?: number;
+}
+
 export interface GameType {
   /** @example 1 */
   id: number;
@@ -56,11 +80,16 @@ export interface InitiateNewMatchPayload {
   gameTypeId: number;
   /** @example 1 */
   locationId: number;
-  /** @example ["abcxyz","aaa","bbbyyyzzz"] */
+  /**
+   * @minItems 1
+   * @uniqueItems true
+   * @example ["abcxyz","aaa","bbbyyyzzz"]
+   */
   participatingTeams: string[];
 }
 
 export interface Location {
+  /** @uniqueItems true */
   availableGames?: GameType[];
   /** @example "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg" */
   coverPhoto?: string;
@@ -76,6 +105,18 @@ export type RecordMatchResultsData = any;
 
 export interface RecordMatchResultsPayload {
   winningTeamId: number;
+}
+
+export interface Team {
+  /** @example "abcxyz" */
+  cumulativeTeamId: string;
+  /** @example 1 */
+  id: number;
+  /**
+   * @minItems 1
+   * @uniqueItems true
+   */
+  players: User[];
 }
 
 export interface TeamHistoricResult {

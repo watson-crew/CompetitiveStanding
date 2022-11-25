@@ -169,6 +169,8 @@
                   },
                   "participatingTeams": {
                     "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
                     "items": {
                       "type": "string",
                       "description": "The cumulative teamId",
@@ -229,33 +231,38 @@
   },
   "components": {
     "schemas": {
-      "User": {
+      "GameResult": {
         "type": "object",
-        "required": ["id", "memorableId", "firstName", "lastName"],
         "properties": {
           "id": {
             "type": "integer",
-            "example": "1"
+            "example": 1
           },
-          "memorableId": {
-            "type": "string",
-            "example": "abc"
+          "participatingTeams": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/Team"
+            }
           },
-          "firstName": {
-            "type": "string",
-            "example": "John"
+          "winningTeamId": {
+            "type": "integer",
+            "example": 1
           },
-          "lastName": {
+          "startTime": {
             "type": "string",
-            "example": "James"
+            "format": "date-time",
+            "example": "2022-11-25T09:12:28Z"
           },
-          "location": {
+          "endTime": {
             "type": "string",
-            "example": "London"
+            "format": "date-time",
+            "example": "2022-11-25T09:19:43Z"
           },
-          "profilePicture": {
+          "locationPlayed": {
             "type": "string",
-            "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+            "example": "Nottingham"
           }
         }
       },
@@ -274,34 +281,6 @@
           "maxNumberOfPlayers": {
             "type": "integer",
             "example": "1"
-          }
-        }
-      },
-      "Location": {
-        "type": "object",
-        "required": ["id", "name", "urlPath"],
-        "properties": {
-          "id": {
-            "type": "integer",
-            "example": 1
-          },
-          "urlPath": {
-            "type": "string",
-            "example": "nottingham"
-          },
-          "name": {
-            "type": "string",
-            "example": "Nottingham"
-          },
-          "coverPhoto": {
-            "type": "string",
-            "example": "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg"
-          },
-          "availableGames": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GameType"
-            }
           }
         }
       },
@@ -333,12 +312,93 @@
           }
         }
       },
+      "Location": {
+        "type": "object",
+        "required": ["id", "name", "urlPath"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "urlPath": {
+            "type": "string",
+            "example": "nottingham"
+          },
+          "name": {
+            "type": "string",
+            "example": "Nottingham"
+          },
+          "coverPhoto": {
+            "type": "string",
+            "example": "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg"
+          },
+          "availableGames": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/GameType"
+            }
+          }
+        }
+      },
+      "Team": {
+        "type": "object",
+        "required": ["id", "cumulativeTeamId", "players"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "cumulativeTeamId": {
+            "type": "string",
+            "example": "abcxyz"
+          },
+          "players": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
       "TeamHistoricResult": {
         "type": "object",
         "required": ["win"],
         "properties": {
           "wins": {
             "type": "integer"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": ["id", "memorableId", "firstName", "lastName"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": "1"
+          },
+          "memorableId": {
+            "type": "string",
+            "example": "abc"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "James"
+          },
+          "location": {
+            "type": "string",
+            "example": "London"
+          },
+          "profilePicture": {
+            "type": "string",
+            "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
           }
         }
       }
