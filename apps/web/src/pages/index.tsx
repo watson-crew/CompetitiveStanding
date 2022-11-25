@@ -1,5 +1,5 @@
 import { Location } from "schema";
-import { PlayerCard, Text } from 'ui'
+import { PlayerCard, Text, Link } from 'ui'
 import { getApiInstance } from "@src/context/ApiContext";
 import { GetStaticPropsContext, GetStaticPropsResult } from "next";
 
@@ -30,6 +30,12 @@ export default function Index({ locations }: RootPageProps) {
 
       <h1>Locations</h1>
       {locations.map(location => <Text type='h2'>{JSON.stringify(location)}</Text>)}
+      <hr />
+
+      <Link href="/play">
+        Play game
+      </Link>
+
       <hr />
 
       <h1>Recently Played</h1>
