@@ -1,4 +1,3 @@
-export const toId = (model: any) => {return { id: model.id }}
-
-
-
+export const toId = (model: { id: number }) => {
+  return { id: model.id };
+};

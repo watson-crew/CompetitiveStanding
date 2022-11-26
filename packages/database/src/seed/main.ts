@@ -1,5 +1,4 @@
-import { Location } from '@prisma/client';
-import { prisma } from '..';
+import { prismaClient as prisma } from '..';
 import seedLocations from './locations';
 import seedUsers from './users';
 import seedGroups from './groups';
@@ -18,13 +17,17 @@ async function main() {
   const gameTypes = await seedGameTypes(prisma, { locations });
 
   // Seed groups
-  const groups = await seedGroups(prisma, { users });
+  const _groups = await seedGroups(prisma, { users });
 
   // Seed teams - each player in their own team
   const teams = await seedTeams(prisma, { users });
 
   // Seed game results
-  const gameResults = await seedGameResults(prisma, { locations, gameTypes, teams });
+  const _gameResults = await seedGameResults(prisma, {
+    locations,
+    gameTypes,
+    teams,
+  });
 }
 
 main()
