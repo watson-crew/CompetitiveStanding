@@ -15,7 +15,7 @@ function mapTeam(
   };
 }
 
-export default function recentResultsMapper({
+export default function mapRecentResults({
   resources,
   results,
 }: GetRecentMatchesData): GameResult[] {

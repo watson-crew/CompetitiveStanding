@@ -3,11 +3,14 @@ import { GetStaticPathsContext, GetStaticPathsResult, GetStaticPropsContext, Get
 import {
   AvailableGamesOverview,
   Card,
+  GameResult,
   RecentMatchesOverview,
   Text,
   TopPlayersOverview,
 } from 'ui';
-import { getApiInstance } from '@src/context/ApiContext';
+import { ApiContext, getApiInstance } from '@src/context/ApiContext';
+import { useContext, useEffect, useState } from 'react';
+import mapRecentResults from '@src/mappers/recentResultsMapper';
 
 type LocationPageProps = {
   location: Location;
@@ -39,6 +42,28 @@ export async function getStaticProps({
 }
 
 export default function Index({ location }: LocationPageProps) {
+
+
+  const api = useContext(ApiContext)
+
+  const [ loading, setLoading ] = useState(true)
+  const [ recentMatches, setRecentMatches ] = useState<GameResult[]>([])
+
+  const fetchRecentGames = async () => {
+    const data = await api.matches.getRecentMatches({ locationId: location.id })
+
+    setRecentMatches(mapRecentResults(data))
+
+    setLoading(false)
+  }
+
+  useEffect(() => {
+
+    fetchRecentGames()
+
+  }, [])
+
+
   return (
     <div className="flex h-screen flex-col items-center">
       <Text type="h1" className="my-5">
@@ -57,7 +82,8 @@ export default function Index({ location }: LocationPageProps) {
 
         <RecentMatchesOverview
           className="row-span-4 h-full w-full"
-          loading={true}
+          recentMatches={recentMatches}
+          loading={loading}
         />
       </Card>
     </div>
