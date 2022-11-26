@@ -22,5 +22,6 @@
     "test": {
       "outputs": []
     }
-  }
+  },
+  "globalDependencies": ["$NODE_ENV"]
 }

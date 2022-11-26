@@ -12,7 +12,8 @@
     "ts:transpile": "tsup",
     "clean": "rimraf .turbo node_modules dist",
     "dev": "tsup --watch",
-    "lint": "npm run format",
+    "lint": "npm run lint:code && npm run format",
+    "lint:code": "eslint --ext .ts,.tsx,.json .",
     "prebuild": "npm run generate",
     "predev": "npm run generate",
     "format": "prisma format",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "config": "*",
+    "eslint-config-custom": "*",
     "@mermaid-js/mermaid-cli": "^9.2.2",
     "prisma": "^4.6.1",
     "prisma-erd-generator": "^1.2.4",

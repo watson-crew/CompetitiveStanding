@@ -24,6 +24,7 @@
     "@azure/functions": "^3.0.0",
     "@types/node": "16.x",
     "azure-functions-core-tools": "^4.x",
+    "eslint-config-custom": "*",
     "rimraf": "^3.0.2",
     "schema": "*",
     "tsc-alias": "^1.7.1",
