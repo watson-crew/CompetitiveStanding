@@ -9,7 +9,7 @@ import { Logger } from './logging';
 // Have some utils to encapsulate default headers & setting responses in the context
 const defaultHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET',
+  'Access-Control-Allow-Methods': '*', // change to be more strict
   'Content-Type': 'application/json',
 };
 
@@ -31,7 +31,7 @@ export const set204Response = (
   log: Logger,
   context: ContextForNoContentResponse,
 ) => {
-  log(`Returning 200 response`);
+  log(`Returning 204 response`);
 
   context.res = {
     headers: defaultHeaders,
