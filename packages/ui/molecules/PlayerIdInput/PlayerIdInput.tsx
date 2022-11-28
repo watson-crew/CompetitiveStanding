@@ -19,7 +19,7 @@ export default function PlayerIdInput({ idLength = 3, title, subtitle = "Enter y
       onChange(value)
     }
 
-  }, [onChange, value])
+  }, [onChange, value, idLength])
 
   return (
     <section className='text-center'>

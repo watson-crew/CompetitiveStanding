@@ -10,7 +10,7 @@ export default function Signup() {
 
   useEffect(() => {
     if (inputs.memorableId.length === 3) { 
-      const isAvailable = doesMemorableIdExist(inputs.memorableId)
+      doesMemorableIdExist(inputs.memorableId)
     }
 
   }, [inputs.memorableId])

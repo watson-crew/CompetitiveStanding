@@ -1,11 +1,11 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent } from 'react';
 
 type TextInputProps = {
   id: string,
   title: string,
   value: string,
   maxLength: number,
-  onChange: (value: ChangeEvent<HTMLInputElement>) => any
+  onChange: (value: ChangeEvent<HTMLInputElement>) => void
 }
 
 export default function TextInput({ id, title, value, onChange, maxLength }: TextInputProps) {
