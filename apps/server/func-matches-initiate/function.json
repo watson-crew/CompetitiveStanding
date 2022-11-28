@@ -14,5 +14,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/func-initiate-match/index.js"
+  "scriptFile": "../dist/func-matches-initiate/index.js"
 }

@@ -4,10 +4,10 @@ import { IoMdCloseCircle } from 'react-icons/io'
 
 type CloseButtonProps = WithDefaultProps<{
   buttonSize?: 's' | 'm' | 'l'
-  onClose: () => any
+  onClose: () => void
 }>
 
-function CloseButton({ buttonSize = 'm', onClose, className }: CloseButtonProps) {
+function CloseButton({  onClose, className }: CloseButtonProps) {
   return <button
       className={twMerge("rounded-full absolute -top-3 -right-3", className)}
       onClick={onClose} 

@@ -6,7 +6,7 @@ type PlayerIdInputProps = {
   title: string,
   subtitle: string,
   idLength?: number
-  onChange: (id: string) => any
+  onChange: (id: string) => void
 }
 
 export default function PlayerIdInput({ idLength = 3, title, subtitle = "Enter your ID", onChange }: PlayerIdInputProps) {

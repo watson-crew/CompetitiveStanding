@@ -5,10 +5,10 @@ export type CardProps = WithDefaultProps<{
   color?: string
 }>
 
-export default function Card({ color = 'slate-100', className = '', children } : CardProps) {
+export default function Card({ color = 'slate-100', className = '', children} : CardProps) {
 
   return (
-    <div className={twMerge(`md:flex rounded-xl p-8 bg-${color}`, className)}>
+    <div className={twMerge(`inline-block rounded-xl p-8 md:p-4 bg-${color}`, className)}>
       {children}
     </div>
   )

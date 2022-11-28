@@ -28,7 +28,10 @@ type HttpSuccessResponse<BodyType> = HttpResponse<BodyType, SuccessStatusCodes>;
 
 type HttpNoContentResponse = HttpResponse<null, StatusCodes.NO_CONTENT>;
 
-export type ContextForResponse<T = any> = Omit<Context, 'res'> & {
+export type ContextForResponse<T = HttpSuccessResponse<unknown>> = Omit<
+  Context,
+  'res'
+> & {
   res: T | HttpErrorResponse;
 };
 

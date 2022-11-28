@@ -10,5 +10,5 @@ export function generateTeamId(teamMembers: User[]): string {
 export function extractPlayerIds(teamId: string): string[] {
   if (teamId.length % 3 !== 0) throw new Error();
 
-  return teamId.match(/.{3}/g)!;
+  return teamId.match(/.{3}/g) || [];
 }

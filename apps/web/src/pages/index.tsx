@@ -1,35 +1,49 @@
-import { useContext, useEffect, useState } from "react";
 import { Location } from "schema";
-import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
-import { ApiContext } from "@src/context/ApiContext";
+import { PlayerCard, Text, Link } from 'ui'
+import { getApiInstance } from "@src/context/ApiContext";
+import { GetStaticPropsContext, GetStaticPropsResult } from "next";
 
-export default function Index() {
+import { useSelector, useDispatch } from 'react-redux'
+import { selectRecentlyPlayed, clearRecentlyPlayed } from '@src/store/reducers/playerSlice'
 
-  const [locations, setLocations] = useState<Location[]>([])
+type RootPageProps = {
+  locations: Location[]
+}
 
-  const client = useContext(ApiContext)
+export async function getStaticProps(_context: GetStaticPropsContext): Promise<GetStaticPropsResult<RootPageProps>> {
+  return {
+    props: {
+      locations: await getApiInstance().location.getAllLocations()
+    }
+  }
+}
 
-  const fetchUser = async (userId: string) => (await client.user.getUserByMemorableId(userId)).data
+export default function Index({ locations }: RootPageProps) {
+  const dispatch = useDispatch()
+  const recentlyPlayedUsers = useSelector(selectRecentlyPlayed)
 
-  useEffect(() => {
-
-      const fetchLocations = async () => {
-        try {
-          setLocations((await client.location.getAllLocations()).data)
-        } catch (err) {
-          console.error(err)
-        }
-      }
-
-      fetchLocations()
-
-  }, [])
+  const clearRecentlyPlayedUsers = () => dispatch(clearRecentlyPlayed())
 
   return (
-    <div className="flex h-screen flex-col items-center mt-20">
-      <h1 className="text-3xl font-bold underline">Competitive standing</h1>
+    <div className="flex h-screen flex-col items-center">
+      <Text type='h1' className="text-3xl font-bold underline">Competitive standing</Text>
 
-      <PlayerSelection fetchPlayer={fetchUser} />
+      <h1>Locations</h1>
+      {locations.map(location => <Text type='h2'>{JSON.stringify(location)}</Text>)}
+      <hr />
+
+      <Link href="/play">
+        Play game
+      </Link>
+
+      <hr />
+
+      <h1>Recently Played</h1>
+      {recentlyPlayedUsers && recentlyPlayedUsers.map(user => <PlayerCard player={user}/>)}
+
+      <button onClick={clearRecentlyPlayedUsers}>
+        Clear Recently Selected
+      </button>
 
     </div>
   );
