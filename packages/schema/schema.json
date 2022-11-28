@@ -230,7 +230,7 @@
     },
     "/matches/recent": {
       "get": {
-        "tags": ["matches"],
+        "tags": ["matches", "location"],
         "summary": "Get all recent matches at a given location",
         "operationId": "getRecentMatches",
         "parameters": [
@@ -304,6 +304,70 @@
                         }
                       }
                     }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matches/rankings": {
+      "get": {
+        "tags": ["matches", "location"],
+        "summary": "Get rankings by urlPath and gameType",
+        "operationId": "getRankingsForLocation",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "urlPath",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "gameTypeId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "total",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RankedPlayer"
                   }
                 }
               }
@@ -431,6 +495,22 @@
             "items": {
               "$ref": "#/components/schemas/GameType"
             }
+          }
+        }
+      },
+      "RankedPlayer": {
+        "type": "object",
+        "properties": {
+          "player": {
+            "$ref": "#/components/schemas/User"
+          },
+          "wins": {
+            "type": "integer",
+            "example": 27
+          },
+          "gamesPlayed": {
+            "type": "integer",
+            "example": 44
           }
         }
       },
