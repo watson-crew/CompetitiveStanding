@@ -14,6 +14,7 @@ env:
   FRONTEND_OUTPUT_LOCATION: './apps/web/out'
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
   DISABLE_ERD: true
+  NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
 
 jobs:
   cancel-existing:
