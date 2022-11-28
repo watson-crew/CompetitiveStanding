@@ -17,7 +17,7 @@ services:
   sqlcmd:
     image: mcr.microsoft.com/mssql-tools:latest
     command: /opt/mssql_scripts/initialise.sh
-    platform: linux/arm64
+    platform: linux/amd64
     stdin_open: true
     volumes:
       - ./packages/database/init:/opt/mssql_scripts
