@@ -108,6 +108,23 @@ export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
     return Object.values(players).every((player) => player != undefined)
   }
 
+  // For RecentlySelected logic
+  const nextFreePlayerSlot = () => {
+    let nextFreePlayerIndex = -1;
+    for (let i = 0; i < numPlayers; i++) {
+      if (players[i] == undefined) {
+        nextFreePlayerIndex = i;
+        break;
+      }
+    }
+    return nextFreePlayerIndex;
+  }
+  const onSelected = (user: User) => {
+    // Set player in first free space
+    // TODO: Disable this if all the players have been selected, i.e no free slot
+    setPlayer(nextFreePlayerSlot(), user);
+  }
+
   return (
     <section className="w-full my-20">
       <section className="flex w-full justify-around align-middle items-center min-h-full h-full">
@@ -139,7 +156,7 @@ export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
           <Button text="Start Game" onClick={startGame}/>
         }
       </div>
-      <RecentPlayers />
+      <RecentPlayers onSelected={onSelected}/>
     </section>
   )
 }

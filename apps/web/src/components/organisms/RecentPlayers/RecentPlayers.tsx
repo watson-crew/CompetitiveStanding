@@ -1,14 +1,23 @@
 import { WithDefaultProps, PlayerCard } from "@src/../../../packages/ui";
 import { useSelector } from 'react-redux'
 import { selectRecentlyPlayed } from '@src/store/reducers/playerSlice'
+import { User } from "@src/../../../packages/schema";
 
-type RecentPlayersProps = WithDefaultProps<{}>
+type RecentPlayersProps = WithDefaultProps<{
+    onSelected: (user: User) => void
+}>
 
-export default function RecentPlayers({}: RecentPlayersProps) {
+export default function RecentPlayers({ onSelected }: RecentPlayersProps) {
     const recentlyPlayedUsers = useSelector(selectRecentlyPlayed)
 
+    const onClick = (user: User) => {
+        onSelected(user);
+    }
+
     const recentlyPlayedUserCards = () => {
-        return recentlyPlayedUsers.map(user => <PlayerCard player={user} />)
+        return recentlyPlayedUsers.map(
+            user => <div onClick={() => onClick(user)}><PlayerCard player={user} /></div>
+        )
     }
 
     return (
