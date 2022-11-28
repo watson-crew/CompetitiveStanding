@@ -46,9 +46,9 @@ export default function Index() {
   const doesMemorableIdExist = async (memborableId: string) => {
     try {
       await api.user.getUserByMemorableId(memborableId)
-      dispatch({ action: Actions.memorableIdError, value: true })
+      dispatch({ action: Actions.memorableIdExists, value: true })
     } catch (e) {
-      dispatch({ action: Actions.memorableIdError, value: false })
+      dispatch({ action: Actions.memorableIdExists, value: false })
     }
   }
 
