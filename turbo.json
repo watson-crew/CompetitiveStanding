@@ -23,5 +23,5 @@
       "outputs": []
     }
   },
-  "globalDependencies": ["$NODE_ENV"]
+  "globalEnv": ["NODE_ENV"]
 }
