@@ -1,11 +1,11 @@
 import { Group, User, PrismaClient, Prisma } from '@prisma/client';
-import { toId } from './maps'
+import { toId } from './maps';
 
 type SeedDependencies = {
-  users: Record<string, User>
-}
+  users: Record<string, User>;
+};
 
-const groups: Omit<Group, "id">[] = [
+const groups: Omit<Group, 'id'>[] = [
   {
     name: 'Watson Crew',
     groupPicture:
@@ -15,30 +15,30 @@ const groups: Omit<Group, "id">[] = [
     name: 'Bench Group',
     groupPicture:
       'http://proici.co.uk/wp-content/uploads/2018/12/BJSS_Header.jpg',
-  }
+  },
 ];
 
- async function addUsersToGroup(
+async function addUsersToGroup(
   prisma: PrismaClient,
   group: Group,
-  users: User[]
+  users: User[],
 ): Promise<Group> {
   const data: Prisma.GroupUpdateInput = {
-      players: {
-          connect: users.map(toId)
-      }
+    players: {
+      connect: users.map(toId),
+    },
   };
 
   const updatedGroup = await prisma.group.update({
-      where: {id: group.id},
-      data
+    where: { id: group.id },
+    data,
   });
-  return updatedGroup
+  return updatedGroup;
 }
 
 async function seedGroups(
   prisma: PrismaClient,
-  { users }: SeedDependencies
+  { users }: SeedDependencies,
 ): Promise<Record<string, Group>> {
   const seededGroups: Record<string, Group> = {};
 
@@ -54,8 +54,15 @@ async function seedGroups(
     seededGroups[insertedGroup.name.toLowerCase()] = insertedGroup;
   }
 
-  const watsonGroup = seededGroups['watson crew']
-  const watsonGroupPlayers = [users['jjp'], users['pjm'], users['stc'], users['ad2'], users['4e8'], users['rua']]
+  const watsonGroup = seededGroups['watson crew'];
+  const watsonGroupPlayers = [
+    users['jjp'],
+    users['pjm'],
+    users['stc'],
+    users['tjw'],
+    users['4e8'],
+    users['rua'],
+  ];
   await addUsersToGroup(prisma, watsonGroup, watsonGroupPlayers);
   seededGroups['watson crew'] = watsonGroup;
 
