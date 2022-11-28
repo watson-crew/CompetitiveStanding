@@ -18,7 +18,6 @@ const locations: Omit<Location, 'id'>[] = [
     urlPath: 'manchester',
     coverPhoto: 'https://pbs.twimg.com/media/ELCpG0xXkAAmJet.jpg',
   },
-  ,
   {
     name: 'London',
     urlPath: 'london',
