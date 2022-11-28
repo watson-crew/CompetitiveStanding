@@ -9,13 +9,13 @@ import { PersistGate } from 'redux-persist/integration/react'
 function MyApp({ Component, pageProps }: AppProps) {
 
   return (
-    <StoreProvider store={store}>
-      <ApiContext.Provider value={getApiInstance()}>
-        <PersistGate loading={null} persistor={persistor}>
-          <Component {...pageProps} />
-        </PersistGate>
-      </ApiContext.Provider>
-    </StoreProvider>
+      <StoreProvider store={store}>
+        <ApiContext.Provider value={getApiInstance()}>
+          <PersistGate loading={null} persistor={persistor}>
+            <Component {...pageProps} />
+          </PersistGate>
+        </ApiContext.Provider>
+      </StoreProvider>
   )
 }
 
