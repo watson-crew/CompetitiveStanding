@@ -62,6 +62,8 @@ export type GetAllLocationsData = Location[];
 
 export type GetLocationByUrlData = Location;
 
+export type GetRankingsForLocationData = RankedPlayer[];
+
 export interface GetRecentMatchesData {
   results: GameResult[];
   resources: {
@@ -108,6 +110,14 @@ export interface Location {
   name: string;
   /** @example "nottingham" */
   urlPath: string;
+}
+
+export interface RankedPlayer {
+  /** @example 44 */
+  gamesPlayed?: number;
+  player?: User;
+  /** @example 27 */
+  wins?: number;
 }
 
 export type RecordMatchResultsData = any;
@@ -247,7 +257,7 @@ export namespace Matches {
   }
   /**
    * No description
-   * @tags matches
+   * @tags matches, location
    * @name GetRecentMatches
    * @summary Get all recent matches at a given location
    * @request GET:/matches/recent
@@ -262,6 +272,27 @@ export namespace Matches {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetRecentMatchesData;
+  }
+  /**
+   * No description
+   * @tags matches, location
+   * @name GetRankingsForLocation
+   * @summary Get rankings by urlPath and gameType
+   * @request GET:/matches/rankings
+   */
+  export namespace GetRankingsForLocation {
+    export type RequestParams = {
+      urlPath: string;
+    };
+    export type RequestQuery = {
+      locationId: number;
+      gameTypeId: number;
+      offset?: number;
+      total?: number;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetRankingsForLocationData;
   }
 }
 
@@ -549,7 +580,7 @@ export class ApiClient<
     /**
      * No description
      *
-     * @tags matches
+     * @tags matches, location
      * @name GetRecentMatches
      * @summary Get all recent matches at a given location
      * @request GET:/matches/recent
@@ -564,6 +595,31 @@ export class ApiClient<
     ) =>
       this.request<GetRecentMatchesData, any>({
         path: `/matches/recent`,
+        method: 'GET',
+        query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags matches, location
+     * @name GetRankingsForLocation
+     * @summary Get rankings by urlPath and gameType
+     * @request GET:/matches/rankings
+     */
+    getRankingsForLocation: (
+      urlPath: string,
+      query: {
+        locationId: number;
+        gameTypeId: number;
+        offset?: number;
+        total?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<GetRankingsForLocationData, any>({
+        path: `/matches/rankings`,
         method: 'GET',
         query: query,
         ...params,

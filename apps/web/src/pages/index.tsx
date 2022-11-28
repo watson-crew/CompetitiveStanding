@@ -36,6 +36,10 @@ export default function Index({ locations }: RootPageProps) {
         Play game
       </Link>
 
+      <Link href="/signup">
+        Sign up
+      </Link>
+
       <hr />
 
       <h1>Recently Played</h1>
