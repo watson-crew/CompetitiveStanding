@@ -4,7 +4,7 @@ import { ChangeEvent, useContext, useEffect, useReducer } from "react";
 import { Button, Card, TextInput } from "ui";
 import { Actions, initialState, signupReducer } from "./state";
 
-export default function Signup() {
+export default function Index() {
   const api = useContext(ApiContext)
   const [inputs, dispatch] = useReducer(signupReducer, initialState);
 
