@@ -1,22 +1,30 @@
-import { WithDefaultProps, PlayerCard } from "@src/../../../packages/ui";
+import { WithDefaultProps, PlayerCard, Button } from "@src/../../../packages/ui";
 import { useSelector } from 'react-redux'
 import { selectRecentlyPlayed } from '@src/store/reducers/playerSlice'
 import { User } from "@src/../../../packages/schema";
 
 type RecentPlayersProps = WithDefaultProps<{
-    onSelected: (user: User) => void
+    onSelected: (user: User) => void,
+    disabled?: number[]
 }>
 
-export default function RecentPlayers({ onSelected }: RecentPlayersProps) {
+export default function RecentPlayers({ onSelected, disabled }: RecentPlayersProps) {
     const recentlyPlayedUsers = useSelector(selectRecentlyPlayed)
 
     const onClick = (user: User) => {
         onSelected(user);
     }
 
+    const isDisabled = (id: number) => {
+        if (!disabled) {
+            return false;
+        }
+        return disabled.includes(id)
+    }
+
     const recentlyPlayedUserCards = () => {
         return recentlyPlayedUsers.map(
-            user => <div onClick={() => onClick(user)}><PlayerCard player={user} /></div>
+            user => <PlayerCard player={user}><Button text="Add" onClick={() => onClick(user)} disabled={isDisabled(user.id)}/></PlayerCard>
         )
     }
 

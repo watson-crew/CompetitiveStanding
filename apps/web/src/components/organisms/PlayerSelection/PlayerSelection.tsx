@@ -82,27 +82,6 @@ export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
     })
   }
 
-  // Dynamically create list of player selection cards
-  // const PlayerSelectionCards = (): any[] => {
-  //   const cards = []
-  //   for (let index = 0; index < numPlayers; index++) {
-  //     cards.push(
-  //       <PlayerSelectionCard
-  //         title="Player {index}"
-  //         player={players[index]}
-  //         loading={loading[index]}
-  //         isError={errors[index]}
-  //         onIdSubmitted={memorableId => onIdSet(index, memorableId)}
-  //         clearPlayer={() => clearPlayer(index)}
-  //         className="basis-2/5 min-h-full"
-  //       />
-  //     )
-  //   }
-  //   return cards;
-  // }
-
-  // let playerSelectionCards: any[] = PlayerSelectionCards()
-
   // Check if all players have been selected
   const allPlayersSelected = () => {
     return Object.values(players).every((player) => player != undefined)
@@ -123,6 +102,12 @@ export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
     // Set player in first free space
     // TODO: Disable this if all the players have been selected, i.e no free slot
     setPlayer(nextFreePlayerSlot(), user);
+  }
+
+  const selectedPlayerIds = () => {
+    const playerIds = Object.values(players).filter(p => p != undefined).map(p => p!.id)
+    console.log(playerIds)
+    return playerIds
   }
 
   return (
@@ -156,7 +141,13 @@ export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
           <Button text="Start Game" onClick={startGame}/>
         }
       </div>
-      <RecentPlayers onSelected={onSelected}/>
+      {
+        !allPlayersSelected() &&
+        <RecentPlayers
+          onSelected={onSelected}
+          disabled={selectedPlayerIds()}
+        />
+      }
     </section>
   )
 }
