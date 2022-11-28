@@ -315,7 +315,7 @@
     "/matches/rankings": {
       "get": {
         "tags": ["matches", "location"],
-        "summary": "Get rankings by urlPath and gameType",
+        "summary": "Get top players for a given location and game type",
         "operationId": "getRankingsForLocation",
         "parameters": [
           {
