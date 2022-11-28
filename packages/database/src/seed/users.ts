@@ -34,7 +34,7 @@ const users = (locations: Record<string, Location>): Omit<User, 'id'>[] => {
     {
       firstName: 'Tom',
       lastName: 'Webb',
-      memorableId: 'ad2',
+      memorableId: 'tjw',
       profilePicture:
         'https://ca.slack-edge.com/T0KNVDB9Q-U0176UQC2BT-f5c3f8a1f990-72',
       locationId: nottingham.id,
