@@ -13,8 +13,9 @@ export { Banner, Button, Card, LoadingSpinner, WithCloseButton, Text, Link };
 import PlayerCard from './molecules/PlayerCard/PlayerCard';
 import PlayerIdInput from './molecules/PlayerIdInput/PlayerIdInput';
 import PlayerSelectionCard from './molecules/PlayerSelectionCard/PlayerSelectionCard';
+import TextInput from './molecules/TextInput/TextInput';
 
-export { PlayerCard, PlayerIdInput, PlayerSelectionCard };
+export { PlayerCard, PlayerIdInput, PlayerSelectionCard, TextInput };
 
 // Organisms
 import AvailableGamesOverview from './organisms/AvailableGamesOverview/AvailableGamesOverview';
