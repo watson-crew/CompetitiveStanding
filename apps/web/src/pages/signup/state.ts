@@ -1,18 +1,21 @@
 export enum Actions {
   firstNameChange = 'firstNameChange',
   lastNameChange = 'lastNameChange',
-  memorableIdChange = 'memorableIdChange'
+  memorableIdChange = 'memorableIdChange',
+  memorableIdError = 'memorableIdError',
+  resetState = 'resetState'
 }
 
 export type SignupAction = {
   action: Actions,
-  value: string
+  value?: any
 }
 
 export type SignupState = {
   firstName: string,
   lastName: string,
-  memorableId: string
+  memorableId: string,
+  memorableIdExists: boolean
 }
 
 export function signupReducer(state: SignupState, action: SignupAction): SignupState {
@@ -32,6 +35,13 @@ export function signupReducer(state: SignupState, action: SignupAction): SignupS
         ...state,
         memorableId: action.value
       }
+    case Actions.memorableIdError:
+      return {
+        ...state,
+        memorableIdExists: action.value
+      }
+    case Actions.resetState:
+      return initialState
     default:
       return state
   }
@@ -40,5 +50,6 @@ export function signupReducer(state: SignupState, action: SignupAction): SignupS
 export const initialState = {
   firstName: '',
   lastName: '',
-  memorableId: ''
+  memorableId: '',
+  memorableIdExists: false
 }
