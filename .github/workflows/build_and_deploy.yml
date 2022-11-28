@@ -36,7 +36,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-2
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
       - name: Node build
         run: npm ci
 
@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-2
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
       - name: Lint
         run: npm run lint
 
@@ -66,7 +66,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-2
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
       - name: Unit Test
         run: npm test
 
@@ -82,7 +82,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-2
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
       - name: Build
         run: |
           npm run build
@@ -115,7 +115,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-2
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
       - name: Run database migration
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run deploy
@@ -184,7 +184,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-2
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
       - name: Build
         run: |
           npm run next:build -w web
