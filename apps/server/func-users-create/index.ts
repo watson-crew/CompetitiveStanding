@@ -17,13 +17,17 @@ const httpTrigger = async function (
 
   log(JSON.stringify(userInput));
 
-  try{
+  try {
     const userCreated: boolean = await createUser(userInput);
-    set204Response(log, context);
+    if (userCreated) {
+      set204Response(log, context);
+    } else {
+      set500Response(log, context, new Error('Failed to create user'));
+    }
   } catch (e) {
-    context.log(`[func-create-user] Error: ${e.message}`)
-    set500Response(log, context, e)
+    context.log(`[func-create-user] Error: ${e.message}`);
+    set500Response(log, context, e);
   }
- };
+};
 
 export default httpTrigger;

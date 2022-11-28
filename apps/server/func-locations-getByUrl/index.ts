@@ -4,7 +4,7 @@ import {
   FunctionName,
   HttpRequestForRequestParams,
 } from '@src/types';
-import { getLocationById } from '@repository/locationRepository';
+import { getLocationByUrl } from '@repository/locationRepository';
 import {
   set200Response,
   set404Response,
@@ -13,25 +13,23 @@ import {
 import { getFunctionLogger } from '@utils/logging';
 
 const httpTrigger = async function (
-  context: ContextForResponseBody<Location.GetLocationById.ResponseBody>,
-  req: HttpRequestForRequestParams<Location.GetLocationById.RequestParams>,
+  context: ContextForResponseBody<Location.GetLocationByUrl.ResponseBody>,
+  req: HttpRequestForRequestParams<Location.GetLocationByUrl.RequestParams>,
 ): Promise<void> {
   const log = getFunctionLogger(FunctionName.GetLocation, context);
 
-  const locationId = parseInt(req.params.locationId);
+  const { urlPath } = req.params;
 
-  log(`Finding Location by id ${locationId}`);
+  log(`Finding Location by url ${urlPath}`);
 
   try {
-    const location: Location = await getLocationById(locationId);
+    const location: Location = await getLocationByUrl(urlPath);
 
     if (!location) {
-      log(`No matching location with id: ${locationId}`);
+      log(`No matching location with urlPath: ${urlPath}`);
       set404Response(log, context);
     } else {
-      context.log(
-        `[func-get-location] Found Location ${JSON.stringify(location)}`,
-      );
+      log(`Found Location ${JSON.stringify(location)}`);
       set200Response(log, context, location);
     }
   } catch (e) {

@@ -5,8 +5,8 @@
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
-      "methods": ["post"],
-      "route": "users"
+      "methods": ["put"],
+      "route": "matches/{winningTeamId:int}"
     },
     {
       "type": "http",
@@ -14,5 +14,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/func-create-user/index.js"
+  "scriptFile": "../dist/func-matches-recordResult/index.js"
 }

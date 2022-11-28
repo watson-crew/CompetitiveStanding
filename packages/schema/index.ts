@@ -24,6 +24,31 @@ export interface CreateUserPayload {
   homeLocationId?: number;
 }
 
+export interface GameResult {
+  /**
+   * @format date-time
+   * @example "2022-11-25T09:19:43Z"
+   */
+  endTime: string;
+  /** @example 1 */
+  id: number;
+  /** @example "Nottingham" */
+  locationPlayed: string;
+  /**
+   * @minItems 2
+   * @uniqueItems true
+   * @example ["abcxyz","aaa","bbbyyyzzz"]
+   */
+  participatingTeams: string[];
+  /**
+   * @format date-time
+   * @example "2022-11-25T09:12:28Z"
+   */
+  startTime: string;
+  /** @example "abcdef" */
+  winningTeamId: string;
+}
+
 export interface GameType {
   /** @example 1 */
   id: number;
@@ -35,7 +60,15 @@ export interface GameType {
 
 export type GetAllLocationsData = Location[];
 
-export type GetLocationByIdData = Location;
+export type GetLocationByUrlData = Location;
+
+export interface GetRecentMatchesData {
+  results: GameResult[];
+  resources: {
+    /** @example {"abc":{"id":1,"memorableId":"abc","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"},"xyz":{"id":2,"memorableId":"xyz","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"}} */
+    players: Record<string, User>;
+  };
+}
 
 export type GetUserByMemorableIdData = User;
 
@@ -56,11 +89,16 @@ export interface InitiateNewMatchPayload {
   gameTypeId: number;
   /** @example 1 */
   locationId: number;
-  /** @example ["abcxyz","aaa","bbbyyyzzz"] */
+  /**
+   * @minItems 1
+   * @uniqueItems true
+   * @example ["abcxyz","aaa","bbbyyyzzz"]
+   */
   participatingTeams: string[];
 }
 
 export interface Location {
+  /** @uniqueItems true */
   availableGames?: GameType[];
   /** @example "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg" */
   coverPhoto?: string;
@@ -68,12 +106,26 @@ export interface Location {
   id: number;
   /** @example "Nottingham" */
   name: string;
+  /** @example "nottingham" */
+  urlPath: string;
 }
 
 export type RecordMatchResultsData = any;
 
 export interface RecordMatchResultsPayload {
   winningTeamId: number;
+}
+
+export interface Team {
+  /** @example "abcxyz" */
+  cumulativeTeamId: string;
+  /** @example 1 */
+  id: number;
+  /**
+   * @minItems 1
+   * @uniqueItems true
+   */
+  players: User[];
 }
 
 export interface TeamHistoricResult {
@@ -147,18 +199,18 @@ export namespace Location {
   /**
    * No description
    * @tags location
-   * @name GetLocationById
-   * @summary Get location by id
-   * @request GET:/locations/{locationId}
+   * @name GetLocationByUrl
+   * @summary Get location by urlPath
+   * @request GET:/locations/{urlPath}
    */
-  export namespace GetLocationById {
+  export namespace GetLocationByUrl {
     export type RequestParams = {
-      locationId: number;
+      urlPath: string;
     };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = GetLocationByIdData;
+    export type ResponseBody = GetLocationByUrlData;
   }
 }
 
@@ -193,15 +245,27 @@ export namespace Matches {
     export type RequestHeaders = {};
     export type ResponseBody = RecordMatchResultsData;
   }
+  /**
+   * No description
+   * @tags matches
+   * @name GetRecentMatches
+   * @summary Get all recent matches at a given location
+   * @request GET:/matches/recent
+   */
+  export namespace GetRecentMatches {
+    export type RequestParams = {};
+    export type RequestQuery = {
+      locationId: number;
+      offset?: number;
+      total?: number;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetRecentMatchesData;
+  }
 }
 
-import axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  HeadersDefaults,
-  ResponseType,
-} from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from 'axios';
 
 export type QueryParamsType = Record<string | number, any>;
 
@@ -279,10 +343,7 @@ export class HttpClient<SecurityDataType = unknown> {
       ...params1,
       ...(params2 || {}),
       headers: {
-        ...((method &&
-          this.instance.defaults.headers[
-            method.toLowerCase() as keyof HeadersDefaults
-          ]) ||
+        ...((method && this.instance.defaults.headers[method.toLowerCase()]) ||
           {}),
         ...(params1.headers || {}),
         ...((params2 && params2.headers) || {}),
@@ -324,7 +385,7 @@ export class HttpClient<SecurityDataType = unknown> {
     format,
     body,
     ...params
-  }: FullRequestParams): Promise<AxiosResponse<T>> => {
+  }: FullRequestParams): Promise<T> => {
     const secureParams =
       ((typeof secure === 'boolean' ? secure : this.secure) &&
         this.securityWorker &&
@@ -351,19 +412,21 @@ export class HttpClient<SecurityDataType = unknown> {
       body = JSON.stringify(body);
     }
 
-    return this.instance.request({
-      ...requestParams,
-      headers: {
-        ...(requestParams.headers || {}),
-        ...(type && type !== ContentType.FormData
-          ? { 'Content-Type': type }
-          : {}),
-      },
-      params: query,
-      responseType: responseFormat,
-      data: body,
-      url: path,
-    });
+    return this.instance
+      .request({
+        ...requestParams,
+        headers: {
+          ...(requestParams.headers || {}),
+          ...(type && type !== ContentType.FormData
+            ? { 'Content-Type': type }
+            : {}),
+        },
+        params: query,
+        responseType: responseFormat,
+        data: body,
+        url: path,
+      })
+      .then(response => response.data);
   };
 }
 
@@ -430,13 +493,13 @@ export class ApiClient<
      * No description
      *
      * @tags location
-     * @name GetLocationById
-     * @summary Get location by id
-     * @request GET:/locations/{locationId}
+     * @name GetLocationByUrl
+     * @summary Get location by urlPath
+     * @request GET:/locations/{urlPath}
      */
-    getLocationById: (locationId: number, params: RequestParams = {}) =>
-      this.request<GetLocationByIdData, any>({
-        path: `/locations/${locationId}`,
+    getLocationByUrl: (urlPath: string, params: RequestParams = {}) =>
+      this.request<GetLocationByUrlData, any>({
+        path: `/locations/${urlPath}`,
         method: 'GET',
         ...params,
       }),
@@ -480,6 +543,29 @@ export class ApiClient<
         method: 'PUT',
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags matches
+     * @name GetRecentMatches
+     * @summary Get all recent matches at a given location
+     * @request GET:/matches/recent
+     */
+    getRecentMatches: (
+      query: {
+        locationId: number;
+        offset?: number;
+        total?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<GetRecentMatchesData, any>({
+        path: `/matches/recent`,
+        method: 'GET',
+        query: query,
         ...params,
       }),
   };

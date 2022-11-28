@@ -1,4 +1,4 @@
-import { Location, Prisma, PrismaClient } from '@prisma/client';
+import { Location, PrismaClient } from '@prisma/client';
 
 const locations: Omit<Location, 'id'>[] = [
   {
@@ -7,31 +7,24 @@ const locations: Omit<Location, 'id'>[] = [
     coverPhoto:
       'http://proici.co.uk/wp-content/uploads/2018/12/BJSS_Header.jpg',
   },
+  {
+    name: 'Leeds',
+    urlPath: 'leeds',
+    coverPhoto:
+      'https://0a2f99e1222b3953ac58-e80a30755738c4b2c0e4ad59cfc2532a.ssl.cf3.rackcdn.com/xl_48_8193_636960094020980000.jpg',
+  },
+  {
+    name: 'Manchester',
+    urlPath: 'manchester',
+    coverPhoto: 'https://pbs.twimg.com/media/ELCpG0xXkAAmJet.jpg',
+  },
+  {
+    name: 'London',
+    urlPath: 'london',
+    coverPhoto:
+      'https://nicheprojects.net/index.php/assets/Uploads/_resampled/ScaleHeightWyI5MDAiXQ/Bjss-023.jpg',
+  },
 ];
-
-// // Generic function for seeding an array of data for a prisma model
-// async function seedData<T>(
-//   prisma: PrismaClient,
-//   data: T[]
-// ): Promise<Record<string, T>> {
-//   const seededData: Record<string, T> = {}
-
-//   for (let i = 0; i < data.length; i++) {
-//     const insertedData = await prisma.location.upsert({
-//       where: {
-//         id: i + 1,
-//       },
-//       update: {},
-//       create: data[i],
-//     });
-
-//     // TODO: Configure this, for Users we want memorableId, for location and group we want name
-//     //       For team and gameResults we may want id
-//     seededData[insertedData.name.toLowerCase()] = insertedData;
-//   }
-
-//   return seededData;
-// }
 
 async function seedLocations(
   prisma: PrismaClient,
