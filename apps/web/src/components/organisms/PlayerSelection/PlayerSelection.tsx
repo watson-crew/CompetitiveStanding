@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { User } from "schema"
 import { Button, PlayerSelectionCard, Text, StateDispatcher } from "ui"
 import { useDispatch } from 'react-redux'
 import { addRecentlyPlayed } from '@src/store/reducers/playerSlice'
 import RecentPlayers from "../RecentPlayers/RecentPlayers"
-import { stringify } from "querystring"
-import internal from "stream"
 
 type PlayerSelectionProps = {
   fetchPlayer: (id: string) => Promise<User>
