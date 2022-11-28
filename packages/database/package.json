@@ -20,6 +20,7 @@
     "studio": "prisma studio",
     "generate": "export DISABLE_ERD=true && prisma generate",
     "migrate": "prisma migrate dev",
+    "reset": "prisma migrate reset",
     "push": "prisma db push --skip-generate",
     "seed": "prisma db seed",
     "deploy": "prisma migrate deploy"

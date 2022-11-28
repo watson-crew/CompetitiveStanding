@@ -277,7 +277,7 @@ export namespace Matches {
    * No description
    * @tags matches, location
    * @name GetRankingsForLocation
-   * @summary Get rankings by urlPath and gameType
+   * @summary Get top players for a given location and game type
    * @request GET:/matches/rankings
    */
   export namespace GetRankingsForLocation {
@@ -605,7 +605,7 @@ export class ApiClient<
      *
      * @tags matches, location
      * @name GetRankingsForLocation
-     * @summary Get rankings by urlPath and gameType
+     * @summary Get top players for a given location and game type
      * @request GET:/matches/rankings
      */
     getRankingsForLocation: (
