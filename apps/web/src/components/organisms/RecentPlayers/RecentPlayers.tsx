@@ -1,4 +1,4 @@
-import { WithDefaultProps, PlayerCard, Button } from "@src/../../../packages/ui";
+import { WithDefaultProps, PlayerCard, Button, Text } from "@src/../../../packages/ui";
 import { useSelector } from 'react-redux'
 import { selectRecentlyPlayed } from '@src/store/reducers/playerSlice'
 import { User } from "@src/../../../packages/schema";
@@ -30,8 +30,8 @@ export default function RecentPlayers({ onSelected, disabled }: RecentPlayersPro
 
     return (
         <section>
-            <h1>Recently Played</h1>
-            <div className="h-full w-full flex-row flex overflow-scroll">
+            <Text type="h2">Recently Played</Text>
+            <div className="h-full w-full flex-row flex overflow-scroll gap-x-4">
                 {recentlyPlayedUserCards()}
             </div>
         </section>
