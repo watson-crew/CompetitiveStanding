@@ -7,10 +7,10 @@ type ButtonProps = WithDefaultProps<{
 }>
 
 export default function Button({ text, onClick, disabled, className = '' }: ButtonProps) {
-  return <button 
+  return <button
     type="button"
     disabled={disabled}
-    className={`bg-slate-400 hover:bg-slate-200 h-16 px-8 rounded-xl ${className}`} onClick={onClick}
+    className={`relative shadow-md font-small my-5 py-2 px-4 text-white cursor-pointer bg-yellow-600 hover:bg-yellow-500 rounded text-lg text-center w-24  disabled:opacity-25 ${className}`} onClick={onClick}
       >{ text }
   </button>;
 }
