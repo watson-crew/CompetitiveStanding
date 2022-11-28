@@ -3,12 +3,13 @@ import OtpField from 'react-otp-field';
 import Text from '../../atoms/Text/Text';
 
 type PlayerIdInputProps = {
-  title: string
+  title: string,
+  subtitle: string,
   idLength?: number
   onChange: (id: string) => void
 }
 
-export default function PlayerIdInput({ idLength = 3, title, onChange }: PlayerIdInputProps) {
+export default function PlayerIdInput({ idLength = 3, title, subtitle = "Enter your ID", onChange }: PlayerIdInputProps) {
 
   const [value, setValue] = useState('');
   
@@ -18,15 +19,15 @@ export default function PlayerIdInput({ idLength = 3, title, onChange }: PlayerI
       onChange(value)
     }
 
-  }, [idLength, onChange, value])
+  }, [onChange, value, idLength])
 
   return (
     <section className='text-center'>
       <Text type='h3'>{title}</Text>
-      <Text type='p'>Enter your id</Text>
+      <Text type='p'>{subtitle}</Text>
 
       <OtpField
-          classNames='flex  justify-around'
+          classNames='flex justify-around'
           value={value}
           onChange={setValue}
           numInputs={idLength}
