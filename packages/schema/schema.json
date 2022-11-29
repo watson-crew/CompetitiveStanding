@@ -215,7 +215,7 @@
                 "properties": {
                   "updateType": {
                     "type": "string",
-                    "enum": ["setWinner", "abandonGame"]
+                    "enum": ["SET_WINNER", "ABANDON_GAME"]
                   },
                   "updateDetails": {
                     "$ref": "#/components/schemas/WinningTeamDetails"

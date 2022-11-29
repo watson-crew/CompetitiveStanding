@@ -163,8 +163,8 @@ export interface WinningTeamDetails {
 }
 
 export enum RecordMatchResultsPayloadUpdateType {
-  SetWinner = 'setWinner',
-  AbandonGame = 'abandonGame',
+  SET_WINNER = 'SET_WINNER',
+  ABANDON_GAME = 'ABANDON_GAME',
 }
 
 export namespace User {
