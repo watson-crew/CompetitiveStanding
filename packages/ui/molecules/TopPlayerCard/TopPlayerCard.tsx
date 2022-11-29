@@ -3,10 +3,11 @@ import { twMerge } from "tailwind-merge"
 import Card from "../../atoms/Card/Card"
 import Text from "../../atoms/Text/Text"
 import { WithDefaultProps, WithLoadingProps } from "../../types"
+import { User } from 'schema'
 
 
 type TopPlayersCardProps = WithDefaultProps<WithLoadingProps<{
-  playerName: string
+  player?: User
 }>>
 
 function TopPlayersCardStateContent() {
@@ -21,17 +22,17 @@ function TopPlayersCardStateContent() {
 }
 
 
-export default function TopPlayersCard({ className, loading }: TopPlayersCardProps) {
+export default function TopPlayersCard({ player, className, loading }: TopPlayersCardProps) {
 
   const renderWithChildren = (children: React.ReactNode) => React.createElement(Card, { className: twMerge('w-full', className) }, children)
-
+  
   if (loading) {
     return renderWithChildren(TopPlayersCardStateContent())
   }
 
   return renderWithChildren(
     <>
-      <Text type='p'>Actual card content here</Text>
+      <Text type='p'>{player?.firstName}</Text>
     </>
   )
 }

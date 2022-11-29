@@ -1,4 +1,4 @@
-import { Location } from 'schema';
+import { Location, RankedPlayer } from 'schema';
 import { GetStaticPathsContext, GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import {
   AvailableGamesOverview,
@@ -20,7 +20,7 @@ type LocationPageDynamicPath = { locationUrlPath: string }
 
 export async function getStaticPaths(_context: GetStaticPathsContext): Promise<GetStaticPathsResult<LocationPageDynamicPath>> {
     const locations = await getApiInstance().location.getAllLocations()
-    
+
     return {
       paths: locations.map(location => ({ params: { locationUrlPath: location.urlPath } })),
       fallback: false
@@ -46,20 +46,34 @@ export default function Index({ location }: LocationPageProps) {
 
   const api = useContext(ApiContext)
 
-  const [ loading, setLoading ] = useState(true)
+  const [ loadingRecentMatches, setLoadingRecentMatches ] = useState(true)
   const [ recentMatches, setRecentMatches ] = useState<GameResult[]>([])
+
+  const [ loadingRankedPlayers, setLoadingRankedPlayers ] = useState(true)
+  const [ rankedPlayers, setRankedPlayers ] = useState<RankedPlayer[]>([])
 
   const fetchRecentGames = async () => {
     const data = await api.matches.getRecentMatches({ locationId: location.id })
 
     setRecentMatches(mapRecentResults(data))
 
-    setLoading(false)
+    // TODO: Change is loading
+    setLoadingRecentMatches(false)
+  }
+
+  const fetchRankings = async () => {
+    // TODO: Look at where game type comes from?
+    const data = await api.matches.getRankingsForLocation({ locationId: location.id, gameTypeId: 1, total: 3});
+
+    setRankedPlayers(data)
+
+    setLoadingRankedPlayers(false)
   }
 
   useEffect(() => {
 
     fetchRecentGames()
+    fetchRankings()
 
   }, [])
 
@@ -78,12 +92,16 @@ export default function Index({ location }: LocationPageProps) {
           className="col-span-2 row-span-2 bg-red-100"
         />
 
-        <TopPlayersOverview className="col-span-2 row-span-2 h-full w-full" />
+        <TopPlayersOverview
+          className="col-span-2 row-span-2 h-full w-full"
+          loading={loadingRankedPlayers}
+          rankedPlayers={rankedPlayers}
+        />
 
         <RecentMatchesOverview
           className="row-span-4 h-full w-full"
           recentMatches={recentMatches}
-          loading={loading}
+          loading={loadingRecentMatches}
         />
       </Card>
     </div>
