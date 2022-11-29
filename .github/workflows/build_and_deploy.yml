@@ -13,7 +13,7 @@ env:
   NODE_VERSION: '16.x'
   FRONTEND_OUTPUT_LOCATION: './apps/web/out'
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
-  DISABLE_ERD: true  
+  DISABLE_ERD: true
 
 jobs:
   cancel-existing:
@@ -38,8 +38,6 @@ jobs:
           key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Node Clean Install
         run: npm ci
-      - name: Print output
-        run: ls node_modules
 
   lint:
     needs: install
@@ -77,6 +75,8 @@ jobs:
       - test
     runs-on: ubuntu-latest
     name: Build backend
+    env: 
+      NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
     steps:
       - uses: actions/checkout@v3
       - name: Load node_modules
@@ -179,6 +179,7 @@ jobs:
     name: Build frontend
     env:
       API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
+      NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
     steps:
       - uses: actions/checkout@v3
       - name: Load node_modules
