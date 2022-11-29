@@ -42,6 +42,24 @@ const games: Game[] = [
     start: new Date(2022, 11, 21, 16, 22),
     end: new Date(2022, 11, 16, 35),
   },
+  {
+    teams: [1, 3],
+    winningTeam: 3,
+    start: new Date(2022, 11, 21, 16, 22),
+    end: new Date(2022, 11, 16, 35),
+  },
+  {
+    teams: [1, 5],
+    winningTeam: 5,
+    start: new Date(2022, 11, 21, 16, 22),
+    end: new Date(2022, 11, 16, 35),
+  },
+  {
+    teams: [1, 2],
+    winningTeam: 1,
+    start: new Date(2022, 11, 21, 10, 47),
+    end: new Date(2022, 11, 11, 4),
+  },
 ];
 
 const generateGameResultData = (

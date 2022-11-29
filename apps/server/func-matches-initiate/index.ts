@@ -4,8 +4,9 @@ import {
   FunctionName,
   HttpRequestForRequestBody,
 } from '@src/types';
-import { set200Response } from '@utils/contextUtils';
+import { set200Response, set500Response } from '@utils/contextUtils';
 import { getFunctionLogger } from '@src/utils/logging';
+import { initiateNewMatch } from '@src/repository/gameResultRepository';
 
 const httpTrigger = async function (
   context: ContextForResponseBody<Matches.InitiateNewMatch.ResponseBody>,
@@ -13,25 +14,23 @@ const httpTrigger = async function (
 ): Promise<void> {
   const log = getFunctionLogger(FunctionName.InitiateMatch, context);
 
-  log('HTTP trigger function processed a request.');
-
   const { gameTypeId, locationId, participatingTeams } = req.body;
 
-  log(`Got gameTypeId: ${gameTypeId}`);
-  log(`Got locationId: ${locationId}`);
-  log(`Got participatingTeams: ${participatingTeams}`);
+  log(
+    `Triggered with gameTypeId: ${gameTypeId}, locationId: ${locationId}, participatingTeams: ${participatingTeams}`,
+  );
 
-  const mockResponse: Matches.InitiateNewMatch.ResponseBody = {
-    matchId: Math.ceil(Math.random() * 1000),
-    historicResults: Object.fromEntries(
-      participatingTeams.map(team => [
-        team,
-        { wins: Math.ceil(Math.random() * 25) },
-      ]),
-    ),
-  };
+  try {
+    const initiatedMatch = await initiateNewMatch(
+      gameTypeId,
+      locationId,
+      participatingTeams,
+    );
 
-  set200Response(log, context, mockResponse);
+    set200Response(log, context, initiatedMatch);
+  } catch (err) {
+    set500Response(log, context, err);
+  }
 };
 
 export default httpTrigger;
