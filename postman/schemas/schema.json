@@ -1,0 +1,593 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Competitive Standing Schema",
+    "description": "Schema for the CompetitiveStandingAPI to create and track the results of various games",
+    "version": "0.0.1"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "tags": [
+    {
+      "name": "user",
+      "description": "Operations about user"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Create a new user",
+        "operationId": "createUser",
+        "tags": ["user"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["memorableId", "firstName", "lastName"],
+                "properties": {
+                  "memorableId": {
+                    "type": "string",
+                    "example": "abc"
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "example": "John"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "example": "James"
+                  },
+                  "profilePictureUrl": {
+                    "type": "string",
+                    "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+                  },
+                  "homeLocationId": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/users/{memorableId}": {
+      "get": {
+        "tags": ["user"],
+        "summary": "Get user by memorable id",
+        "operationId": "getUserByMemorableId",
+        "parameters": [
+          {
+            "name": "memorableId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "4e8"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/locations": {
+      "get": {
+        "tags": ["location"],
+        "operationId": "getAllLocations",
+        "summary": "Get all locations",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Location"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/locations/{urlPath}": {
+      "get": {
+        "tags": ["location"],
+        "summary": "Get location by urlPath",
+        "operationId": "getLocationByUrl",
+        "parameters": [
+          {
+            "name": "urlPath",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Location"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matches": {
+      "post": {
+        "tags": ["matches"],
+        "summary": "Initiate a match between a number of teams",
+        "operationId": "initiateNewMatch",
+        "requestBody": {
+          "required": true,
+          "description": "The details of the match to be initiated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["gameTypeId", "locationId", "participatingTeams"],
+                "properties": {
+                  "gameTypeId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "locationId": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "participatingTeams": {
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "description": "The cumulative teamId",
+                      "example": "abcxyz"
+                    },
+                    "example": ["abcxyz", "aaa", "bbbyyyzzz"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitiateMatchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/matches/${matchId}": {
+      "put": {
+        "tags": ["matches"],
+        "summary": "Record the results of a given match",
+        "operationId": "recordMatchResults",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["updateType"],
+                "properties": {
+                  "updateType": {
+                    "type": "string",
+                    "enum": ["SET_WINNER", "ABANDON_GAME"]
+                  },
+                  "updateDetails": {
+                    "$ref": "#/components/schemas/WinningTeamDetails"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "successful update"
+          }
+        }
+      }
+    },
+    "/matches/recent": {
+      "get": {
+        "tags": ["matches", "location"],
+        "summary": "Get all recent matches at a given location",
+        "operationId": "getRecentMatches",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "total",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["results", "resources"],
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GameResult"
+                      }
+                    },
+                    "resources": {
+                      "type": "object",
+                      "required": ["players"],
+                      "properties": {
+                        "players": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "$ref": "#/components/schemas/User"
+                          },
+                          "example": {
+                            "abc": {
+                              "id": 1,
+                              "memorableId": "abc",
+                              "firstName": "John",
+                              "lastName": "James",
+                              "location": "London",
+                              "profilePicture": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+                            },
+                            "xyz": {
+                              "id": 2,
+                              "memorableId": "xyz",
+                              "firstName": "John",
+                              "lastName": "James",
+                              "location": "London",
+                              "profilePicture": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/matches/rankings": {
+      "get": {
+        "tags": ["matches", "location"],
+        "summary": "Get top players for a given location and game type",
+        "operationId": "getRankingsForLocation",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "urlPath",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "gameTypeId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "total",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RankedPlayer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GameResult": {
+        "type": "object",
+        "required": [
+          "id",
+          "participatingTeams",
+          "winningTeamId",
+          "startTime",
+          "endTime",
+          "locationPlayed"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "participatingTeams": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            },
+            "example": ["abcxyz", "aaa", "bbbyyyzzz"]
+          },
+          "winningTeamId": {
+            "type": "string",
+            "example": "abcdef"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-11-25T09:12:28Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-11-25T09:19:43Z"
+          },
+          "locationPlayed": {
+            "type": "string",
+            "example": "Nottingham"
+          }
+        }
+      },
+      "GameType": {
+        "type": "object",
+        "required": ["id", "name", "maxNumberOfPlayers"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Pool"
+          },
+          "maxNumberOfPlayers": {
+            "type": "integer",
+            "example": "1"
+          }
+        }
+      },
+      "InitiateMatchResponse": {
+        "type": "object",
+        "required": ["matchId", "historicResults"],
+        "properties": {
+          "matchId": {
+            "type": "integer",
+            "example": 519
+          },
+          "historicResults": {
+            "type": "object",
+            "description": "The historic results for each team participating in the match",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TeamHistoricResult"
+            },
+            "example": {
+              "abcxyz": {
+                "wins": 2
+              },
+              "aaa": {
+                "wins": 8
+              },
+              "bbbyyyzzz": {
+                "wins": 9
+              }
+            }
+          }
+        }
+      },
+      "Location": {
+        "type": "object",
+        "required": ["id", "name", "urlPath"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "urlPath": {
+            "type": "string",
+            "example": "nottingham"
+          },
+          "name": {
+            "type": "string",
+            "example": "Nottingham"
+          },
+          "coverPhoto": {
+            "type": "string",
+            "example": "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg"
+          },
+          "availableGames": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/GameType"
+            }
+          }
+        }
+      },
+      "RankedPlayer": {
+        "type": "object",
+        "properties": {
+          "player": {
+            "$ref": "#/components/schemas/User"
+          },
+          "wins": {
+            "type": "integer",
+            "example": 27
+          },
+          "gamesPlayed": {
+            "type": "integer",
+            "example": 44
+          }
+        }
+      },
+      "WinningTeamDetails": {
+        "type": "object",
+        "required": ["winningTeamId"],
+        "properties": {
+          "winningTeamId": {
+            "type": "string"
+          }
+        }
+      },
+      "Team": {
+        "type": "object",
+        "required": ["id", "cumulativeTeamId", "players"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "cumulativeTeamId": {
+            "type": "string",
+            "example": "abcxyz"
+          },
+          "players": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "TeamHistoricResult": {
+        "type": "object",
+        "required": ["win"],
+        "properties": {
+          "wins": {
+            "type": "integer"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": ["id", "memorableId", "firstName", "lastName"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": "1"
+          },
+          "memorableId": {
+            "type": "string",
+            "example": "abc"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "James"
+          },
+          "location": {
+            "type": "string",
+            "example": "London"
+          },
+          "profilePicture": {
+            "type": "string",
+            "example": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+          }
+        }
+      }
+    }
+  }
+}

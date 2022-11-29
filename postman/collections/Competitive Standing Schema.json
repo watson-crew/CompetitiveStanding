@@ -1,0 +1,788 @@
+{
+	"info": {
+		"_postman_id": "48794f1a-9494-435e-bc2d-906498020d4b",
+		"name": "Competitive Standing Schema",
+		"description": "Schema for the CompetitiveStandingAPI to create and track the results of various games",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "8771393-48794f1a-9494-435e-bc2d-906498020d4b"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Create a new user",
+					"id": "66fdcd6a-9a9f-4d11-8ae6-2c93f3377639",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"memorableId\": \"abc\",\n  \"firstName\": \"John\",\n  \"lastName\": \"James\",\n  \"profilePictureUrl\": \"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg\",\n  \"homeLocationId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "d2f8221c-9881-4e54-8e41-4dd015b376a1",
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"memorableId\": \"abc\",\n  \"firstName\": \"John\",\n  \"lastName\": \"James\",\n  \"profilePictureUrl\": \"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg\",\n  \"homeLocationId\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Get user by memorable id",
+					"id": "bbb6cb0d-3452-4a1e-a7d5-e538bb4b2484",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/users/:memorableId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":memorableId"
+							],
+							"variable": [
+								{
+									"key": "memorableId",
+									"value": "4e8",
+									"description": "(Required) "
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "7e6b1d35-93d6-441f-9141-e0a57aefbb9d",
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/users/:memorableId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":memorableId"
+									],
+									"variable": [
+										{
+											"key": "memorableId",
+											"value": "4e8",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": 76005242,\n  \"memorableId\": \"abc\",\n  \"firstName\": \"John\",\n  \"lastName\": \"James\",\n  \"location\": \"London\",\n  \"profilePicture\": \"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg\"\n}"
+						},
+						{
+							"id": "f7481f8c-8c1c-4823-9bd7-38fc7e704539",
+							"name": "User not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/users/:memorableId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										":memorableId"
+									],
+									"variable": [
+										{
+											"key": "memorableId",
+											"value": "4e8",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			],
+			"id": "d9f5f01d-07f6-43dc-94d7-4ad9839346e2"
+		},
+		{
+			"name": "locations",
+			"item": [
+				{
+					"name": "Get all locations",
+					"id": "da5d37c6-f92f-49d2-a8e9-1ba9f5c2c733",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "241f1694-113f-4629-b7d6-cc40007042fa",
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/locations",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"locations"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Nottingham\",\n    \"urlPath\": \"nottingham\",\n    \"coverPhoto\": \"https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg\",\n    \"availableGames\": [\n      {\n        \"id\": 1,\n        \"name\": \"Pool\",\n        \"maxNumberOfPlayers\": 28674782\n      },\n      {\n        \"id\": 1,\n        \"name\": \"Pool\",\n        \"maxNumberOfPlayers\": -71614062\n      }\n    ]\n  },\n  {\n    \"id\": 1,\n    \"name\": \"Nottingham\",\n    \"urlPath\": \"nottingham\",\n    \"coverPhoto\": \"https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg\",\n    \"availableGames\": [\n      {\n        \"id\": 1,\n        \"name\": \"Pool\",\n        \"maxNumberOfPlayers\": -29097864\n      },\n      {\n        \"id\": 1,\n        \"name\": \"Pool\",\n        \"maxNumberOfPlayers\": 57218525\n      }\n    ]\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get location by urlPath",
+					"id": "5d5ce9ff-fab8-4d4e-8151-d876dd068f11",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations/:urlPath",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations",
+								":urlPath"
+							],
+							"variable": [
+								{
+									"key": "urlPath",
+									"value": "irure laboris do",
+									"description": "(Required) "
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "10d45cc5-3da1-487d-8653-cf041daeafaa",
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/locations/:urlPath",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"locations",
+										":urlPath"
+									],
+									"variable": [
+										{
+											"key": "urlPath",
+											"value": "irure laboris do",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": 1,\n  \"name\": \"Nottingham\",\n  \"urlPath\": \"nottingham\",\n  \"coverPhoto\": \"https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg\",\n  \"availableGames\": [\n    {\n      \"id\": 1,\n      \"name\": \"Pool\",\n      \"maxNumberOfPlayers\": 60590671\n    },\n    {\n      \"id\": 1,\n      \"name\": \"Pool\",\n      \"maxNumberOfPlayers\": 73956610\n    }\n  ]\n}"
+						}
+					]
+				}
+			],
+			"id": "a2ffc866-b789-44d8-a3f2-6e874edbe775"
+		},
+		{
+			"name": "matches",
+			"item": [
+				{
+					"name": "Initiate a match between a number of teams",
+					"id": "ff25b448-d04f-4ddc-a54f-439adea00096",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"gameTypeId\": 1,\n  \"locationId\": 1,\n  \"participatingTeams\": [\n    \"abcxyz\",\n    \"aaa\",\n    \"bbbyyyzzz\"\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/matches",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"matches"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "96cbacf0-3395-4357-ab07-d0dfb2c80363",
+							"name": "Successful operation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"gameTypeId\": 1,\n  \"locationId\": 1,\n  \"participatingTeams\": [\n    \"abcxyz\",\n    \"aaa\",\n    \"bbbyyyzzz\"\n  ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/matches",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"matches"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"matchId\": 519,\n  \"historicResults\": {\n    \"officia_4_\": {\n      \"wins\": 38759854\n    }\n  }\n}"
+						},
+						{
+							"id": "c4790fb9-09e5-4424-a45f-6f3a8d50d9b7",
+							"name": "Bad request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"gameTypeId\": 1,\n  \"locationId\": 1,\n  \"participatingTeams\": [\n    \"abcxyz\",\n    \"aaa\",\n    \"bbbyyyzzz\"\n  ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/matches",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"matches"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Record the results of a given match",
+					"id": "d6652fbb-576c-406a-a403-e6a766bb54f7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"updateType\": \"SET_WINNER\",\n  \"updateDetails\": {\n    \"winningTeamId\": \"anim laboris sint\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/matches/${{matchId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"matches",
+								"${{matchId}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "36e02636-1799-4483-bcce-f616c7f68b7c",
+							"name": "successful update",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"updateType\": \"SET_WINNER\",\n  \"updateDetails\": {\n    \"winningTeamId\": \"anim laboris sint\"\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/matches/${{matchId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"matches",
+										"${{matchId}}"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "Get all recent matches at a given location",
+					"id": "da7b7dcf-174a-4ce7-8047-1b4f2b799026",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/matches/recent?locationId=-85110495&offset=-85110495&total=-85110495",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"matches",
+								"recent"
+							],
+							"query": [
+								{
+									"key": "locationId",
+									"value": "-85110495",
+									"description": "(Required) "
+								},
+								{
+									"key": "offset",
+									"value": "-85110495"
+								},
+								{
+									"key": "total",
+									"value": "-85110495"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "cc0354be-7340-47ef-aa12-0fd74fa28d49",
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/matches/recent?locationId=-85110495&offset=-85110495&total=-85110495",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"matches",
+										"recent"
+									],
+									"query": [
+										{
+											"key": "locationId",
+											"value": "-85110495",
+											"description": "(Required) "
+										},
+										{
+											"key": "offset",
+											"value": "-85110495"
+										},
+										{
+											"key": "total",
+											"value": "-85110495"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"results\": [\n    {\n      \"id\": 1,\n      \"participatingTeams\": [\n        \"abcxyz\",\n        \"aaa\",\n        \"bbbyyyzzz\"\n      ],\n      \"winningTeamId\": \"abcdef\",\n      \"startTime\": \"2022-11-25T09:12:28Z\",\n      \"endTime\": \"2022-11-25T09:19:43Z\",\n      \"locationPlayed\": \"Nottingham\"\n    },\n    {\n      \"id\": 1,\n      \"participatingTeams\": [\n        \"abcxyz\",\n        \"aaa\",\n        \"bbbyyyzzz\"\n      ],\n      \"winningTeamId\": \"abcdef\",\n      \"startTime\": \"2022-11-25T09:12:28Z\",\n      \"endTime\": \"2022-11-25T09:19:43Z\",\n      \"locationPlayed\": \"Nottingham\"\n    }\n  ],\n  \"resources\": {\n    \"players\": {\n      \"abc\": {\n        \"id\": 1,\n        \"memorableId\": \"abc\",\n        \"firstName\": \"John\",\n        \"lastName\": \"James\",\n        \"location\": \"London\",\n        \"profilePicture\": \"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg\"\n      },\n      \"xyz\": {\n        \"id\": 2,\n        \"memorableId\": \"xyz\",\n        \"firstName\": \"John\",\n        \"lastName\": \"James\",\n        \"location\": \"London\",\n        \"profilePicture\": \"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg\"\n      }\n    }\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get top players for a given location and game type",
+					"id": "2a3e17a2-cb97-4b9b-a136-ee51dacbe6b7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/matches/rankings?locationId=-85110495&gameTypeId=-85110495&offset=-85110495&total=-85110495",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"matches",
+								"rankings"
+							],
+							"query": [
+								{
+									"key": "locationId",
+									"value": "-85110495",
+									"description": "(Required) "
+								},
+								{
+									"key": "gameTypeId",
+									"value": "-85110495",
+									"description": "(Required) "
+								},
+								{
+									"key": "offset",
+									"value": "-85110495"
+								},
+								{
+									"key": "total",
+									"value": "-85110495"
+								}
+							],
+							"variable": [
+								{
+									"key": "urlPath",
+									"value": "irure laboris do",
+									"description": "(Required) "
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "9170b9ca-04a9-478f-b2b0-5066353ac75a",
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/matches/rankings?locationId=-85110495&gameTypeId=-85110495&offset=-85110495&total=-85110495",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"matches",
+										"rankings"
+									],
+									"query": [
+										{
+											"key": "locationId",
+											"value": "-85110495",
+											"description": "(Required) "
+										},
+										{
+											"key": "gameTypeId",
+											"value": "-85110495",
+											"description": "(Required) "
+										},
+										{
+											"key": "offset",
+											"value": "-85110495"
+										},
+										{
+											"key": "total",
+											"value": "-85110495"
+										}
+									],
+									"variable": [
+										{
+											"key": "urlPath",
+											"value": "irure laboris do",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"player\": {\n      \"id\": -90509752,\n      \"memorableId\": \"abc\",\n      \"firstName\": \"John\",\n      \"lastName\": \"James\",\n      \"location\": \"London\",\n      \"profilePicture\": \"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg\"\n    },\n    \"wins\": 27,\n    \"gamesPlayed\": 44\n  },\n  {\n    \"player\": {\n      \"id\": 88768048,\n      \"memorableId\": \"abc\",\n      \"firstName\": \"John\",\n      \"lastName\": \"James\",\n      \"location\": \"London\",\n      \"profilePicture\": \"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg\"\n    },\n    \"wins\": 27,\n    \"gamesPlayed\": 44\n  }\n]"
+						}
+					]
+				}
+			],
+			"id": "761e0036-f46d-409d-b9ea-b6ab87f30c8b"
+		}
+	],
+	"variable": [
+		{
+			"id": "d3974b78-52f1-4eb0-b61f-bb2eb6e7b6d9",
+			"key": "baseUrl",
+			"value": "/",
+			"type": "string"
+		}
+	]
+}
