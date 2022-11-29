@@ -4,8 +4,8 @@ import { prismaClient as prisma, Prisma } from 'database';
 import {
   GetRecentMatchesData,
   InitiateMatchResponse,
-  RecordMatchResultsPayload,
   TeamHistoricResult,
+  WinningTeamDetails,
 } from 'schema';
 import dayjs from 'dayjs';
 
@@ -128,7 +128,7 @@ export async function initiateNewMatch(
 
 export async function updateGameResult(
   gameId: number,
-  { winningTeamId }: RecordMatchResultsPayload,
+  { winningTeamId }: WinningTeamDetails,
 ): Promise<boolean> {
   try {
     await prisma.gameResult.update({
@@ -138,6 +138,20 @@ export async function updateGameResult(
       },
       where: {
         id: gameId,
+      },
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+export async function abandonMatch(matchId: number): Promise<boolean> {
+  try {
+    await prisma.gameResult.delete({
+      where: {
+        id: matchId,
       },
     });
     return true;

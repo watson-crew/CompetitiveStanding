@@ -211,10 +211,19 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["winningTeamId"],
+                "required": ["updateType"],
                 "properties": {
+<<<<<<< Updated upstream
                   "winningTeamId": {
                     "type": "string"
+=======
+                  "updateType": {
+                    "type": "string",
+                    "enum": ["setWinner", "abandonGame"]
+                  },
+                  "updateDetails": {
+                    "$ref": "#/components/schemas/WinningTeamDetails"
+>>>>>>> Stashed changes
                   }
                 }
               }
@@ -511,6 +520,15 @@
           "gamesPlayed": {
             "type": "integer",
             "example": 44
+          }
+        }
+      },
+      "WinningTeamDetails": {
+        "type": "object",
+        "required": ["winningTeamId"],
+        "properties": {
+          "winningTeamId": {
+            "type": "string"
           }
         }
       },

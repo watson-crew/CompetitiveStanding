@@ -1,12 +1,19 @@
-import { Matches } from 'schema';
+import { Matches, RecordMatchResultsPayloadUpdateType } from 'schema';
 import {
   ContextForNoContentResponse,
   FunctionName,
   ParameterizedHttpRequest,
 } from '@src/types';
-import { set204Response, set500Response } from '@src/utils/contextUtils';
+import {
+  set204Response,
+  set400Response,
+  set500Response,
+} from '@src/utils/contextUtils';
 import { getFunctionLogger } from '@src/utils/logging';
-import { updateGameResult } from '@src/repository/gameResultRepository';
+import {
+  abandonMatch,
+  updateGameResult,
+} from '@src/repository/gameResultRepository';
 
 const httpTrigger = async function (
   context: ContextForNoContentResponse,
@@ -18,22 +25,29 @@ const httpTrigger = async function (
 ): Promise<void> {
   const log = getFunctionLogger(FunctionName.RecordMatchResults, context);
 
-  const { matchId } = req.params;
-  const { winningTeamId } = req.body;
+  const matchId = parseInt(req.params.matchId);
+  const { updateType, updateDetails } = req.body;
 
-  log(`Triggered for matchId ${matchId}, winningTeamId ${winningTeamId}.`);
+  log(`Triggered for matchId ${matchId}, updateType ${updateType}.`);
 
-  const updateSuccessful = await updateGameResult(parseInt(matchId), {
-    winningTeamId,
-  });
+  let updateSuccessful: Promise<boolean>;
 
-  if (updateSuccessful) {
+  if (updateType === RecordMatchResultsPayloadUpdateType.AbandonGame) {
+    updateSuccessful = abandonMatch(matchId);
+  } else if (updateType === RecordMatchResultsPayloadUpdateType.SetWinner) {
+    updateSuccessful = updateGameResult(matchId, updateDetails);
+  } else {
+    set400Response(log, context);
+    return;
+  }
+
+  if (await updateSuccessful) {
     set204Response(log, context);
   } else {
     set500Response(
       log,
       context,
-      new Error('An error occurred updating the winning team'),
+      new Error('An error occurred updating the game result'),
     );
   }
 };
