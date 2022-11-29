@@ -36,9 +36,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
-      - name: Node build
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.run_id }}
+      - name: Node Clean Install
         run: npm ci
+      - name: Print output
+        run: ls node_modules
 
   lint:
     needs: install
@@ -52,7 +54,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.run_id }}
       - name: Lint
         run: npm run lint
 
@@ -66,7 +68,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.run_id }}
       - name: Unit Test
         run: npm test
 
@@ -82,7 +84,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.run_id }}
       - name: Build
         run: |
           npm run build
@@ -92,7 +94,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.BACKEND_OUTPUT_LOCATION }}
-          key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
+          key: ${{ runner.os }}-build-cache-backend-${{ github.run_id }}
 
   migrate-database:
     name: Database Migration
@@ -115,7 +117,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.run_id }}
       - name: Run database migration
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run deploy
@@ -139,7 +141,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.BACKEND_OUTPUT_LOCATION }}
-          key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
+          key: ${{ runner.os }}-build-cache-backend-${{ github.run_id }}
       - name: Deploy azure functions
         uses: Azure/functions-action@v1
         id: function-app-deploy
@@ -184,7 +186,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.run_id }}
       - name: Build
         run: |
           npm run next:build -w web
@@ -194,7 +196,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.FRONTEND_OUTPUT_LOCATION }}
-          key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
+          key: ${{ runner.os }}-build-cache-frontend-${{ github.run_id }}
 
   deploy-frontend:
     name: Frontend Deploy
@@ -211,7 +213,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.FRONTEND_OUTPUT_LOCATION }}
-          key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
+          key: ${{ runner.os }}-build-cache-frontend-${{ github.run_id }}
       - name: Deploy frontend
         id: deploy
         uses: Azure/static-web-apps-deploy@v1
