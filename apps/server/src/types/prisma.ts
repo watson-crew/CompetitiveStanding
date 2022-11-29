@@ -1,4 +1,4 @@
-import { GameResult, User, Team } from 'database';
+import { GameResult, User } from 'database';
 
 export type GetResultsForLocationResult = GameResult & {
   winningTeam: {

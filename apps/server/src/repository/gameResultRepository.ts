@@ -201,7 +201,7 @@ export async function getResultsForLocation(
     });
 
   return gameResultMapper.map(matches);
-};
+}
 
 export const getRankingsForLocation = async (
   locationId: number,
