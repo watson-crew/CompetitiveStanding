@@ -16,8 +16,7 @@ export enum topPlayerCardType {
 
 type TopPlayersCardProps = WithDefaultProps<WithLoadingProps<{
   rankedPlayer?: RankedPlayer,
-  cardType: topPlayerCardType,
-  fullVersion?: boolean
+  cardType: topPlayerCardType
 }>>
 
 function TopPlayersCardStateContent() {
@@ -41,7 +40,7 @@ function classNames(type: topPlayerCardType) {
   return classNamesForCards[type];
 }
 
-export default function TopPlayersCard({ rankedPlayer, className, loading, cardType, fullVersion = false }: TopPlayersCardProps) {
+export default function TopPlayersCard({ rankedPlayer, className, loading, cardType}: TopPlayersCardProps) {
 
   const classNamesToUse = classNames(cardType);
 

@@ -14,7 +14,7 @@ type TopPlayersOverviewProps = WithDefaultProps<WithLoadingProps<{
 export default function TopPlayersOverview({ rankedPlayers, className, loading }: TopPlayersOverviewProps) {
 
   // TODO: Refactor this
-  let cardsToRender: JSX.Element[] = []
+  const cardsToRender: JSX.Element[] = []
 
   const cardDetailsToRender = [
     {
