@@ -211,10 +211,14 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["winningTeamId"],
+                "required": ["updateType"],
                 "properties": {
-                  "winningTeamId": {
-                    "type": "integer"
+                  "updateType": {
+                    "type": "string",
+                    "enum": ["SET_WINNER", "ABANDON_GAME"]
+                  },
+                  "updateDetails": {
+                    "$ref": "#/components/schemas/WinningTeamDetails"
                   }
                 }
               }
@@ -503,6 +507,15 @@
           "gamesPlayed": {
             "type": "integer",
             "example": 44
+          }
+        }
+      },
+      "WinningTeamDetails": {
+        "type": "object",
+        "required": ["winningTeamId"],
+        "properties": {
+          "winningTeamId": {
+            "type": "string"
           }
         }
       },
