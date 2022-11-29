@@ -57,7 +57,6 @@ export default function Index({ location }: LocationPageProps) {
 
     setRecentMatches(mapRecentResults(data))
 
-    // TODO: Change is loading
     setLoadingRecentMatches(false)
   }
 

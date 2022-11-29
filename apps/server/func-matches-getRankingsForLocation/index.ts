@@ -1,4 +1,4 @@
-import { Matches, RankedPlayer } from 'schema';
+import { Matches } from 'schema';
 import {
   ContextForResponseBody,
   FunctionName,
@@ -6,7 +6,6 @@ import {
 } from '@src/types';
 import { set200Response, set500Response } from '@utils/contextUtils';
 import { getFunctionLogger } from '@src/utils/logging';
-import { getUserByMemorableId } from '@src/repository/userRepository';
 import { getRankingsForLocation } from '@src/repository/gameResultRepository';
 
 const httpTrigger = async function (

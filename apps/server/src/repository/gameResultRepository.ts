@@ -1,7 +1,7 @@
 import { gameResultMapper, gameRankingsMapper } from '@src/mappers/gameResultMapper';
 import { GetResultsForLocationResult, GetRankingsForLocationAndGameTypeResult } from '@src/types';
 import { prismaClient as prisma } from 'database';
-import { GetRecentMatchesData, GetRankingsForLocationData, RankedPlayer } from 'schema';
+import { GetRecentMatchesData, GetRankingsForLocationData } from 'schema';
 
 export const getResultsForLocation = async (
   locationId: number,
