@@ -123,7 +123,8 @@ export interface RankedPlayer {
 export type RecordMatchResultsData = any;
 
 export interface RecordMatchResultsPayload {
-  winningTeamId: number;
+  updateType: 'SET_WINNER' | 'ABANDON_GAME';
+  updateDetails?: WinningTeamDetails;
 }
 
 export interface Team {
@@ -155,6 +156,10 @@ export interface User {
   memorableId: string;
   /** @example "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg" */
   profilePicture?: string;
+}
+
+export interface WinningTeamDetails {
+  winningTeamId: string;
 }
 
 export namespace User {

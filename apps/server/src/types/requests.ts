@@ -4,14 +4,12 @@ type Stringified<T> = {
   [P in keyof T]: string;
 };
 
-type ParameterizedHttpRequest<PathParams, BodyParams, QueryParams> = Omit<
-  HttpRequest,
-  'params' | 'body' | 'query'
-> & {
-  query: Stringified<QueryParams>;
-  body: BodyParams;
-  params: Stringified<PathParams>;
-};
+export type ParameterizedHttpRequest<PathParams, BodyParams, QueryParams> =
+  Omit<HttpRequest, 'params' | 'body' | 'query'> & {
+    query: Stringified<QueryParams>;
+    body: BodyParams;
+    params: Stringified<PathParams>;
+  };
 
 export type HttpRequestForRequestBody<BodyType> = ParameterizedHttpRequest<
   never,

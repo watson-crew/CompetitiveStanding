@@ -6,7 +6,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["put"],
-      "route": "matches/{winningTeamId:int}"
+      "route": "matches/{matchId:int}"
     },
     {
       "type": "http",

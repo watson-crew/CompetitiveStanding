@@ -5,6 +5,7 @@ import {
   GetRecentMatchesData,
   InitiateMatchResponse,
   TeamHistoricResult,
+  WinningTeamDetails,
 } from 'schema';
 import dayjs from 'dayjs';
 
@@ -123,6 +124,44 @@ export async function initiateNewMatch(
     historicResults,
     matchId,
   };
+}
+
+export async function updateGameResult(
+  gameId: number,
+  { winningTeamId }: WinningTeamDetails,
+): Promise<boolean> {
+  try {
+    await prisma.gameResult.update({
+      data: {
+        winningTeamId,
+        endTime: dayjs().toDate(),
+      },
+      where: {
+        id: gameId,
+      },
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+export async function abandonMatch(matchId: number): Promise<boolean> {
+  try {
+    await prisma.gameResult.deleteMany({
+      where: {
+        id: matchId,
+        winningTeamId: {
+          equals: null,
+        },
+      },
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
 }
 
 export async function getResultsForLocation(

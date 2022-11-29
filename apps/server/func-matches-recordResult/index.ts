@@ -2,24 +2,54 @@ import { Matches } from 'schema';
 import {
   ContextForNoContentResponse,
   FunctionName,
-  HttpRequestForRequestBody,
+  ParameterizedHttpRequest,
 } from '@src/types';
-import { set204Response } from '@src/utils/contextUtils';
+import {
+  set204Response,
+  set400Response,
+  set500Response,
+} from '@src/utils/contextUtils';
 import { getFunctionLogger } from '@src/utils/logging';
+import {
+  abandonMatch,
+  updateGameResult,
+} from '@src/repository/gameResultRepository';
 
 const httpTrigger = async function (
   context: ContextForNoContentResponse,
-  req: HttpRequestForRequestBody<Matches.RecordMatchResults.RequestBody>,
+  req: ParameterizedHttpRequest<
+    Matches.RecordMatchResults.RequestParams,
+    Matches.RecordMatchResults.RequestBody,
+    never
+  >,
 ): Promise<void> {
   const log = getFunctionLogger(FunctionName.RecordMatchResults, context);
 
-  log('HTTP trigger function processed a request.');
+  const matchId = parseInt(req.params.matchId);
+  const { updateType, updateDetails } = req.body;
 
-  const { winningTeamId } = req.body;
+  log(`Triggered for matchId ${matchId}, updateType ${updateType}.`);
 
-  log(`Got winningTeamId: ${winningTeamId}`);
+  let updateSuccessful: Promise<boolean>;
 
-  set204Response(log, context);
+  if (updateType === 'ABANDON_GAME') {
+    updateSuccessful = abandonMatch(matchId);
+  } else if (updateType === 'SET_WINNER') {
+    updateSuccessful = updateGameResult(matchId, updateDetails);
+  } else {
+    set400Response(log, context);
+    return;
+  }
+
+  if (await updateSuccessful) {
+    set204Response(log, context);
+  } else {
+    set500Response(
+      log,
+      context,
+      new Error('An error occurred updating the game result'),
+    );
+  }
 };
 
 export default httpTrigger;
