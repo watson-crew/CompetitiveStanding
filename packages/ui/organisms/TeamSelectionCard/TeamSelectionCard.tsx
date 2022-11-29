@@ -1,5 +1,4 @@
-import { User } from 'schema';
-import { WithDefaultProps } from '../../types';
+import { LoadingPlayer, WithDefaultProps } from '../../types';
 import { twMerge } from 'tailwind-merge';
 import Card from '../../atoms/Card/Card';
 import PlayerSelectionCard from '../../molecules/PlayerSelectionCard/PlayerSelectionCard';
@@ -7,18 +6,13 @@ import { AiOutlineUserAdd } from 'react-icons/ai';
 import Button from '../../atoms/Button/Button';
 import TextWithIcon from '../../molecules/TextWithIcon/TextWithIcon';
 
-type YourMum = {
-  user?: User;
-  loading: boolean;
-};
-
 type TeamSelectionCardProps = WithDefaultProps<{
-  title: string;
-  team: YourMum[];
+  team: LoadingPlayer[];
   onPlayerAdded: (id: string) => Promise<void>;
   increaseTeamSize: () => Promise<void>;
   clearPlayer: (playerId?: string) => void;
   maxPlayersPerTeam: number;
+  teamNumber: number;
 }>;
 
 export default function TeamSelectionCard({
@@ -28,26 +22,26 @@ export default function TeamSelectionCard({
   clearPlayer,
   className,
   maxPlayersPerTeam,
-  key,
+  teamNumber,
 }: TeamSelectionCardProps) {
   const containerClasses = twMerge(
     'bg-slate-200 w-full flex justify-center items-center flex-col md:p-10  gap-5',
     className,
   );
 
-  const allSlotsFilled = team.every(player => !!player.user);
+  const allSlotsFilled = team.every(player => !!player.playerDetails);
 
   const allSpacesFilled = maxPlayersPerTeam === team.length;
 
   return (
     <Card className={containerClasses}>
-      {team.map(player => (
+      {team.map(({ playerDetails, loading }) => (
         <PlayerSelectionCard
-          key={`${key}-player-selection-card-${player.user?.memorableId}`}
-          player={player.user}
-          loading={player.loading}
+          key={`team-${teamNumber}-player-${playerDetails?.memorableId}`}
+          player={playerDetails}
+          loading={loading}
           onIdSubmitted={onPlayerAdded}
-          clearPlayer={() => clearPlayer(player.user?.memorableId)}
+          clearPlayer={() => clearPlayer(playerDetails?.memorableId)}
           className="min-h-full basis-2/5"
         />
       ))}

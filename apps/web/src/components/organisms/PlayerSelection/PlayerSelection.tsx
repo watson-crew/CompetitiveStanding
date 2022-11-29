@@ -1,6 +1,13 @@
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { User } from 'schema';
-import { Banner, Button, TeamSelectionCard, Text, Toggle } from 'ui';
+import {
+  Banner,
+  Button,
+  TeamSelectionCard,
+  Text,
+  Toggle,
+  LoadingPlayer,
+} from 'ui';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addRecentlyPlayed,
@@ -75,12 +82,7 @@ export default function PlayerSelection() {
 
   const { minNumberOfTeams, minPlayersPerTeam } = gameTypes[selectedGameTypeId];
 
-  type YourMum = {
-    playerId?: string;
-    loading: boolean;
-  };
-
-  const initialTeams: YourMum[][] = [
+  const initialTeams: LoadingPlayer[][] = [
     [{ loading: false }],
     [{ loading: false }],
   ];
@@ -97,15 +99,9 @@ export default function PlayerSelection() {
     ),
   );
 
-  const getPlayer = (playerId?: string) => {
-    if (!playerId) return undefined;
-
-    return savedPlayers[playerId] || undefined;
-  };
-
   const setLoadingForTeam = (teamIndex: number, isLoading: boolean) => {
     setTeams(teams => {
-      const copy: YourMum[][] = JSON.parse(JSON.stringify(teams));
+      const copy: LoadingPlayer[][] = JSON.parse(JSON.stringify(teams));
       const loadingTeam = copy[teamIndex];
 
       loadingTeam[loadingTeam.length - 1].loading = isLoading;
@@ -116,7 +112,7 @@ export default function PlayerSelection() {
 
   const increaseTeamSize = async (teamIndex: number) => {
     setTeams(teams => {
-      const copy: YourMum[][] = JSON.parse(JSON.stringify(teams));
+      const copy: LoadingPlayer[][] = JSON.parse(JSON.stringify(teams));
 
       const toIncrease = copy[teamIndex];
 
@@ -133,7 +129,9 @@ export default function PlayerSelection() {
     // Make sure player is not already in a team
 
     if (
-      teams.some(team => team.some(player => player.playerId === memorableId))
+      teams.some(team =>
+        team.some(player => player.playerDetails?.memorableId === memorableId),
+      )
     ) {
       setPlayerAlreadyInTeamError(true);
       return;
@@ -151,7 +149,7 @@ export default function PlayerSelection() {
       }
 
       // ADd to team
-      addPlayerToTeam(memorableId, teamIndex);
+      addPlayerToTeam(playerAdded, teamIndex);
 
       // Add to local player cache
       setSavedPlayers(savedPlayers => {
@@ -168,15 +166,15 @@ export default function PlayerSelection() {
     }
   };
 
-  const addPlayerToTeam = (playerId: string, teamIndex: number) => {
+  const addPlayerToTeam = (playerDetails: User, teamIndex: number) => {
     setTeams(teams => {
       // Clean this up at some point
       // Probs a better way
-      const copy: YourMum[][] = JSON.parse(JSON.stringify(teams));
+      const copy: LoadingPlayer[][] = JSON.parse(JSON.stringify(teams));
 
       copy[teamIndex] = filter([
         ...copy[teamIndex],
-        { playerId, loading: false },
+        { playerDetails, loading: false },
       ]);
 
       return copy;
@@ -195,10 +193,10 @@ export default function PlayerSelection() {
   ) => {
     setTeams(teams => {
       // Probs a better way
-      const copy: YourMum[][] = JSON.parse(JSON.stringify(teams));
+      const copy: LoadingPlayer[][] = JSON.parse(JSON.stringify(teams));
 
       copy[teamIndex] = copy[teamIndex].filter(
-        item => item.playerId !== playerId,
+        item => item.playerDetails?.memorableId !== playerId,
       );
 
       if (copy[teamIndex].length === 0) copy[teamIndex] = [{ loading: false }];
@@ -235,21 +233,21 @@ export default function PlayerSelection() {
     );
   };
 
-  function filter(arr: YourMum[]): YourMum[] {
-    return arr.filter(item => !!item.playerId);
+  function filter(arr: LoadingPlayer[]): LoadingPlayer[] {
+    return arr.filter(item => !!item.playerDetails);
   }
 
   const selectedPlayerIds = (): string[] => {
     return teams.flatMap(
       team =>
         team
-          .filter(item => item.playerId !== undefined)
-          .map(item => item.playerId) as string[],
+          .filter(item => item.playerDetails !== undefined)
+          .map(item => item.playerDetails?.memorableId) as string[],
     );
   };
 
-  const hasOpenSlot = (arr: YourMum[]): boolean => {
-    return arr.some(item => item.playerId === undefined);
+  const hasOpenSlot = (arr: LoadingPlayer[]): boolean => {
+    return arr.some(item => item.playerDetails === undefined);
   };
 
   const nextTeamIndex = (): number => {
@@ -344,12 +342,9 @@ export default function PlayerSelection() {
       <section className="my-10 flex min-h-fit w-full items-center justify-around align-middle">
         {teams.map((team, teamIndex) => (
           <TeamSelectionCard
-            title="Foo"
+            teamNumber={teamIndex}
             key={`team-${teamIndex}`}
-            team={team.map(player => ({
-              user: getPlayer(player.playerId),
-              loading: player.loading,
-            }))}
+            team={team}
             onPlayerAdded={memorableId =>
               onPlayerAddedToTeam(teamIndex, memorableId)
             }
