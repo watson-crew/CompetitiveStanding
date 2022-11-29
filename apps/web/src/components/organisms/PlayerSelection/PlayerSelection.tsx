@@ -34,6 +34,10 @@ export default function PlayerSelection() {
   const [playerNotFoundId, setPlayerNotFoundId] = useState<string | undefined>(
     undefined,
   );
+
+  const [playerAlreadyInTeamError, setPlayerAlreadyInTeamError] =
+    useState(false);
+
   const [initiateMatchError, setInitiateMatchError] = useState<boolean>(false);
 
   // Initialise values
@@ -87,10 +91,32 @@ export default function PlayerSelection() {
     });
   };
 
+  const increaseTeamSize = async (teamIndex: number) => {
+    setTeams(teams => {
+      const copy: YourMum[][] = JSON.parse(JSON.stringify(teams));
+
+      const toIncrease = copy[teamIndex];
+
+      copy[teamIndex] = [...toIncrease, { loading: false }];
+
+      return copy;
+    });
+  };
+
   const onPlayerAddedToTeam = async (
     teamIndex: number,
     memorableId: string,
   ) => {
+    // Make sure player is not already in a team
+
+    if (
+      teams.some(team => team.some(player => player.playerId === memorableId))
+    ) {
+      setPlayerAlreadyInTeamError(true);
+      return;
+    }
+    setPlayerAlreadyInTeamError(false);
+
     setLoadingForTeam(teamIndex, true);
 
     try {
@@ -210,6 +236,18 @@ export default function PlayerSelection() {
           </Text>
         </Banner>
       )}
+      {playerAlreadyInTeamError && (
+        <Banner
+          type="info"
+          className="m-auto my-5"
+          onClose={() => setPlayerNotFoundId(undefined)}
+        >
+          <Text type="p">
+            Player is already in a team
+            <span className="font-bold">{playerNotFoundId}</span>
+          </Text>
+        </Banner>
+      )}
 
       {initiateMatchError && (
         <Banner
@@ -233,30 +271,11 @@ export default function PlayerSelection() {
             onPlayerAdded={memorableId =>
               onPlayerAddedToTeam(teamIndex, memorableId)
             }
+            increaseTeamSize={() => increaseTeamSize(teamIndex)}
             clearPlayer={playerId => clearPlayerFromTeam(playerId, teamIndex)}
             className="min-h-full basis-2/5"
           />
         ))}
-
-        {/* <PlayerSelectionCard
-          title="Player 1"
-          player={players[0]}
-          loading={loading[0]}
-          onIdSubmitted={memorableId => onIdSet(0, memorableId)}
-          clearPlayer={() => clearPlayer(0)}
-          className="min-h-full basis-2/5"
-        />
-
-        <Text type="p">VS</Text>
-
-        <PlayerSelectionCard
-          title="Player 2"
-          player={players[1]}
-          loading={loading[1]}
-          onIdSubmitted={memorableId => onIdSet(1, memorableId)}
-          clearPlayer={() => clearPlayer(1)}
-          className="min-h-full basis-2/5"
-        /> */}
       </section>
       <div className="text-center">
         <Button

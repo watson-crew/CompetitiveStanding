@@ -2,6 +2,7 @@
 import Banner from './atoms/Banner/Banner';
 import Button from './atoms/Button/Button';
 import Card from './atoms/Card/Card';
+import IconButton from './atoms/IconButton/IconButton';
 import LoadingSpinner from './atoms/LoadingSpinner/LoadingSpinner';
 import WithCloseButton from './atoms/WithCloseButton/WithCloseButton';
 import Text from './atoms/Text/Text';
