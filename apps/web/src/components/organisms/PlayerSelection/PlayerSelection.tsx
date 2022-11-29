@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useState } from 'react';
+import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { User } from 'schema';
 import { Banner, Button, TeamSelectionCard, Text, Toggle } from 'ui';
 import { useDispatch } from 'react-redux';
@@ -8,7 +8,11 @@ import { ApiContext } from '@src/context/ApiContext';
 import RecentPlayers from '../RecentPlayers/RecentPlayers';
 import TextWithIcon from '@src/../../../packages/ui/molecules/TextWithIcon/TextWithIcon';
 // import { initialState } from '@src/pages/signup/state';
-import { AiOutlineTeam, AiOutlineUser } from 'react-icons/ai';
+import {
+  AiOutlineTeam,
+  AiOutlineUser,
+  AiOutlineUsergroupAdd,
+} from 'react-icons/ai';
 
 // This should be dynamic from somewhere
 const gameTypes = {
@@ -22,12 +26,29 @@ const gameTypes = {
   },
 };
 
+type TeamConfiguration = {
+  maxNumberOfTeams: number;
+  maxPlayersPerTeam: number;
+};
+
 export default function PlayerSelection() {
   const [teamsEnabled, setTeamsEnabled] = useState(false);
 
   const toggleTeamsEnabled = (_e: ChangeEvent<HTMLInputElement>) => {
     setTeamsEnabled(!teamsEnabled);
   };
+
+  const [teamConfiguration, setTeamConfiguration] = useState<TeamConfiguration>(
+    { maxNumberOfTeams: 1, maxPlayersPerTeam: 1 },
+  );
+
+  useEffect(() => {
+    if (teamsEnabled) {
+      setTeamConfiguration({ maxNumberOfTeams: 4, maxPlayersPerTeam: 4 });
+    } else {
+      setTeamConfiguration({ maxNumberOfTeams: 1, maxPlayersPerTeam: 1 });
+    }
+  }, [teamsEnabled]);
 
   const dispatch = useDispatch();
   const client = useContext(ApiContext);
@@ -51,8 +72,7 @@ export default function PlayerSelection() {
 
   // Initialise values
 
-  const { minNumberOfTeams, minPlayersPerTeam, maxPlayersPerTeam } =
-    gameTypes[selectedGameTypeId];
+  const { minNumberOfTeams, minPlayersPerTeam } = gameTypes[selectedGameTypeId];
 
   type YourMum = {
     playerId?: string;
@@ -170,6 +190,12 @@ export default function PlayerSelection() {
     });
   };
 
+  const addTeam = () => {
+    setTeams(teams => {
+      return [...teams, [{ loading: false }]];
+    });
+  };
+
   const clearPlayerFromTeam = (
     playerId: string | undefined,
     teamIndex: number,
@@ -231,6 +257,7 @@ export default function PlayerSelection() {
 
   console.log(`Teams ${teams}`);
   console.log(teams);
+  console.log(teamConfiguration.maxNumberOfTeams);
 
   return (
     <section className="w-full text-center">
@@ -254,6 +281,17 @@ export default function PlayerSelection() {
           </TextWithIcon>
         }
       />
+
+      {teamsEnabled && (
+        <Button
+          onClick={addTeam}
+          disabled={teamConfiguration.maxNumberOfTeams === teams.length}
+        >
+          <TextWithIcon textProps={{ type: 'p' }} icon={AiOutlineUsergroupAdd}>
+            Add Team
+          </TextWithIcon>
+        </Button>
+      )}
 
       {playerNotFoundId && (
         <Banner
@@ -304,7 +342,7 @@ export default function PlayerSelection() {
             }
             increaseTeamSize={() => increaseTeamSize(teamIndex)}
             clearPlayer={playerId => clearPlayerFromTeam(playerId, teamIndex)}
-            maxPlayersPerTeam={maxPlayersPerTeam}
+            maxPlayersPerTeam={teamConfiguration.maxPlayersPerTeam}
             className="min-h-full basis-2/5"
           />
         ))}

@@ -6,7 +6,7 @@ import { twMerge } from 'tailwind-merge';
 
 type TextWithIconProps = WithDefaultProps<{
   icon: IconType;
-  iconSize: 's' | 'm' | 'l';
+  iconSize?: 's' | 'm' | 'l';
   textProps: TextProps;
   iconProps?: React.Attributes & IconBaseProps;
   reversed?: boolean;

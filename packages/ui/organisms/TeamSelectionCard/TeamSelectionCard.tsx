@@ -3,7 +3,6 @@ import { WithDefaultProps } from '../../types';
 import { twMerge } from 'tailwind-merge';
 import Card from '../../atoms/Card/Card';
 import PlayerSelectionCard from '../../molecules/PlayerSelectionCard/PlayerSelectionCard';
-import IconButton from '../../atoms/IconButton/IconButton';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import Button from '../../atoms/Button/Button';
 import TextWithIcon from '../../molecules/TextWithIcon/TextWithIcon';
