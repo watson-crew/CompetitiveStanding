@@ -213,17 +213,12 @@
                 "type": "object",
                 "required": ["updateType"],
                 "properties": {
-<<<<<<< Updated upstream
-                  "winningTeamId": {
-                    "type": "string"
-=======
                   "updateType": {
                     "type": "string",
                     "enum": ["setWinner", "abandonGame"]
                   },
                   "updateDetails": {
                     "$ref": "#/components/schemas/WinningTeamDetails"
->>>>>>> Stashed changes
                   }
                 }
               }
