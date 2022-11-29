@@ -214,7 +214,7 @@
                 "required": ["winningTeamId"],
                 "properties": {
                   "winningTeamId": {
-                    "type": "integer"
+                    "type": "string"
                   }
                 }
               }

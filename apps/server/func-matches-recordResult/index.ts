@@ -2,24 +2,40 @@ import { Matches } from 'schema';
 import {
   ContextForNoContentResponse,
   FunctionName,
-  HttpRequestForRequestBody,
+  ParameterizedHttpRequest,
 } from '@src/types';
-import { set204Response } from '@src/utils/contextUtils';
+import { set204Response, set500Response } from '@src/utils/contextUtils';
 import { getFunctionLogger } from '@src/utils/logging';
+import { updateGameResult } from '@src/repository/gameResultRepository';
 
 const httpTrigger = async function (
   context: ContextForNoContentResponse,
-  req: HttpRequestForRequestBody<Matches.RecordMatchResults.RequestBody>,
+  req: ParameterizedHttpRequest<
+    Matches.RecordMatchResults.RequestParams,
+    Matches.RecordMatchResults.RequestBody,
+    never
+  >,
 ): Promise<void> {
   const log = getFunctionLogger(FunctionName.RecordMatchResults, context);
 
-  log('HTTP trigger function processed a request.');
-
+  const { matchId } = req.params;
   const { winningTeamId } = req.body;
 
-  log(`Got winningTeamId: ${winningTeamId}`);
+  log(`Triggered for matchId ${matchId}, winningTeamId ${winningTeamId}.`);
 
-  set204Response(log, context);
+  const updateSuccessful = await updateGameResult(parseInt(matchId), {
+    winningTeamId,
+  });
+
+  if (updateSuccessful) {
+    set204Response(log, context);
+  } else {
+    set500Response(
+      log,
+      context,
+      new Error('An error occurred updating the winning team'),
+    );
+  }
 };
 
 export default httpTrigger;

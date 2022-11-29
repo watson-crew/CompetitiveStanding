@@ -123,7 +123,7 @@ export interface RankedPlayer {
 export type RecordMatchResultsData = any;
 
 export interface RecordMatchResultsPayload {
-  winningTeamId: number;
+  winningTeamId: string;
 }
 
 export interface Team {
