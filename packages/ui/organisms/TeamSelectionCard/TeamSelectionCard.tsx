@@ -2,20 +2,22 @@ import { User } from 'schema';
 import { WithDefaultProps } from '../../types';
 import { twMerge } from 'tailwind-merge';
 import Card from '../../atoms/Card/Card';
-import LoadingSpinner from '../../atoms/LoadingSpinner/LoadingSpinner';
 import PlayerSelectionCard from '../../molecules/PlayerSelectionCard/PlayerSelectionCard';
+
+type YourMum = {
+  user?: User;
+  loading: boolean;
+};
 
 type TeamSelectionCardProps = WithDefaultProps<{
   title: string;
-  team: (User | undefined)[];
-  loading: boolean;
+  team: YourMum[];
   onPlayerAdded: (id: string) => Promise<void>;
   clearPlayer: (playerId?: string) => void;
 }>;
 
 export default function TeamSelectionCard({
   team,
-  loading,
   onPlayerAdded,
   clearPlayer,
   className,
@@ -26,25 +28,25 @@ export default function TeamSelectionCard({
     className,
   );
 
-  if (loading) {
-    return (
-      <Card className={containerClasses}>
-        <LoadingSpinner />
-      </Card>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Card className={containerClasses}>
+  //       <LoadingSpinner />
+  //     </Card>
+  //   );
+  // }
 
-  console.log('Hi');
+  // console.log('Hi');
 
   return (
-    <Card>
+    <Card className={containerClasses}>
       {team.map(player => (
         <PlayerSelectionCard
-          key={`${key}-player-selection-card-${player?.memorableId}`}
-          player={player}
-          loading={false}
+          key={`${key}-player-selection-card-${player.user?.memorableId}`}
+          player={player.user}
+          loading={player.loading}
           onIdSubmitted={onPlayerAdded}
-          clearPlayer={() => clearPlayer(player?.memorableId)}
+          clearPlayer={() => clearPlayer(player.user?.memorableId)}
           className="min-h-full basis-2/5"
         />
       ))}

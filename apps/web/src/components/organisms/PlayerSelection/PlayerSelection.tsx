@@ -40,7 +40,15 @@ export default function PlayerSelection() {
 
   const { minNumberOfTeams, minPlayersPerTeam } = gameTypes[selectedGameTypeId];
 
-  const initialTeams: (string | undefined)[][] = [[undefined], [undefined]];
+  type YourMum = {
+    playerId?: string;
+    loading: boolean;
+  };
+
+  const initialTeams: YourMum[][] = [
+    [{ loading: false }],
+    [{ loading: false }],
+  ];
 
   const [teams, setTeams] = useState(initialTeams);
 
@@ -68,11 +76,22 @@ export default function PlayerSelection() {
     return savedPlayers[playerId] || undefined;
   };
 
+  const setLoadingForTeam = (teamIndex: number, isLoading: boolean) => {
+    setTeams(teams => {
+      const copy: YourMum[][] = JSON.parse(JSON.stringify(teams));
+      const loadingTeam = copy[teamIndex];
+
+      loadingTeam[loadingTeam.length - 1].loading = isLoading;
+
+      return copy;
+    });
+  };
+
   const onPlayerAddedToTeam = async (
     teamIndex: number,
     memorableId: string,
   ) => {
-    // setLoadingForPlayer(id, true);
+    setLoadingForTeam(teamIndex, true);
 
     try {
       // Try load from cache
@@ -82,7 +101,10 @@ export default function PlayerSelection() {
         playerAdded = await client.user.getUserByMemorableId(memorableId);
       }
 
+      // ADd to team
       addPlayerToTeam(memorableId, teamIndex);
+
+      // Add to local player cache
       setSavedPlayers(savedPlayers => {
         return { ...savedPlayers, [memorableId]: playerAdded };
       });
@@ -93,7 +115,7 @@ export default function PlayerSelection() {
       setPlayerNotFoundId(memorableId);
       // setErrorForPlayer(id, true);
     } finally {
-      // setLoadingForPlayer(id, false);
+      setLoadingForTeam(teamIndex, false);
     }
   };
 
@@ -101,9 +123,12 @@ export default function PlayerSelection() {
     setTeams(teams => {
       // Clean this up at some point
       // Probs a better way
-      const copy: (string | undefined)[][] = JSON.parse(JSON.stringify(teams));
+      const copy: YourMum[][] = JSON.parse(JSON.stringify(teams));
 
-      copy[teamIndex] = filter([...copy[teamIndex], playerId]);
+      copy[teamIndex] = filter([
+        ...copy[teamIndex],
+        { playerId, loading: false },
+      ]);
 
       return copy;
     });
@@ -115,11 +140,13 @@ export default function PlayerSelection() {
   ) => {
     setTeams(teams => {
       // Probs a better way
-      const copy: string[][] = JSON.parse(JSON.stringify(teams));
+      const copy: YourMum[][] = JSON.parse(JSON.stringify(teams));
 
-      copy[teamIndex] = copy[teamIndex].filter(id => id !== playerId);
+      copy[teamIndex] = copy[teamIndex].filter(
+        item => item.playerId !== playerId,
+      );
 
-      if (copy[teamIndex].length === 0) copy[teamIndex] = [undefined];
+      if (copy[teamIndex].length === 0) copy[teamIndex] = [{ loading: false }];
 
       return copy;
     });
@@ -153,13 +180,16 @@ export default function PlayerSelection() {
     );
   };
 
-  function filter<T>(arr: (T | undefined)[]): T[] {
-    return arr.filter(item => !!item) as T[];
+  function filter(arr: YourMum[]): YourMum[] {
+    return arr.filter(item => !!item.playerId);
   }
 
   const selectedPlayerIds = (): string[] => {
     return teams.flatMap(
-      team => team.filter(playerId => playerId !== undefined) as string[],
+      team =>
+        team
+          .filter(item => item.playerId !== undefined)
+          .map(item => item.playerId) as string[],
     );
   };
 
@@ -196,8 +226,10 @@ export default function PlayerSelection() {
           <TeamSelectionCard
             title="Foo"
             key={`team-${teamIndex}`}
-            loading={false}
-            team={team.map(playerId => getPlayer(playerId))}
+            team={team.map(player => ({
+              user: getPlayer(player.playerId),
+              loading: player.loading,
+            }))}
             onPlayerAdded={memorableId =>
               onPlayerAddedToTeam(teamIndex, memorableId)
             }
