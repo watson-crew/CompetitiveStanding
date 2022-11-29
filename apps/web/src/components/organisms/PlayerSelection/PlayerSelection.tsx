@@ -1,18 +1,48 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { User } from 'schema';
-import { Button, PlayerSelectionCard, Text } from 'ui';
+import { Banner, Button, TeamSelectionCard, Text } from 'ui';
 import { useDispatch } from 'react-redux';
 import { addRecentlyPlayed } from '@src/store/reducers/playerSlice';
+// import RecentPlayers from '../RecentPlayers/RecentPlayers';
+import { ApiContext } from '@src/context/ApiContext';
 import RecentPlayers from '../RecentPlayers/RecentPlayers';
+// import { initialState } from '@src/pages/signup/state';
 
-type PlayerSelectionProps = {
-  fetchPlayer: (id: string) => Promise<User>;
+// This should be dynamic from somewhere
+const gameTypes = {
+  1: {
+    gameTypeId: 1,
+    minNumberOfTeams: 2,
+    maxNumberOfTeams: 2,
+    minPlayersPerTeam: 1,
+    defaultPlayersPerTeam: 1,
+  },
 };
 
-export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
+export default function PlayerSelection() {
   const dispatch = useDispatch();
+  const client = useContext(ApiContext);
+
+  // Maybe from query param
+  const selectedGameTypeId = 1;
+
+  // Maybe from query param
+  const selectedLocationId = 1;
 
   const numPlayers = 2;
+
+  const [playerNotFoundId, setPlayerNotFoundId] = useState<string | undefined>(
+    undefined,
+  );
+  const [initiateMatchError, setInitiateMatchError] = useState<boolean>(false);
+
+  // Initialise values
+
+  const { minNumberOfTeams, minPlayersPerTeam } = gameTypes[selectedGameTypeId];
+
+  const initialTeams: (string | undefined)[][] = [[undefined], [undefined]];
+
+  const [teams, setTeams] = useState(initialTeams);
 
   // Initialise values
   const initialPlayers: Record<number, User | undefined> = {};
@@ -24,96 +54,162 @@ export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
     initialErrors[i] = false;
   }
 
-  // Create states that can handle multiple players
-  const [players, setPlayers] =
-    useState<Record<number, User | undefined>>(initialPlayers);
-  const [loading, setLoading] =
-    useState<Record<number, boolean>>(initialLoading);
-  const [errors, setErrors] = useState<Record<number, boolean>>(initialErrors);
+  const [savedPlayers, setSavedPlayers] = useState<Record<string, User>>(
+    Object.fromEntries(
+      Object.values(initialPlayers)
+        .filter(player => !!player)
+        .map(player => [player?.memorableId, player]),
+    ),
+  );
 
-  // Functions to edit states
-  const setPlayer = (id: number, player?: User) => {
-    const existing = players;
-    existing[id] = player;
-    setPlayers({ ...existing });
+  const getPlayer = (playerId?: string) => {
+    if (!playerId) return undefined;
+
+    return savedPlayers[playerId] || undefined;
   };
 
-  const setLoadingForPlayer = (id: number, isLoading: boolean) => {
-    const existingLoading = loading;
-    existingLoading[id] = isLoading;
-    setLoading({ ...existingLoading });
-  };
-
-  const setErrorForPlayer = (id: number, isError: boolean) => {
-    const existingErrors = errors;
-    existingErrors[id] = isError;
-    setErrors({ ...existingErrors });
-  };
-
-  const clearPlayer = (id: number) => {
-    setPlayer(id, undefined);
-    setErrorForPlayer(id, false);
-    setLoadingForPlayer(id, false);
-  };
-
-  const onIdSet = async (id: number, memorableId: string) => {
-    setLoadingForPlayer(id, true);
+  const onPlayerAddedToTeam = async (
+    teamIndex: number,
+    memorableId: string,
+  ) => {
+    // setLoadingForPlayer(id, true);
 
     try {
-      setPlayer(id, await fetchPlayer(memorableId));
-      setErrorForPlayer(id, false);
+      // Try load from cache
+      let playerAdded: User = savedPlayers[memorableId];
+
+      if (!playerAdded) {
+        playerAdded = await client.user.getUserByMemorableId(memorableId);
+      }
+
+      addPlayerToTeam(memorableId, teamIndex);
+      setSavedPlayers(savedPlayers => {
+        return { ...savedPlayers, [memorableId]: playerAdded };
+      });
+
+      // setPlayer(id, await fetchPlayer(memorableId));
+      // setErrorForPlayer(id, false);
     } catch (err) {
-      setErrorForPlayer(id, true);
+      setPlayerNotFoundId(memorableId);
+      // setErrorForPlayer(id, true);
     } finally {
-      setLoadingForPlayer(id, false);
+      // setLoadingForPlayer(id, false);
     }
   };
 
-  const startGame = () => {
+  const addPlayerToTeam = (playerId: string, teamIndex: number) => {
+    setTeams(teams => {
+      // Clean this up at some point
+      // Probs a better way
+      const copy: (string | undefined)[][] = JSON.parse(JSON.stringify(teams));
+
+      copy[teamIndex] = filter([...copy[teamIndex], playerId]);
+
+      return copy;
+    });
+  };
+
+  const clearPlayerFromTeam = (
+    playerId: string | undefined,
+    teamIndex: number,
+  ) => {
+    setTeams(teams => {
+      // Probs a better way
+      const copy: string[][] = JSON.parse(JSON.stringify(teams));
+
+      copy[teamIndex] = copy[teamIndex].filter(id => id !== playerId);
+
+      if (copy[teamIndex].length === 0) copy[teamIndex] = [undefined];
+
+      return copy;
+    });
+  };
+
+  const startGame = async () => {
     console.log('Starting game...');
-    Object.values(players).forEach(player => {
+
+    try {
+      await client.matches.initiateNewMatch({
+        gameTypeId: selectedGameTypeId,
+        locationId: selectedLocationId,
+        participatingTeams: Object.values(savedPlayers).map(
+          player => player!.memorableId,
+        ),
+      });
+    } catch (err) {
+      setInitiateMatchError(true);
+    }
+
+    Object.values(savedPlayers).forEach(player => {
       dispatch(addRecentlyPlayed(player!));
     });
   };
 
-  // Check if all players have been selected
+  // Check if minimum required players have been selected
   const allPlayersSelected = () => {
-    return Object.values(players).every(player => player != undefined);
+    return (
+      teams.length >= minNumberOfTeams &&
+      teams.every(team => filter(team).length >= minPlayersPerTeam)
+    );
   };
 
-  // For RecentlySelected logic
-  const nextFreePlayerSlot = () => {
-    let nextFreePlayerIndex = -1;
-    for (let i = 0; i < numPlayers; i++) {
-      if (players[i] == undefined) {
-        nextFreePlayerIndex = i;
-        break;
-      }
-    }
-    return nextFreePlayerIndex;
-  };
-  const onSelected = (user: User) => {
-    // Set player in first free space
-    // TODO: Disable this if all the players have been selected, i.e no free slot
-    setPlayer(nextFreePlayerSlot(), user);
+  function filter<T>(arr: (T | undefined)[]): T[] {
+    return arr.filter(item => !!item) as T[];
+  }
+
+  const selectedPlayerIds = (): string[] => {
+    return teams.flatMap(
+      team => team.filter(playerId => playerId !== undefined) as string[],
+    );
   };
 
-  const selectedPlayerIds = () => {
-    const playerIds = Object.values(players)
-      .filter(p => p != undefined)
-      .map(p => p!.id);
-    console.log(playerIds);
-    return playerIds;
-  };
+  console.log(`Teams ${teams}`);
+  console.log(teams);
 
   return (
-    <section className="my-20 w-full">
-      <section className="flex h-full min-h-full w-full items-center justify-around align-middle">
-        <PlayerSelectionCard
+    <main className="w-full text-center	">
+      {playerNotFoundId && (
+        <Banner
+          type="info"
+          className="m-auto my-5"
+          onClose={() => setPlayerNotFoundId(undefined)}
+        >
+          <Text type="p">
+            No player exits with memorable id{' '}
+            <span className="font-bold">{playerNotFoundId}</span>
+          </Text>
+        </Banner>
+      )}
+
+      {initiateMatchError && (
+        <Banner
+          type="error"
+          className="m-auto my-5"
+          onClose={() => setInitiateMatchError(false)}
+        >
+          <Text type="p">An error occurred starting the match</Text>
+        </Banner>
+      )}
+
+      <section className="my-10 flex min-h-fit w-full items-center justify-around align-middle">
+        {teams.map((team, teamIndex) => (
+          <TeamSelectionCard
+            title="Foo"
+            key={`team-${teamIndex}`}
+            loading={false}
+            team={team.map(playerId => getPlayer(playerId))}
+            onPlayerAdded={memorableId =>
+              onPlayerAddedToTeam(teamIndex, memorableId)
+            }
+            clearPlayer={playerId => clearPlayerFromTeam(playerId, teamIndex)}
+            className="min-h-full basis-2/5"
+          />
+        ))}
+
+        {/* <PlayerSelectionCard
           title="Player 1"
           player={players[0]}
           loading={loading[0]}
-          isError={errors[0]}
           onIdSubmitted={memorableId => onIdSet(0, memorableId)}
           clearPlayer={() => clearPlayer(0)}
           className="min-h-full basis-2/5"
@@ -125,20 +221,23 @@ export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
           title="Player 2"
           player={players[1]}
           loading={loading[1]}
-          isError={errors[1]}
           onIdSubmitted={memorableId => onIdSet(1, memorableId)}
           clearPlayer={() => clearPlayer(1)}
           className="min-h-full basis-2/5"
-        />
+        /> */}
       </section>
-      <div className="my-20 text-center">
-        {allPlayersSelected() && (
-          <Button text="Start Game" onClick={startGame} />
-        )}
+      <div className="text-center">
+        <Button
+          text="Start Game"
+          disabled={!allPlayersSelected()}
+          onClick={startGame}
+        />
       </div>
-      {!allPlayersSelected() && (
-        <RecentPlayers onSelected={onSelected} disabled={selectedPlayerIds()} />
-      )}
-    </section>
+      <RecentPlayers
+        className="mx-10"
+        onSelected={() => console.log('')}
+        disabled={selectedPlayerIds()}
+      />
+    </main>
   );
 }

@@ -3,13 +3,14 @@ import React from 'react';
 export type DefaultProps = {
   className?: string;
   children?: React.ReactNode | React.ReactNode[] | string;
+  key?: string;
 };
 
 export type LoadingProps = {
-  loading: boolean
-}
+  loading: boolean;
+};
 
-export type WithLoadingProps<T> = T & LoadingProps
+export type WithLoadingProps<T> = T & LoadingProps;
 
 export type WithDefaultProps<T> = T & DefaultProps;
 

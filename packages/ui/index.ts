@@ -20,8 +20,14 @@ export { PlayerCard, PlayerIdInput, PlayerSelectionCard, TextInput };
 // Organisms
 import AvailableGamesOverview from './organisms/AvailableGamesOverview/AvailableGamesOverview';
 import RecentMatchesOverview from './organisms/RecentMatchesOverview/RecentMatchesOverview';
+import TeamSelectionCard from './organisms/TeamSelectionCard/TeamSelectionCard';
 import TopPlayersOverview from './organisms/TopPlayersOverview/TopPlayersOverview';
 
-export { AvailableGamesOverview, RecentMatchesOverview, TopPlayersOverview };
+export {
+  AvailableGamesOverview,
+  RecentMatchesOverview,
+  TeamSelectionCard,
+  TopPlayersOverview,
+};
 
 export * from './types';
