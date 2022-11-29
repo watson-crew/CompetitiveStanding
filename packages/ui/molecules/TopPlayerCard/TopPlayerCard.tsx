@@ -2,13 +2,22 @@ import React from "react"
 import { twMerge } from "tailwind-merge"
 import Card from "../../atoms/Card/Card"
 import Text from "../../atoms/Text/Text"
+import PlaysAndWinsResults from "../PlaysAndWinsResults/PlaysAndWinsResults"
 import { WithDefaultProps, WithLoadingProps } from "../../types"
 import { RankedPlayer, User } from 'schema'
 import Image from 'next/image'
 
 
+export enum topPlayerCardType {
+  FIRST,
+  SECOND,
+  THIRD
+}
+
 type TopPlayersCardProps = WithDefaultProps<WithLoadingProps<{
-  rankedPlayer?: RankedPlayer
+  rankedPlayer?: RankedPlayer,
+  cardType: topPlayerCardType,
+  fullVersion?: boolean
 }>>
 
 function TopPlayersCardStateContent() {
@@ -22,10 +31,21 @@ function TopPlayersCardStateContent() {
   )
 }
 
+const classNamesForCards: Record<topPlayerCardType, string> = {
+  [topPlayerCardType.FIRST] : "row-span-6 col-span-2 bg-yellow-400",
+  [topPlayerCardType.SECOND]: "row-span-4 col-span-1 bg-gray-500",
+  [topPlayerCardType.THIRD] : "row-span-2 col-span-1 bg-yellow-700"
+};
 
-export default function TopPlayersCard({ rankedPlayer, className, loading }: TopPlayersCardProps) {
+function classNames(type: topPlayerCardType) {
+  return classNamesForCards[type];
+}
 
-  const renderWithChildren = (children: React.ReactNode) => React.createElement(Card, { className: twMerge('w-full', className) }, children)
+export default function TopPlayersCard({ rankedPlayer, className, loading, cardType, fullVersion = false }: TopPlayersCardProps) {
+
+  const classNamesToUse = classNames(cardType);
+
+  const renderWithChildren = (children: React.ReactNode) => React.createElement(Card, { className: twMerge('flex flex-col w-full', className, classNamesToUse) }, children)
 
   if (loading) {
     return renderWithChildren(TopPlayersCardStateContent())
@@ -43,16 +63,18 @@ export default function TopPlayersCard({ rankedPlayer, className, loading }: Top
           <Image src={imageUrl} alt={`${fullName}'s picture`} fill={true} sizes="" className="rounded-full" />
         </div>
 
-        <section className='pl-10'>
+        <section className='pl-5'>
           <Text type='h3' className='text-sky-500 dark:text-sky-400'>{fullName}</Text>
           <Text type='p' className='text-[#ff3e00] font-bold'>{player?.memorableId}</Text>
         </section>
       </div>
 
-      <section className='pl-10'>
-        <Text type='h3' className='text-sky-500 dark:text-sky-400'>Wins: <span>{rankedPlayer?.wins}</span></Text>
-        <Text type='p' className='text-[#ff3e00] font-bold'>Played: <span>{rankedPlayer?.gamesPlayed}</span></Text>
-      </section>
+      <PlaysAndWinsResults
+        gamesPlayed={rankedPlayer!.gamesPlayed!}
+        gamesWon={rankedPlayer!.wins!}
+        fullVersion={cardType == topPlayerCardType.FIRST}
+        className="flex self-end"
+      />
     </>
   )
 }

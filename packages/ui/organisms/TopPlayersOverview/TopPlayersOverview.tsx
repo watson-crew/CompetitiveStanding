@@ -2,6 +2,7 @@ import { twMerge } from "tailwind-merge"
 import Card from "../../atoms/Card/Card"
 import Text from "../../atoms/Text/Text"
 import TopPlayersCard from "../../molecules/TopPlayerCard/TopPlayerCard"
+import { topPlayerCardType } from "../../molecules/TopPlayerCard/TopPlayerCard"
 import { WithDefaultProps, WithLoadingProps } from "../../types"
 import { RankedPlayer } from 'schema'
 
@@ -18,24 +19,24 @@ export default function TopPlayersOverview({ rankedPlayers, className, loading }
   const cardDetailsToRender = [
     {
       rankedPlayer: rankedPlayers[0],
-      className: "row-span-6 col-span-2 bg-yellow-400"
+      cardType: topPlayerCardType.FIRST
     },
     {
       rankedPlayer: rankedPlayers[1],
-      className: "row-span-4 col-span-1 bg-gray-500"
+      cardType: topPlayerCardType.SECOND
     },
     {
       rankedPlayer: rankedPlayers[2],
-      className: "row-span-2 col-span-1 bg-yellow-700"
+      cardType: topPlayerCardType.THIRD
     }
   ]
 
   cardDetailsToRender.forEach(details => {
     if (loading || !details.rankedPlayer)
     {
-      cardsToRender.push(<TopPlayersCard loading={true} className={details.className}/>)
+      cardsToRender.push(<TopPlayersCard loading={true} cardType={details.cardType}/>)
     } else {
-      cardsToRender.push(<TopPlayersCard rankedPlayer={details.rankedPlayer} loading={false} className={details.className}/>)
+      cardsToRender.push(<TopPlayersCard rankedPlayer={details.rankedPlayer} loading={false} cardType={details.cardType}/>)
     }
 
   });
