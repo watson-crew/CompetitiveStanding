@@ -123,7 +123,7 @@ export interface RankedPlayer {
 export type RecordMatchResultsData = any;
 
 export interface RecordMatchResultsPayload {
-  updateType: RecordMatchResultsPayloadUpdateType;
+  updateType: 'SET_WINNER' | 'ABANDON_GAME';
   updateDetails?: WinningTeamDetails;
 }
 
@@ -160,11 +160,6 @@ export interface User {
 
 export interface WinningTeamDetails {
   winningTeamId: string;
-}
-
-export enum RecordMatchResultsPayloadUpdateType {
-  SET_WINNER = 'SET_WINNER',
-  ABANDON_GAME = 'ABANDON_GAME',
 }
 
 export namespace User {

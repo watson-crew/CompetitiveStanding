@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate": "swagger-typescript-api -p ./schema.json --axios --name index --route-types --extract-request-body --extract-response-body --sort-types --extract-enums --module-name-first-tag --unwrap-response-data --api-class-name ApiClient"
+    "generate": "swagger-typescript-api -p ./schema.json --axios --name index --route-types --extract-request-body --extract-response-body --sort-types --module-name-first-tag --unwrap-response-data --api-class-name ApiClient"
   },
   "author": "",
   "license": "ISC",

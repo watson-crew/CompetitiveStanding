@@ -149,9 +149,12 @@ export async function updateGameResult(
 
 export async function abandonMatch(matchId: number): Promise<boolean> {
   try {
-    await prisma.gameResult.delete({
+    await prisma.gameResult.deleteMany({
       where: {
         id: matchId,
+        winningTeamId: {
+          equals: null,
+        },
       },
     });
     return true;

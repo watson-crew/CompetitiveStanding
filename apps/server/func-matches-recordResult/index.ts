@@ -1,4 +1,4 @@
-import { Matches, RecordMatchResultsPayloadUpdateType } from 'schema';
+import { Matches } from 'schema';
 import {
   ContextForNoContentResponse,
   FunctionName,
@@ -32,9 +32,9 @@ const httpTrigger = async function (
 
   let updateSuccessful: Promise<boolean>;
 
-  if (updateType === RecordMatchResultsPayloadUpdateType.ABANDON_GAME) {
+  if (updateType === 'ABANDON_GAME') {
     updateSuccessful = abandonMatch(matchId);
-  } else if (updateType === RecordMatchResultsPayloadUpdateType.SET_WINNER) {
+  } else if (updateType === 'SET_WINNER') {
     updateSuccessful = updateGameResult(matchId, updateDetails);
   } else {
     set400Response(log, context);
