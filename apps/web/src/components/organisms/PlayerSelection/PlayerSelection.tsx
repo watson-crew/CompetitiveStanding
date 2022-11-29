@@ -16,6 +16,7 @@ const gameTypes = {
     maxNumberOfTeams: 2,
     minPlayersPerTeam: 1,
     defaultPlayersPerTeam: 1,
+    maxPlayersPerTeam: 2,
   },
 };
 
@@ -42,7 +43,8 @@ export default function PlayerSelection() {
 
   // Initialise values
 
-  const { minNumberOfTeams, minPlayersPerTeam } = gameTypes[selectedGameTypeId];
+  const { minNumberOfTeams, minPlayersPerTeam, maxPlayersPerTeam } =
+    gameTypes[selectedGameTypeId];
 
   type YourMum = {
     playerId?: string;
@@ -273,6 +275,7 @@ export default function PlayerSelection() {
             }
             increaseTeamSize={() => increaseTeamSize(teamIndex)}
             clearPlayer={playerId => clearPlayerFromTeam(playerId, teamIndex)}
+            maxPlayersPerTeam={maxPlayersPerTeam}
             className="min-h-full basis-2/5"
           />
         ))}

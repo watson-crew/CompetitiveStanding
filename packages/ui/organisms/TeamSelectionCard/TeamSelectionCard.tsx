@@ -5,7 +5,6 @@ import Card from '../../atoms/Card/Card';
 import PlayerSelectionCard from '../../molecules/PlayerSelectionCard/PlayerSelectionCard';
 import IconButton from '../../atoms/IconButton/IconButton';
 import { AiOutlineUserAdd } from 'react-icons/ai';
-import WithCloseButton from '../../atoms/WithCloseButton/WithCloseButton';
 
 type YourMum = {
   user?: User;
@@ -18,6 +17,7 @@ type TeamSelectionCardProps = WithDefaultProps<{
   onPlayerAdded: (id: string) => Promise<void>;
   increaseTeamSize: () => Promise<void>;
   clearPlayer: (playerId?: string) => void;
+  maxPlayersPerTeam: number;
 }>;
 
 export default function TeamSelectionCard({
@@ -26,6 +26,7 @@ export default function TeamSelectionCard({
   increaseTeamSize,
   clearPlayer,
   className,
+  maxPlayersPerTeam,
   key,
 }: TeamSelectionCardProps) {
   const containerClasses = twMerge(
@@ -34,6 +35,8 @@ export default function TeamSelectionCard({
   );
 
   const allSlotsFilled = team.every(player => !!player.user);
+
+  const allSpacesFilled = maxPlayersPerTeam === team.length;
 
   return (
     <Card className={containerClasses}>
@@ -48,7 +51,7 @@ export default function TeamSelectionCard({
         />
       ))}
 
-      {
+      {!allSpacesFilled && (
         <IconButton
           icon={AiOutlineUserAdd}
           buttonSize="l"
@@ -59,7 +62,7 @@ export default function TeamSelectionCard({
             'fill-slate-500 transition duration-300 hover:fill-slate-800'
           }
         />
-      }
+      )}
     </Card>
   );
 }
