@@ -2,11 +2,21 @@ import React from "react"
 import { twMerge } from "tailwind-merge"
 import Card from "../../atoms/Card/Card"
 import Text from "../../atoms/Text/Text"
+import PlaysAndWinsResults from "../PlaysAndWinsResults/PlaysAndWinsResults"
 import { WithDefaultProps, WithLoadingProps } from "../../types"
+import { RankedPlayer, User } from 'schema'
+import Image from 'next/image'
 
+
+export enum topPlayerCardType {
+  FIRST,
+  SECOND,
+  THIRD
+}
 
 type TopPlayersCardProps = WithDefaultProps<WithLoadingProps<{
-  playerName: string
+  rankedPlayer?: RankedPlayer,
+  cardType: topPlayerCardType
 }>>
 
 function TopPlayersCardStateContent() {
@@ -20,18 +30,50 @@ function TopPlayersCardStateContent() {
   )
 }
 
+const classNamesForCards: Record<topPlayerCardType, string> = {
+  [topPlayerCardType.FIRST] : "row-span-6 col-span-2 bg-yellow-400",
+  [topPlayerCardType.SECOND]: "row-span-4 col-span-1 bg-gray-500",
+  [topPlayerCardType.THIRD] : "row-span-2 col-span-1 bg-yellow-700"
+};
 
-export default function TopPlayersCard({ className, loading }: TopPlayersCardProps) {
+function classNames(type: topPlayerCardType) {
+  return classNamesForCards[type];
+}
 
-  const renderWithChildren = (children: React.ReactNode) => React.createElement(Card, { className: twMerge('w-full', className) }, children)
+export default function TopPlayersCard({ rankedPlayer, className, loading, cardType}: TopPlayersCardProps) {
+
+  const classNamesToUse = classNames(cardType);
+
+  const renderWithChildren = (children: React.ReactNode) => React.createElement(Card, { className: twMerge('flex flex-col w-full', className, classNamesToUse) }, children)
 
   if (loading) {
     return renderWithChildren(TopPlayersCardStateContent())
   }
 
+  const player = rankedPlayer?.player
+  const getFullName = (player: User) => `${player.firstName} ${player.lastName}`
+  const fullName = (player && getFullName(player)) ?? ''
+  const imageUrl = player?.profilePicture ?? 'https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg'
+
   return renderWithChildren(
     <>
-      <Text type='p'>Actual card content here</Text>
+      <div className="flex">
+        <div className="h-12 w-12 relative">
+          <Image src={imageUrl} alt={`${fullName}'s picture`} fill={true} sizes="" className="rounded-full" />
+        </div>
+
+        <section className='pl-5'>
+          <Text type='h3' className='text-sky-500 dark:text-sky-400'>{fullName}</Text>
+          <Text type='p' className='text-[#ff3e00] font-bold'>{player?.memorableId}</Text>
+        </section>
+      </div>
+
+      <PlaysAndWinsResults
+        gamesPlayed={rankedPlayer!.gamesPlayed!}
+        gamesWon={rankedPlayer!.wins!}
+        fullVersion={cardType == topPlayerCardType.FIRST}
+        className="flex self-end"
+      />
     </>
   )
 }
