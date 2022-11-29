@@ -1,8 +1,11 @@
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { User } from 'schema';
 import { Banner, Button, TeamSelectionCard, Text, Toggle } from 'ui';
-import { useDispatch } from 'react-redux';
-import { addRecentlyPlayed } from '@src/store/reducers/playerSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addRecentlyPlayed,
+  selectRecentlyPlayed,
+} from '@src/store/reducers/playerSlice';
 // import RecentPlayers from '../RecentPlayers/RecentPlayers';
 import { ApiContext } from '@src/context/ApiContext';
 import RecentPlayers from '../RecentPlayers/RecentPlayers';
@@ -59,8 +62,6 @@ export default function PlayerSelection() {
   // Maybe from query param
   const selectedLocationId = 1;
 
-  const numPlayers = 2;
-
   const [playerNotFoundId, setPlayerNotFoundId] = useState<string | undefined>(
     undefined,
   );
@@ -86,15 +87,7 @@ export default function PlayerSelection() {
 
   const [teams, setTeams] = useState(initialTeams);
 
-  // Initialise values
-  const initialPlayers: Record<number, User | undefined> = {};
-  const initialLoading: Record<number, boolean> = {};
-  const initialErrors: Record<number, boolean> = {};
-  for (let i = 0; i < numPlayers; i++) {
-    initialPlayers[i] = undefined;
-    initialLoading[i] = false;
-    initialErrors[i] = false;
-  }
+  const initialPlayers = useSelector(selectRecentlyPlayed);
 
   const [savedPlayers, setSavedPlayers] = useState<Record<string, User>>(
     Object.fromEntries(
@@ -255,9 +248,29 @@ export default function PlayerSelection() {
     );
   };
 
-  console.log(`Teams ${teams}`);
-  console.log(teams);
-  console.log(teamConfiguration.maxNumberOfTeams);
+  const hasOpenSlot = (arr: YourMum[]): boolean => {
+    return arr.some(item => item.playerId === undefined);
+  };
+
+  const nextTeamIndex = (): number => {
+    let shortest: number = Number.MAX_VALUE;
+    let shortestIndex: number = Number.MAX_VALUE;
+
+    for (let i = 0; i < teams.length; i++) {
+      const team = teams[i];
+
+      if (hasOpenSlot(team)) {
+        if (team.length === 1) {
+          return i;
+        } else if (team.length < shortest) {
+          shortest = team.length;
+          shortestIndex = i;
+        }
+      }
+    }
+
+    return shortestIndex;
+  };
 
   return (
     <section className="w-full text-center">
@@ -356,7 +369,9 @@ export default function PlayerSelection() {
       </div>
       <RecentPlayers
         className="mx-10"
-        onSelected={() => console.log('')}
+        onSelected={user =>
+          onPlayerAddedToTeam(nextTeamIndex(), user.memorableId)
+        }
         disabled={selectedPlayerIds()}
       />
     </section>
