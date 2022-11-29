@@ -1,25 +1,34 @@
+import { twMerge } from 'tailwind-merge';
 import { WithDefaultProps } from '../../types';
+import Text from '../Text/Text';
 
 type ButtonProps = WithDefaultProps<{
-  text: string;
+  text?: string;
   disabled?: boolean;
   onClick: () => void;
 }>;
 
 export default function Button({
+  children,
   text,
   onClick,
   disabled,
   className = '',
 }: ButtonProps) {
+  const hasChildren = children !== undefined;
+
   return (
     <button
       type="button"
       disabled={disabled}
-      className={`font-small relative my-5 w-24 cursor-pointer rounded bg-yellow-600 py-2 px-4 text-center text-lg text-white shadow-md hover:bg-yellow-500 disabled:opacity-25 ${className}`}
+      className={twMerge(
+        `font-small disabled: relative my-5 w-fit cursor-pointer rounded bg-yellow-600 py-2 px-4 text-center text-lg text-white shadow-md enabled:hover:bg-yellow-500 disabled:cursor-default disabled:opacity-25`,
+        className,
+      )}
       onClick={onClick}
     >
-      {text}
+      {hasChildren && children}
+      {!hasChildren && <Text type="p">{text}</Text>}
     </button>
   );
 }

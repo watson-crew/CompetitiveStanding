@@ -6,9 +6,20 @@ import IconButton from './atoms/IconButton/IconButton';
 import LoadingSpinner from './atoms/LoadingSpinner/LoadingSpinner';
 import WithCloseButton from './atoms/WithCloseButton/WithCloseButton';
 import Text from './atoms/Text/Text';
+import Toggle from './atoms/Toggle/Toggle';
 import Link from './atoms/Link/Link';
 
-export { Banner, Button, Card, LoadingSpinner, WithCloseButton, Text, Link };
+export {
+  Banner,
+  Button,
+  Card,
+  IconButton,
+  LoadingSpinner,
+  WithCloseButton,
+  Text,
+  Toggle,
+  Link,
+};
 
 // Molecules
 import PlayerCard from './molecules/PlayerCard/PlayerCard';

@@ -1,12 +1,14 @@
-import { useContext, useState } from 'react';
+import { ChangeEvent, useContext, useState } from 'react';
 import { User } from 'schema';
-import { Banner, Button, TeamSelectionCard, Text } from 'ui';
+import { Banner, Button, TeamSelectionCard, Text, Toggle } from 'ui';
 import { useDispatch } from 'react-redux';
 import { addRecentlyPlayed } from '@src/store/reducers/playerSlice';
 // import RecentPlayers from '../RecentPlayers/RecentPlayers';
 import { ApiContext } from '@src/context/ApiContext';
 import RecentPlayers from '../RecentPlayers/RecentPlayers';
+import TextWithIcon from '@src/../../../packages/ui/molecules/TextWithIcon/TextWithIcon';
 // import { initialState } from '@src/pages/signup/state';
+import { AiOutlineTeam, AiOutlineUser } from 'react-icons/ai';
 
 // This should be dynamic from somewhere
 const gameTypes = {
@@ -21,6 +23,12 @@ const gameTypes = {
 };
 
 export default function PlayerSelection() {
+  const [teamsEnabled, setTeamsEnabled] = useState(false);
+
+  const toggleTeamsEnabled = (_e: ChangeEvent<HTMLInputElement>) => {
+    setTeamsEnabled(!teamsEnabled);
+  };
+
   const dispatch = useDispatch();
   const client = useContext(ApiContext);
 
@@ -225,7 +233,28 @@ export default function PlayerSelection() {
   console.log(teams);
 
   return (
-    <main className="w-full text-center	">
+    <section className="w-full text-center">
+      <Toggle
+        isToggled={teamsEnabled}
+        onChange={toggleTeamsEnabled}
+        defaultColor="yellow-500"
+        toggledColor="cyan-800"
+        beforeChild={
+          <TextWithIcon
+            textProps={{ type: 'p' }}
+            icon={AiOutlineUser}
+            reversed={true}
+          >
+            Singles
+          </TextWithIcon>
+        }
+        afterChild={
+          <TextWithIcon textProps={{ type: 'p' }} icon={AiOutlineTeam}>
+            Teams
+          </TextWithIcon>
+        }
+      />
+
       {playerNotFoundId && (
         <Banner
           type="info"
@@ -292,6 +321,6 @@ export default function PlayerSelection() {
         onSelected={() => console.log('')}
         disabled={selectedPlayerIds()}
       />
-    </main>
+    </section>
   );
 }

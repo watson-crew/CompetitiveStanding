@@ -5,6 +5,8 @@ import Card from '../../atoms/Card/Card';
 import PlayerSelectionCard from '../../molecules/PlayerSelectionCard/PlayerSelectionCard';
 import IconButton from '../../atoms/IconButton/IconButton';
 import { AiOutlineUserAdd } from 'react-icons/ai';
+import Button from '../../atoms/Button/Button';
+import TextWithIcon from '../../molecules/TextWithIcon/TextWithIcon';
 
 type YourMum = {
   user?: User;
@@ -52,16 +54,15 @@ export default function TeamSelectionCard({
       ))}
 
       {!allSpacesFilled && (
-        <IconButton
-          icon={AiOutlineUserAdd}
-          buttonSize="l"
-          onClick={increaseTeamSize}
-          className={'mt-5'}
-          disabled={!allSlotsFilled}
-          iconClassName={
-            'fill-slate-500 transition duration-300 hover:fill-slate-800'
-          }
-        />
+        <Button onClick={increaseTeamSize} disabled={!allSlotsFilled}>
+          <TextWithIcon
+            textProps={{ type: 'p' }}
+            icon={AiOutlineUserAdd}
+            iconSize="l"
+          >
+            Add Player
+          </TextWithIcon>
+        </Button>
       )}
     </Card>
   );
