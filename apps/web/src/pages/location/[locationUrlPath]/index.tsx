@@ -62,7 +62,7 @@ export default function Index({ location }: LocationPageProps) {
   }
 
   const fetchRankings = async () => {
-    // TODO: Look at where game type comes from?
+    // TODO: Look at where game type should come from
     const data = await api.matches.getRankingsForLocation({ locationId: location.id, gameTypeId: 1, total: 3});
 
     setRankedPlayers(data)

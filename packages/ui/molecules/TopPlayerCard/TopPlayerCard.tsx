@@ -3,11 +3,12 @@ import { twMerge } from "tailwind-merge"
 import Card from "../../atoms/Card/Card"
 import Text from "../../atoms/Text/Text"
 import { WithDefaultProps, WithLoadingProps } from "../../types"
-import { User } from 'schema'
+import { RankedPlayer, User } from 'schema'
+import Image from 'next/image'
 
 
 type TopPlayersCardProps = WithDefaultProps<WithLoadingProps<{
-  player?: User
+  rankedPlayer?: RankedPlayer
 }>>
 
 function TopPlayersCardStateContent() {
@@ -22,17 +23,36 @@ function TopPlayersCardStateContent() {
 }
 
 
-export default function TopPlayersCard({ player, className, loading }: TopPlayersCardProps) {
+export default function TopPlayersCard({ rankedPlayer, className, loading }: TopPlayersCardProps) {
 
   const renderWithChildren = (children: React.ReactNode) => React.createElement(Card, { className: twMerge('w-full', className) }, children)
-  
+
   if (loading) {
     return renderWithChildren(TopPlayersCardStateContent())
   }
 
+  const player = rankedPlayer?.player
+  const getFullName = (player: User) => `${player.firstName} ${player.lastName}`
+  const fullName = (player && getFullName(player)) ?? ''
+  const imageUrl = player?.profilePicture ?? 'https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg'
+
   return renderWithChildren(
     <>
-      <Text type='p'>{player?.firstName}</Text>
+      <div className="flex">
+        <div className="h-12 w-12 relative">
+          <Image src={imageUrl} alt={`${fullName}'s picture`} fill={true} sizes="" className="rounded-full" />
+        </div>
+
+        <section className='pl-10'>
+          <Text type='h3' className='text-sky-500 dark:text-sky-400'>{fullName}</Text>
+          <Text type='p' className='text-[#ff3e00] font-bold'>{player?.memorableId}</Text>
+        </section>
+      </div>
+
+      <section className='pl-10'>
+        <Text type='h3' className='text-sky-500 dark:text-sky-400'>Wins: <span>{rankedPlayer?.wins}</span></Text>
+        <Text type='p' className='text-[#ff3e00] font-bold'>Played: <span>{rankedPlayer?.gamesPlayed}</span></Text>
+      </section>
     </>
   )
 }

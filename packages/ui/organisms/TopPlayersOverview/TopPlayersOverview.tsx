@@ -17,25 +17,25 @@ export default function TopPlayersOverview({ rankedPlayers, className, loading }
 
   const cardDetailsToRender = [
     {
-      rankingDetails: rankedPlayers[0],
+      rankedPlayer: rankedPlayers[0],
       className: "row-span-6 col-span-2 bg-yellow-400"
     },
     {
-      rankingDetails: rankedPlayers[1],
+      rankedPlayer: rankedPlayers[1],
       className: "row-span-4 col-span-1 bg-gray-500"
     },
     {
-      rankingDetails: rankedPlayers[2],
+      rankedPlayer: rankedPlayers[2],
       className: "row-span-2 col-span-1 bg-yellow-700"
     }
   ]
 
   cardDetailsToRender.forEach(details => {
-    if (loading || !details.rankingDetails)
+    if (loading || !details.rankedPlayer)
     {
       cardsToRender.push(<TopPlayersCard loading={true} className={details.className}/>)
     } else {
-      cardsToRender.push(<TopPlayersCard player={details.rankingDetails.player!} loading={false} className={details.className}/>)
+      cardsToRender.push(<TopPlayersCard rankedPlayer={details.rankedPlayer} loading={false} className={details.className}/>)
     }
 
   });

@@ -1,4 +1,4 @@
-import { GameResult, User } from 'database';
+import { GameResult, User, Team } from 'database';
 
 export type GetResultsForLocationResult = GameResult & {
   winningTeam: {
@@ -11,4 +11,9 @@ export type GetResultsForLocationResult = GameResult & {
     cumulativeTeamId: string;
     players: User[];
   }[];
+};
+
+export type GetRankingsForLocationAndGameTypeResult = User & {
+  gamesPlayed: number,
+  gamesWon: number
 };

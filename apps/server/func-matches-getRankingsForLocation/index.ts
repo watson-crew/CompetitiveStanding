@@ -7,6 +7,7 @@ import {
 import { set200Response, set500Response } from '@utils/contextUtils';
 import { getFunctionLogger } from '@src/utils/logging';
 import { getUserByMemorableId } from '@src/repository/userRepository';
+import { getRankingsForLocation } from '@src/repository/gameResultRepository';
 
 const httpTrigger = async function (
   context: ContextForResponseBody<Matches.GetRankingsForLocation.ResponseBody>,
@@ -24,12 +25,13 @@ const httpTrigger = async function (
   log(`Got total: ${total}`);
 
   try {
-    const josh = await getUserByMemorableId('jjp')
-    const rankings: RankedPlayer[] = [{
-      player: josh,
-      gamesPlayed: 1,
-      wins: 1
-    }];
+    const rankings = await getRankingsForLocation(
+      parseInt(locationId),
+      parseInt(gameTypeId),
+      parseInt(offset) || undefined,
+      parseInt(total) || undefined,
+    );
+
     log(`Found rankings`)
     set200Response(log, context, rankings);
   } catch (e) {
