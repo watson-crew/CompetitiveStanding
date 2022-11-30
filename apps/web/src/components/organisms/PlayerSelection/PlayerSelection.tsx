@@ -1,4 +1,11 @@
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react';
 import { User } from 'schema';
 import {
   Banner,
@@ -23,6 +30,7 @@ import {
   AiOutlineUser,
   AiOutlineUsergroupAdd,
 } from 'react-icons/ai';
+import { teamsReducer } from './state';
 
 // This should be dynamic from somewhere
 const gameTypes = {
@@ -41,8 +49,50 @@ type TeamConfiguration = {
   maxPlayersPerTeam: number;
 };
 
+type Error = {
+  level: 'info' | 'error';
+  message: string;
+};
+
+function TeamToggle({
+  teamsEnabled,
+  toggleTeamsEnabled,
+}: {
+  teamsEnabled: boolean;
+  toggleTeamsEnabled: ChangeEventHandler<HTMLInputElement>;
+}) {
+  return (
+    <Toggle
+      isToggled={teamsEnabled}
+      onChange={toggleTeamsEnabled}
+      defaultColor="yellow-500"
+      toggledColor="cyan-800"
+      beforeChild={
+        <TextWithIcon
+          textProps={{ type: 'p' }}
+          icon={AiOutlineUser}
+          reversed={true}
+        >
+          Singles
+        </TextWithIcon>
+      }
+      afterChild={
+        <TextWithIcon textProps={{ type: 'p' }} icon={AiOutlineTeam}>
+          Teams
+        </TextWithIcon>
+      }
+    />
+  );
+}
+
 export default function PlayerSelection() {
+  const recentPlayers = useSelector(selectRecentlyPlayed);
+
+  const [teamState, localDispatch] = useReducer(teamsReducer, { teams: [] });
+
   const [teamsEnabled, setTeamsEnabled] = useState(false);
+
+  const [error, setError] = useState<Error | undefined>();
 
   const toggleTeamsEnabled = (_e: ChangeEvent<HTMLInputElement>) => {
     setTeamsEnabled(!teamsEnabled);
@@ -69,15 +119,6 @@ export default function PlayerSelection() {
   // Maybe from query param
   const selectedLocationId = 1;
 
-  const [playerNotFoundId, setPlayerNotFoundId] = useState<string | undefined>(
-    undefined,
-  );
-
-  const [playerAlreadyInTeamError, setPlayerAlreadyInTeamError] =
-    useState(false);
-
-  const [initiateMatchError, setInitiateMatchError] = useState<boolean>(false);
-
   // Initialise values
 
   const { minNumberOfTeams, minPlayersPerTeam } = gameTypes[selectedGameTypeId];
@@ -89,11 +130,9 @@ export default function PlayerSelection() {
 
   const [teams, setTeams] = useState(initialTeams);
 
-  const initialPlayers = useSelector(selectRecentlyPlayed);
-
   const [savedPlayers, setSavedPlayers] = useState<Record<string, User>>(
     Object.fromEntries(
-      Object.values(initialPlayers)
+      Object.values(recentPlayers)
         .filter(player => !!player)
         .map(player => [player?.memorableId, player]),
     ),
@@ -133,10 +172,12 @@ export default function PlayerSelection() {
         team.some(player => player.playerDetails?.memorableId === memorableId),
       )
     ) {
-      setPlayerAlreadyInTeamError(true);
+      setError({
+        level: 'info',
+        message: `${savedPlayers[memorableId].firstName} is already in a team`,
+      });
       return;
     }
-    setPlayerAlreadyInTeamError(false);
 
     setLoadingForTeam(teamIndex, true);
 
@@ -156,10 +197,15 @@ export default function PlayerSelection() {
         return { ...savedPlayers, [memorableId]: playerAdded };
       });
 
+      setError(undefined);
+
       // setPlayer(id, await fetchPlayer(memorableId));
       // setErrorForPlayer(id, false);
     } catch (err) {
-      setPlayerNotFoundId(memorableId);
+      setError({
+        level: 'info',
+        message: `No player exits with memorable id: ${memorableId}`,
+      });
       // setErrorForPlayer(id, true);
     } finally {
       setLoadingForTeam(teamIndex, false);
@@ -217,7 +263,10 @@ export default function PlayerSelection() {
         ),
       });
     } catch (err) {
-      setInitiateMatchError(true);
+      setError({
+        level: 'error',
+        message: 'An error occurred starting the match',
+      });
     }
 
     Object.values(savedPlayers).forEach(player => {
@@ -272,25 +321,9 @@ export default function PlayerSelection() {
 
   return (
     <section className="w-full text-center">
-      <Toggle
-        isToggled={teamsEnabled}
-        onChange={toggleTeamsEnabled}
-        defaultColor="yellow-500"
-        toggledColor="cyan-800"
-        beforeChild={
-          <TextWithIcon
-            textProps={{ type: 'p' }}
-            icon={AiOutlineUser}
-            reversed={true}
-          >
-            Singles
-          </TextWithIcon>
-        }
-        afterChild={
-          <TextWithIcon textProps={{ type: 'p' }} icon={AiOutlineTeam}>
-            Teams
-          </TextWithIcon>
-        }
+      <TeamToggle
+        teamsEnabled={teamsEnabled}
+        toggleTeamsEnabled={toggleTeamsEnabled}
       />
 
       {teamsEnabled && (
@@ -304,38 +337,13 @@ export default function PlayerSelection() {
         </Button>
       )}
 
-      {playerNotFoundId && (
+      {error && (
         <Banner
-          type="info"
+          type={error.level}
           className="m-auto my-5"
-          onClose={() => setPlayerNotFoundId(undefined)}
+          onClose={() => setError(undefined)}
         >
-          <Text type="p">
-            No player exits with memorable id{' '}
-            <span className="font-bold">{playerNotFoundId}</span>
-          </Text>
-        </Banner>
-      )}
-      {playerAlreadyInTeamError && (
-        <Banner
-          type="info"
-          className="m-auto my-5"
-          onClose={() => setPlayerNotFoundId(undefined)}
-        >
-          <Text type="p">
-            Player is already in a team
-            <span className="font-bold">{playerNotFoundId}</span>
-          </Text>
-        </Banner>
-      )}
-
-      {initiateMatchError && (
-        <Banner
-          type="error"
-          className="m-auto my-5"
-          onClose={() => setInitiateMatchError(false)}
-        >
-          <Text type="p">An error occurred starting the match</Text>
+          <Text type="p">{error.message}</Text>
         </Banner>
       )}
 
