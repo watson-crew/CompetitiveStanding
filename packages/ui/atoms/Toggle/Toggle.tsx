@@ -16,6 +16,7 @@ type ToggleProps = WithDefaultProps<{
 
 export default function Toggle({
   isToggled,
+  className,
   onChange,
   beforeText,
   beforeChild,
@@ -37,7 +38,7 @@ export default function Toggle({
   const peerStyles = `peer peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-300`;
 
   return (
-    <span className="flex">
+    <span className={twMerge('inline-flex', className)}>
       {beforeElement}
 
       <label className="relative mx-1 inline-flex cursor-pointer items-center">
