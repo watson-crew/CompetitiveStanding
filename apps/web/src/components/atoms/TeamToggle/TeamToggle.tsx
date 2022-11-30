@@ -1,6 +1,6 @@
 import { Toggle, TextWithIcon } from 'ui';
 import { AiOutlineTeam, AiOutlineUser } from 'react-icons/ai';
-import { ChangeEventHandler, useState } from 'react';
+import { MouseEventHandler, useState } from 'react';
 
 type TeamToggleProps = {
   initialState: boolean;
@@ -17,7 +17,7 @@ export default function TeamToggle({
 
   console.log(`TeamToggle state: ${toggled}`);
 
-  const onChange: ChangeEventHandler<HTMLInputElement> = _e => {
+  const onChange: MouseEventHandler<HTMLDivElement> = _e => {
     console.log(`TeamToggle event current: ${toggled}`);
     setToggled(toggled => !toggled);
     console.log(`TeamToggle event postSet: ${toggled}`);

@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from 'react';
+import { MouseEventHandler } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { WithDefaultProps } from '../../types';
 import Text from '../Text/Text';
@@ -7,7 +7,7 @@ type ToggleProps = WithDefaultProps<{
   defaultColor?: string;
   toggledColor?: string;
   isToggled: boolean;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  onChange: MouseEventHandler<HTMLDivElement>;
   beforeText?: string;
   afterText?: string;
   beforeChild?: React.ReactNode;
