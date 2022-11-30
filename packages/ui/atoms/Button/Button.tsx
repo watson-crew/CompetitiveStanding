@@ -1,10 +1,9 @@
-import { ButtonHTMLAttributes, DetailedHTMLProps, HTMLProps } from "react";
 import { WithDefaultProps } from "../../types";
 
 type ButtonProps = WithDefaultProps<{
   text: string,
   disabled?: boolean,
-  type?: any,
+  type?: 'submit' | 'button',
   onClick?: () => void
 }>
 

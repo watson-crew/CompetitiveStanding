@@ -9,7 +9,8 @@ export enum Actions {
 
 export type SignupAction = {
   action: Actions,
-  value?: any,
+  inputValue?: string,
+  inputCheck?: boolean,
   errorMessage?: string | undefined
 }
 
@@ -27,24 +28,24 @@ export function signupReducer(state: SignupState, action: SignupAction): SignupS
       return {
         ...state,
         errorMessages: [],
-        firstName: action.value
+        firstName: action.inputValue || ''
       }
     case Actions.lastNameChange:
       return {
         ...state,
         errorMessages: [],
-        lastName: action.value
+        lastName: action.inputValue || ''
       }
     case Actions.memorableIdChange:
       return {
         ...state,
         errorMessages: [],
-        memorableId: action.value
+        memorableId: action.inputValue || ''
       }
     case Actions.memorableIdExists:
       return {
         ...state,
-        memorableIdExists: action.value
+        memorableIdExists: !!action.inputCheck
       }
     case Actions.setError:
       return {

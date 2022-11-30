@@ -15,7 +15,7 @@ export default function Index() {
   }, [signupState.memorableId])
 
   const handleOnChange = (action: Actions, event: ChangeEvent<HTMLInputElement>) => {
-    dispatch({ action, value: event.target.value })
+    dispatch({ action, inputValue: event.target.value })
   }
 
   const handleError = (message: string) => {
@@ -61,9 +61,9 @@ export default function Index() {
   const doesMemorableIdExist = async (memborableId: string) => {
     try {
       await api.user.getUserByMemorableId(memborableId)
-      dispatch({ action: Actions.memorableIdExists, value: true })
+      dispatch({ action: Actions.memorableIdExists, inputCheck: true })
     } catch (e) {
-      dispatch({ action: Actions.memorableIdExists, value: false })
+      dispatch({ action: Actions.memorableIdExists, inputCheck: false })
     }
   }
 
