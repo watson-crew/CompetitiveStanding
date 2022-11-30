@@ -27,6 +27,8 @@ export default function GameComponent({ teams, historicData }: GameComponentProp
         console.log(`Winner: ${team.cumulativeTeamId}`)
     }
 
+    // TODO: Display current game length
+    //       For this we need to know the startTime of the match. We can get the matchId, or the full matchDetails as a prop
     return (
         <section className="w-full h-full">
             <section className="flex h-full w-full items-center space-x-4 px-10">

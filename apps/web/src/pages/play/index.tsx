@@ -47,6 +47,10 @@ export default function Index() {
 
   // END OF TEST DATA
 
+  // TODO: Figure out what happens if screen is refreshed.
+  //       If we haven't stored the local state that a game is happening, we can't re-hydrate state
+  //       We should store the current initiateMatch results (i.e matchId, historicResults, teams) in some global persisted state
+  //       Then on refresh, we start it up again. 
   return (
     <div className="flex h-screen flex-col items-center">
       <h1 className="text-3xl font-bold underline">Competitive standing</h1>
