@@ -45,18 +45,23 @@ export default function Index() {
     setHistoricData(newHistoricData)
   }
 
-  useEffect(() => {
-    setTestData()
-  }, [])
   // END OF TEST DATA
 
   return (
     <div className="flex h-screen flex-col items-center">
       <h1 className="text-3xl font-bold underline">Competitive standing</h1>
 
-      {/* <PlayerSelection fetchPlayer={fetchUser} /> */}
+      {
+        (!teams || !teams[0])
+        &&
+        <PlayerSelection fetchPlayer={fetchUser} startMatch={setTestData}/>
+      }
 
-      <GameComponent historicData={historicData} teams={teams}/>
+      {historicData && teams && teams[0] && teams[1]
+        &&
+        <GameComponent historicData={historicData} teams={teams}/>
+      }
+
 
     </div>
   );

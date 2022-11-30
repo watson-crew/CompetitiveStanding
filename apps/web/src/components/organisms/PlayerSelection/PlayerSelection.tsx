@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User } from 'schema';
+import { Team, TeamHistoricResult, User } from 'schema';
 import { Button, PlayerSelectionCard, Text } from 'ui';
 import { useDispatch } from 'react-redux';
 import { addRecentlyPlayed } from '@src/store/reducers/playerSlice';
@@ -7,9 +7,11 @@ import RecentPlayers from '../RecentPlayers/RecentPlayers';
 
 type PlayerSelectionProps = {
   fetchPlayer: (id: string) => Promise<User>;
+  startMatch: () => void;
+  // startMatch: (teams: Team[], historicData: Record<string, TeamHistoricResult>) => void;
 };
 
-export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
+export default function PlayerSelection({ fetchPlayer, startMatch }: PlayerSelectionProps) {
   const dispatch = useDispatch();
 
   const numPlayers = 2;
@@ -71,9 +73,11 @@ export default function PlayerSelection({ fetchPlayer }: PlayerSelectionProps) {
 
   const startGame = () => {
     console.log('Starting game...');
+    // Could move this to the startGame function?
     Object.values(players).forEach(player => {
       dispatch(addRecentlyPlayed(player!));
     });
+    startMatch();
   };
 
   // Check if all players have been selected

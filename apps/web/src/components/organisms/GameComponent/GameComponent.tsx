@@ -2,15 +2,14 @@ import { Team, TeamHistoricResult } from "@src/../../../packages/schema";
 import { TeamHistoricResultsCard, Button } from 'ui'
 
 type GameComponentProps = {
-    teams: Team[] // Do we need full team info or just memorableIds?
+    teams: Team[]
     historicData: Record<string, TeamHistoricResult>
 };
 
 export default function GameComponent({ teams, historicData }: GameComponentProps) {
-    // TODO: 1v1 teams first
-    // Then: multi-teams
+    // TODO: Refactor to work with more than 2 teams
 
-    // TODO: Remove this, just for testing
+    // TODO: Remove this after testing
     if(!teams || !teams[0] || !teams[1]) {
         return <div>No Data</div>
     }
