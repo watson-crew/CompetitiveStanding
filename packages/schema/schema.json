@@ -331,14 +331,6 @@
             }
           },
           {
-            "name": "urlPath",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "gameTypeId",
             "in": "query",
             "required": true,

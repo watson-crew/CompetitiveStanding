@@ -614,7 +614,6 @@ export class ApiClient<
      * @request GET:/matches/rankings
      */
     getRankingsForLocation: (
-      urlPath: string,
       query: {
         locationId: number;
         gameTypeId: number;

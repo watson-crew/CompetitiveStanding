@@ -55,16 +55,6 @@ function useSelectedLocation(): Location {
   };
 }
 
-function createGameRequirementDispatcher(
-  { min, max }: GameRequirements,
-  setter: Dispatch<SetStateAction<GameRequirement>>,
-): (isToggled: boolean) => void {
-  return (isToggled: boolean) => {
-    console.log(`createGameRequirementDispatcher: ${isToggled}`);
-    setter(isToggled ? max : min);
-  };
-}
-
 export default function PlayerSelection() {
   // Use a proper react hook to load this from somewhere
   const selectedGameType = useSelectedGameType();
@@ -72,10 +62,11 @@ export default function PlayerSelection() {
   // Use a proper react hook to load this from somewhere
   const selectedLocation = useSelectedLocation();
 
-  const [gameRequirements, setGameRequirements] = useState<GameRequirement>(
-    selectedGameType.requirements.min,
-  );
-  const [teamWithOpenSlot, setTeamWithOpenSlot] = useState<number>(-1);
+  const gameMinRequirements = selectedGameType.requirements.min;
+
+  const [gameRequirements, setGameRequirements] =
+    useState<GameRequirement>(gameMinRequirements);
+  const [teamsEnabled, setTeamsEnabled] = useState(false);
 
   const [teams, teamsDispatch] = useReducer(
     teamsReducer,
@@ -87,19 +78,20 @@ export default function PlayerSelection() {
   });
 
   const additionalTeamsEnabled =
-    gameRequirements.numberOfTeams >
-    selectedGameType.requirements.min.numberOfTeams;
+    gameRequirements.numberOfTeams > gameMinRequirements.numberOfTeams;
 
-  useEffect(() => {
-    setTeamWithOpenSlot(getNextTeamWithOpenSlot(teams));
-  }, [teams]);
+  const teamWithOpenSlot = getNextTeamWithOpenSlot(teams);
 
   const [error, setError] = useState<Error | undefined>();
 
-  const toggleTeamsEnabled = createGameRequirementDispatcher(
-    selectedGameType.requirements,
-    setGameRequirements,
-  );
+  const toggleTeamsEnabled = () => {
+    console.log(teamsEnabled);
+    setTeamsEnabled(teamsEnabled === false ? true : false, () => {});
+    console.log(teamsEnabled);
+
+    const requirementsToUse = teamsEnabled ? 'max' : 'min';
+    setGameRequirements(selectedGameType.requirements[requirementsToUse]);
+  };
 
   const reduxDispatch = useDispatch();
   const client = useContext(ApiContext);
@@ -202,10 +194,7 @@ export default function PlayerSelection() {
 
   return (
     <section className="w-full text-center">
-      <TeamToggle
-        initialState={false}
-        toggleTeamsEnabled={toggleTeamsEnabled}
-      />
+      <TeamToggle toggled={teamsEnabled} onToggled={toggleTeamsEnabled} />
 
       {additionalTeamsEnabled && (
         <Button
@@ -257,9 +246,7 @@ export default function PlayerSelection() {
       <div className="text-center">
         <Button
           text="Start Game"
-          disabled={
-            !minimumRequirementsMet(teams, selectedGameType.requirements.min)
-          }
+          disabled={!minimumRequirementsMet(teams, gameMinRequirements)}
           onClick={startGame}
         />
       </div>
