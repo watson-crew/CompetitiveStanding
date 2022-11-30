@@ -1,5 +1,6 @@
-import { Team } from 'schema';
+import { Team, User } from 'schema';
 import { Dayjs } from 'dayjs';
+import { WithLoadingProps } from './react';
 
 export type GameResult = {
   teams: Omit<Team, 'id'>[];
@@ -8,3 +9,7 @@ export type GameResult = {
   endTime: Dayjs;
   location: string;
 };
+
+export type LoadingPlayer = WithLoadingProps<{
+  playerDetails?: User;
+}>;

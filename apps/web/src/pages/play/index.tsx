@@ -1,18 +1,14 @@
-import { useContext } from "react";
-import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
-import { ApiContext } from "@src/context/ApiContext";
+import PlayerSelection from '@organisms/PlayerSelection/PlayerSelection';
 
 export default function Index() {
-
-  const client = useContext(ApiContext)
-  const fetchUser = async (userId: string) => client.user.getUserByMemorableId(userId)
-
   return (
     <div className="flex h-screen flex-col items-center">
       <h1 className="text-3xl font-bold underline">Competitive standing</h1>
 
-      <PlayerSelection fetchPlayer={fetchUser} />
-
+      {/* This should be the top level component with the rest in the header */}
+      <main className="w-full">
+        <PlayerSelection />
+      </main>
     </div>
   );
 }

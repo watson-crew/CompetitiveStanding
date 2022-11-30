@@ -286,9 +286,7 @@ export namespace Matches {
    * @request GET:/matches/rankings
    */
   export namespace GetRankingsForLocation {
-    export type RequestParams = {
-      urlPath: string;
-    };
+    export type RequestParams = {};
     export type RequestQuery = {
       locationId: number;
       gameTypeId: number;
