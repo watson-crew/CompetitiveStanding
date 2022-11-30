@@ -187,7 +187,10 @@ export default function PlayerSelection() {
 
   return (
     <section className="w-full text-center">
-      <TeamToggle toggled={teamsEnabled} onToggled={toggleTeamsEnabled} />
+      <TeamToggle
+        initialState={teamsEnabled}
+        toggleTeamsEnabled={toggleTeamsEnabled}
+      />
 
       {additionalTeamsEnabled && (
         <Button
