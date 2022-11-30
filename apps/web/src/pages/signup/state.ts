@@ -2,7 +2,7 @@ export enum Actions {
   firstNameChange = 'firstNameChange',
   lastNameChange = 'lastNameChange',
   memorableIdChange = 'memorableIdChange',
-  memorableIdError = 'memorableIdError',
+  memorableIdExists = 'memorableIdExists',
   resetState = 'resetState'
 }
 
@@ -35,7 +35,7 @@ export function signupReducer(state: SignupState, action: SignupAction): SignupS
         ...state,
         memorableId: action.value
       }
-    case Actions.memorableIdError:
+    case Actions.memorableIdExists:
       return {
         ...state,
         memorableIdExists: action.value
