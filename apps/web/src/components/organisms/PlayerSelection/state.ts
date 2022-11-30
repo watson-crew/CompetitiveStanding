@@ -63,9 +63,7 @@ export function teamsReducer(
 
   switch (actionType) {
     case TeamActionType.PlayerDetailsAdded:
-      console.log(state);
-
-      const foo = withIndexReplaced(
+      return withIndexReplaced(
         state,
         [
           ...filterFalsey(state[teamIndex], 'playerDetails'),
@@ -73,10 +71,6 @@ export function teamsReducer(
         ],
         teamIndex,
       );
-
-      console.log(foo);
-
-      return foo;
 
     case TeamActionType.PlayerLoading:
       return withIndexReplaced(

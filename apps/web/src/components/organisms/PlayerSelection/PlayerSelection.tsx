@@ -48,12 +48,13 @@ function useSelectedLocation(): Location {
   };
 }
 
+// This component is currently re-rendering twice, I'm not sure if this is correct or not
 export default function PlayerSelection() {
   // Use a proper react hook to load this from somewhere
-  const selectedGameType = useSelectedGameType();
+  const [selectedGameType] = useState(useSelectedGameType());
 
   // Use a proper react hook to load this from somewhere
-  const selectedLocation = useSelectedLocation();
+  const [selectedLocation] = useState(useSelectedLocation());
 
   const gameMinRequirements = selectedGameType.requirements.min;
 
@@ -66,10 +67,6 @@ export default function PlayerSelection() {
     createInitialState(gameRequirements),
   );
 
-  useEffect(() => {
-    console.log('rendered');
-  });
-
   const additionalTeamsEnabled =
     gameRequirements.numberOfTeams > gameMinRequirements.numberOfTeams;
 
@@ -77,14 +74,10 @@ export default function PlayerSelection() {
 
   const [error, setError] = useState<Error | undefined>();
 
-  const toggleTeamsEnabled = () => {
-    console.log(teamsEnabled);
-    setTeamsEnabled(teamsEnabled === false ? true : false);
-    console.log(teamsEnabled);
-
+  useEffect(() => {
     const requirementsToUse = teamsEnabled ? 'max' : 'min';
     setGameRequirements(selectedGameType.requirements[requirementsToUse]);
-  };
+  }, [teamsEnabled, selectedGameType]);
 
   const reduxDispatch = useDispatch();
   const client = useContext(ApiContext);
@@ -188,8 +181,8 @@ export default function PlayerSelection() {
   return (
     <section className="w-full text-center">
       <TeamToggle
-        initialState={teamsEnabled}
-        toggleTeamsEnabled={toggleTeamsEnabled}
+        toggled={teamsEnabled}
+        onChange={() => setTeamsEnabled(!teamsEnabled)}
       />
 
       {additionalTeamsEnabled && (
