@@ -29,8 +29,8 @@ export default function GameComponent({ teams, historicData }: GameComponentProp
     }
 
     return (
-        <section className="my-20 w-full">
-            <section className="flex h-full min-h-full w-full items-center">
+        <section className="mb-20 w-full">
+            <section className="flex h-full min-h-full w-full items-center space-x-4">
                 <TeamHistoricResultsCard
                     team={teamOne}
                     historicResults={historicDataForTeamOne}

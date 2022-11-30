@@ -21,7 +21,7 @@ export default function TeamHistoricResultsCard({team, historicResults, setAsWin
 
     return (
         <Card className={containerClasses}>
-            <div className="flex">
+            <div className="flex mb-10">
                 <Text type="h1">{team.cumulativeTeamId}</Text>
                 <TextWithIcon
                     icon={CommonIcons.Trophy}
@@ -31,7 +31,7 @@ export default function TeamHistoricResultsCard({team, historicResults, setAsWin
                     {historicResults.wins}
                 </TextWithIcon>
             </div>
-            <div className="flex space-between w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="flex w-full space-x-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                 {team.players.map((player) => <PlayerCard player={player} className=""/>)}
             </div>
             <Button onClick={setAsWinner} text="Mark as Winner" className="w-fit"/>
