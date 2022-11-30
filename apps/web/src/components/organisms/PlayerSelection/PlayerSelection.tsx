@@ -1,11 +1,4 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 import { GameType, Location, User } from 'schema';
 import { Banner, Button, TeamSelectionCard, Text, TextWithIcon } from 'ui';
 import { useDispatch, useSelector } from 'react-redux';
@@ -86,7 +79,7 @@ export default function PlayerSelection() {
 
   const toggleTeamsEnabled = () => {
     console.log(teamsEnabled);
-    setTeamsEnabled(teamsEnabled === false ? true : false, () => {});
+    setTeamsEnabled(teamsEnabled === false ? true : false);
     console.log(teamsEnabled);
 
     const requirementsToUse = teamsEnabled ? 'max' : 'min';
