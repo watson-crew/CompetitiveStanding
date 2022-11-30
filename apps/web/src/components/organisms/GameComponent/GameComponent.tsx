@@ -30,23 +30,23 @@ export default function GameComponent({ teams, historicData }: GameComponentProp
 
     return (
         <section className="my-20 w-full">
-            <section className="flex h-full min-h-full w-full items-center justify-around align-middle">
+            <section className="flex h-full min-h-full w-full items-center">
                 <TeamHistoricResultsCard
                     team={teamOne}
                     historicResults={historicDataForTeamOne}
                     setAsWinner={() => setWinner(teamOne)}
-                    className="mx-5"
+                    className="w-1/2"
                 />
 
                 <TeamHistoricResultsCard
                     team={teamTwo}
                     historicResults={historicDataForTeamTwo}
                     setAsWinner={() => setWinner(teamTwo)}
-                    className="mx-5"
+                    className="w-1/2"
                 />
             </section>
             <section className="flex items-centre justify-around align-middle">
-                <Button text="Abandon" onClick={abandonGame} />
+                <Button text="Abandon" onClick={abandonGame} className="w-fit"/>
             </section>
         </section>
     )

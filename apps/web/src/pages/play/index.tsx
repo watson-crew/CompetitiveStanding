@@ -18,25 +18,28 @@ export default function Index() {
   const setTestData = async () => {
     const josh = await client.user.getUserByMemorableId('jjp')
     const stephen = await client.user.getUserByMemorableId('stc')
+    const pierce = await client.user.getUserByMemorableId('pjm')
+    const fabian = await client.user.getUserByMemorableId('4e8')
+    const tom = await client.user.getUserByMemorableId('ad2')
 
     const teamsInGame: Team[] = [
       {
         id: 1,
-        cumulativeTeamId: 'jjp',
-        players: [josh]
+        cumulativeTeamId: 'ad2jjppjm',
+        players: [tom, josh, pierce]
       },
       {
         id: 2,
-        cumulativeTeamId: 'stc',
-        players: [stephen]
+        cumulativeTeamId: '4e8stc',
+        players: [fabian, stephen]
       }
     ]
 
     setTeams(teamsInGame)
 
     const newHistoricData: Record<string, TeamHistoricResult> = {
-      'jjp': { wins: 1 },
-      'stc': { wins: 2}
+      'ad2jjppjm': { wins: 1 },
+      '4e8stc': { wins: 2}
     }
 
     setHistoricData(newHistoricData)

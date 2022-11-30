@@ -6,8 +6,8 @@ import Card from "../../atoms/Card/Card"
 import PlayerCard from "../../molecules/PlayerCard/PlayerCard"
 import Text from "../../atoms/Text/Text"
 import TextWithIcon from '../TextWithIcon/TextWithIcon';
-import { AiOutlineTrophy } from 'react-icons/ai'
 import { Button } from '../..';
+import { CommonIcons } from '../../types/icons'
 
 type TeamHistoricResultsProps = WithDefaultProps<{
     team: Team,
@@ -17,24 +17,24 @@ type TeamHistoricResultsProps = WithDefaultProps<{
 
 export default function TeamHistoricResultsCard({team, historicResults, setAsWinner, className}: TeamHistoricResultsProps) {
 
-    const containerClasses = twMerge("bg-slate-100 w-full min-h-full h-full flex justify-center items-center flex-col", className)
+    const containerClasses = twMerge("bg-slate-100 flex flex-col items-center", className)
 
     return (
         <Card className={containerClasses}>
             <div className="flex">
                 <Text type="h1">{team.cumulativeTeamId}</Text>
                 <TextWithIcon
-                    icon={AiOutlineTrophy}
+                    icon={CommonIcons.Trophy}
                     textProps={{type:"h3", className:"text-3xl"}}
                     iconProps={{size: 50}}
                 >
                     {historicResults.wins}
                 </TextWithIcon>
             </div>
-            <div className="flex">
-                {team.players.map((player) => <PlayerCard player={player}/>)}
+            <div className="flex space-between w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                {team.players.map((player) => <PlayerCard player={player} className=""/>)}
             </div>
-            <Button onClick={setAsWinner} text="Mark as Winner"/>
+            <Button onClick={setAsWinner} text="Mark as Winner" className="w-fit"/>
         </Card>
     )
 }
