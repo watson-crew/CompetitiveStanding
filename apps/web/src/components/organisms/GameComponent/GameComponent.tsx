@@ -15,14 +15,17 @@ export default function GameComponent({ teams, historicData }: GameComponentProp
         return <div>No Data</div>
     }
 
+    const teamOne = teams[0]
+    const historicDataForTeamOne = historicData[teamOne.cumulativeTeamId]
+    const teamTwo = teams[1]
+    const historicDataForTeamTwo = historicData[teamTwo.cumulativeTeamId]
+
     return (
         <section className="my-20 w-full">
             <section className="flex h-full min-h-full w-full items-center justify-around align-middle">
-                <TeamHistoricResultsCard team={teams[0]} historicResults={historicData[teams[0].cumulativeTeamId]} />
+                <TeamHistoricResultsCard team={teamOne} historicResults={historicDataForTeamOne} className="mx-5"/>
 
-                <Text type="p">VS</Text>
-
-                <TeamHistoricResultsCard team={teams[1]} historicResults={historicData[teams[1].cumulativeTeamId]} />
+                <TeamHistoricResultsCard team={teamTwo} historicResults={historicDataForTeamTwo} className="mx-5"/>
             </section>
         </section>
     )

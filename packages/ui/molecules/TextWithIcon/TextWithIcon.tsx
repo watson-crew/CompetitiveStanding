@@ -10,17 +10,17 @@ type TextWithIconProps = WithDefaultProps<{
   iconProps?: (React.Attributes & IconBaseProps)
 }>
 
-export default function TextWithIcon({ icon, textProps, children }: TextWithIconProps) {
-
-  const iconProps: IconBaseProps = {
+export default function TextWithIcon({ icon, textProps, iconProps, children }: TextWithIconProps) {
+  
+  const iconDefaultProps: IconBaseProps = {
     size: 24,
     className: 'mr-2'
   }
 
-  const iconToRender = React.createElement(icon, iconProps)
+  const iconToRender = React.createElement(icon, iconProps ?? iconDefaultProps)
 
   return (
-  <span className="flex align-middle">
+  <span className="flex items-center align-middle">
     {iconToRender}
     <Text {...textProps}>{children}</Text>
   </span>
