@@ -6,23 +6,18 @@ import { User } from 'schema';
 type RecentPlayersProps = WithDefaultProps<{
   onSelected: (user: User) => void;
   disabled?: string[];
+  allSlotsFilled?: boolean;
 }>;
 
 export default function RecentPlayers({
   className,
   onSelected,
-  disabled,
+  disabled = [],
+  allSlotsFilled = false,
 }: RecentPlayersProps) {
   const recentlyPlayedUsers = useSelector(selectRecentlyPlayed);
 
-  const onClick = (user: User) => {
-    onSelected(user);
-  };
-
   const isDisabled = (memorableId: string) => {
-    if (!disabled) {
-      return false;
-    }
     return disabled.includes(memorableId);
   };
 
@@ -31,8 +26,8 @@ export default function RecentPlayers({
       <PlayerCard player={user} key={`recent-player-${i}`}>
         <Button
           text="Add"
-          onClick={() => onClick(user)}
-          disabled={isDisabled(user.memorableId)}
+          onClick={() => onSelected(user)}
+          disabled={allSlotsFilled || isDisabled(user.memorableId)}
         />
       </PlayerCard>
     ));

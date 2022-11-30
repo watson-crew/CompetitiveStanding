@@ -1,3 +1,9 @@
+import { GameRequirement } from '@src/types/games';
+import {
+  defaultIfEmpty,
+  filterFalsey,
+  withIndexReplaced,
+} from '@src/uilts/collectionUtils';
 import { User } from 'schema';
 import { LoadingPlayer } from 'ui';
 
@@ -20,39 +26,32 @@ export type TeamAction = {
 
 export type TeamState = LoadingPlayer[][];
 
-export function createInitialState(
-  minTeams: number,
-  minPlayersPerTeam: number,
-): TeamState {
+const PlayerFactory = {
+  createSlot: (): LoadingPlayer => ({ loading: false }),
+  createLoading: (): LoadingPlayer => ({ loading: true }),
+  createLoaded: (playerDetails: User): LoadingPlayer => ({
+    loading: false,
+    playerDetails,
+  }),
+};
+
+export function createInitialState({
+  numberOfTeams,
+  playersPerTeam,
+}: GameRequirement): TeamState {
   const initialState: LoadingPlayer[][] = [];
 
-  for (let i = 0; i < minTeams; i++) {
+  for (let i = 0; i < numberOfTeams; i++) {
     const team: LoadingPlayer[] = [];
 
-    for (let j = 0; j < minPlayersPerTeam; j++) {
-      team.push({ loading: false });
+    for (let j = 0; j < playersPerTeam; j++) {
+      team.push(PlayerFactory.createSlot());
     }
 
     initialState.push(team);
   }
 
   return initialState;
-}
-
-function withEmptySlotsRemoved(arr: LoadingPlayer[]): LoadingPlayer[] {
-  return arr.filter(slot => !!slot.playerDetails);
-}
-
-function withIndexReplaced(
-  arr: LoadingPlayer[][],
-  newValue: LoadingPlayer[],
-  index: number,
-) {
-  return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
-}
-
-function defaultIfEmpty<T>(arr: T[], defaultVal: T): T[] {
-  return arr.length === 0 ? [defaultVal] : arr;
 }
 
 export function teamsReducer(
@@ -69,8 +68,8 @@ export function teamsReducer(
       const foo = withIndexReplaced(
         state,
         [
-          ...withEmptySlotsRemoved(state[teamIndex]),
-          { loading: false, playerDetails: player },
+          ...filterFalsey(state[teamIndex], 'playerDetails'),
+          PlayerFactory.createLoaded(player),
         ],
         teamIndex,
       );
@@ -82,7 +81,7 @@ export function teamsReducer(
     case TeamActionType.PlayerLoading:
       return withIndexReplaced(
         state,
-        [...state[teamIndex].slice(0, -1), { loading: true }],
+        [...state[teamIndex].slice(0, -1), PlayerFactory.createLoading()],
         teamIndex,
       );
 
@@ -108,13 +107,13 @@ export function teamsReducer(
     case TeamActionType.SlotAdded:
       const withSlotAddded: LoadingPlayer[] = [
         ...state[teamIndex],
-        { loading: false },
+        PlayerFactory.createSlot(),
       ];
 
       return withIndexReplaced(state, withSlotAddded, teamIndex);
 
     case TeamActionType.AddTeam:
-      return [...state, [{ loading: false }]];
+      return [...state, [PlayerFactory.createSlot()]];
 
     default:
       return state;

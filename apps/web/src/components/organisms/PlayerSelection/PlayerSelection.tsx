@@ -1,142 +1,137 @@
 import {
-  ChangeEvent,
-  ChangeEventHandler,
+  Dispatch,
+  SetStateAction,
   useContext,
   useEffect,
   useReducer,
   useState,
 } from 'react';
-import { User } from 'schema';
-import {
-  Banner,
-  Button,
-  TeamSelectionCard,
-  Text,
-  Toggle,
-  LoadingPlayer,
-} from 'ui';
+import { GameType, Location, User } from 'schema';
+import { Banner, Button, TeamSelectionCard, Text, TextWithIcon } from 'ui';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addRecentlyPlayed,
   selectRecentlyPlayed,
 } from '@src/store/reducers/playerSlice';
-// import RecentPlayers from '../RecentPlayers/RecentPlayers';
 import { ApiContext } from '@src/context/ApiContext';
 import RecentPlayers from '../RecentPlayers/RecentPlayers';
-import TextWithIcon from '@src/../../../packages/ui/molecules/TextWithIcon/TextWithIcon';
-// import { initialState } from '@src/pages/signup/state';
-import {
-  AiOutlineTeam,
-  AiOutlineUser,
-  AiOutlineUsergroupAdd,
-} from 'react-icons/ai';
+import { AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { createInitialState, TeamActionType, teamsReducer } from './state';
-import { toObj } from '@src/uilts/objectUtils';
+import { filterFalsey, toObj } from '@src/uilts/collectionUtils';
+import TeamToggle from '@src/components/atoms/TeamToggle/TeamToggle';
+import { Error } from '@src/types/common';
+import {
+  getAllPlayerIds,
+  getNextTeamWithOpenSlot,
+  isPlayerInTeam,
+  minimumRequirementsMet,
+} from '@src/uilts/gamesUtils';
+import { GameRequirements, GameRequirement } from '@src/types/games';
+import { generateTeamId } from '@src/uilts/teamUtils';
 
-// This should be dynamic from somewhere
-const gameTypes = {
-  1: {
-    gameTypeId: 1,
-    minNumberOfTeams: 2,
-    maxNumberOfTeams: 2,
-    minPlayersPerTeam: 1,
-    defaultPlayersPerTeam: 1,
-    maxPlayersPerTeam: 2,
-  },
-};
+function useSelectedGameType(): GameType & { requirements: GameRequirements } {
+  return {
+    id: 1,
+    name: 'Pool',
+    maxNumberOfPlayers: 2, // Obsolete now
+    requirements: {
+      min: {
+        playersPerTeam: 1,
+        numberOfTeams: 2,
+      },
+      max: {
+        playersPerTeam: 4,
+        numberOfTeams: 3, // Just for testing purposes
+      },
+    },
+  };
+}
 
-type TeamConfiguration = {
-  maxNumberOfTeams: number;
-  maxPlayersPerTeam: number;
-};
+function useSelectedLocation(): Location {
+  return {
+    id: 1,
+    name: 'Nottingham',
+    urlPath: 'nottingham',
+  };
+}
 
-type Error = {
-  level: 'info' | 'error';
-  message: string;
-};
-
-function TeamToggle({
-  teamsEnabled,
-  toggleTeamsEnabled,
-}: {
-  teamsEnabled: boolean;
-  toggleTeamsEnabled: ChangeEventHandler<HTMLInputElement>;
-}) {
-  return (
-    <Toggle
-      isToggled={teamsEnabled}
-      onChange={toggleTeamsEnabled}
-      defaultColor="yellow-500"
-      toggledColor="cyan-800"
-      beforeChild={
-        <TextWithIcon
-          textProps={{ type: 'p' }}
-          icon={AiOutlineUser}
-          reversed={true}
-        >
-          Singles
-        </TextWithIcon>
-      }
-      afterChild={
-        <TextWithIcon textProps={{ type: 'p' }} icon={AiOutlineTeam}>
-          Teams
-        </TextWithIcon>
-      }
-    />
-  );
+function createGameRequirementDispatcher(
+  { min, max }: GameRequirements,
+  setter: Dispatch<SetStateAction<GameRequirement>>,
+): (isToggled: boolean) => void {
+  return (isToggled: boolean) => {
+    console.log(`createGameRequirementDispatcher: ${isToggled}`);
+    setter(isToggled ? max : min);
+  };
 }
 
 export default function PlayerSelection() {
-  // Maybe from query param
-  const selectedGameTypeId = 1;
+  // Use a proper react hook to load this from somewhere
+  const selectedGameType = useSelectedGameType();
 
-  // Maybe from query param
-  const selectedLocationId = 1;
+  // Use a proper react hook to load this from somewhere
+  const selectedLocation = useSelectedLocation();
 
-  // Initialise values
-  const { minNumberOfTeams, minPlayersPerTeam } = gameTypes[selectedGameTypeId];
+  const [gameRequirements, setGameRequirements] = useState<GameRequirement>(
+    selectedGameType.requirements.min,
+  );
+  const [teamWithOpenSlot, setTeamWithOpenSlot] = useState<number>(-1);
 
   const [teams, teamsDispatch] = useReducer(
     teamsReducer,
-    createInitialState(minNumberOfTeams, minPlayersPerTeam),
-  );
-
-  const [teamsEnabled, toggleTeamsEnabled] = useReducer(val => !val, false);
-  const [error, setError] = useState<Error | undefined>();
-
-  const [teamConfiguration, setTeamConfiguration] = useState<TeamConfiguration>(
-    { maxNumberOfTeams: 1, maxPlayersPerTeam: 1 },
+    createInitialState(gameRequirements),
   );
 
   useEffect(() => {
-    if (teamsEnabled) {
-      setTeamConfiguration({ maxNumberOfTeams: 4, maxPlayersPerTeam: 4 });
-    } else {
-      setTeamConfiguration({ maxNumberOfTeams: 1, maxPlayersPerTeam: 1 });
-    }
-  }, [teamsEnabled]);
+    console.log('rendered');
+  });
 
-  const dispatch = useDispatch();
+  const additionalTeamsEnabled =
+    gameRequirements.numberOfTeams >
+    selectedGameType.requirements.min.numberOfTeams;
+
+  useEffect(() => {
+    setTeamWithOpenSlot(getNextTeamWithOpenSlot(teams));
+  }, [teams]);
+
+  const [error, setError] = useState<Error | undefined>();
+
+  const toggleTeamsEnabled = createGameRequirementDispatcher(
+    selectedGameType.requirements,
+    setGameRequirements,
+  );
+
+  const reduxDispatch = useDispatch();
   const client = useContext(ApiContext);
 
+  // A local cache of players who have been loaded
   const [seenPlayers, setSeenPlayers] = useState<Record<string, User>>(
     toObj(useSelector(selectRecentlyPlayed), 'memorableId'),
   );
 
-  function isPlayerInTeam(team: LoadingPlayer[], memorableId: string): boolean {
-    return team.some(
-      ({ playerDetails }) => playerDetails?.memorableId === memorableId,
+  async function getPlayer(memorableId: string): Promise<User> {
+    return (
+      seenPlayers[memorableId] ||
+      (await client.user.getUserByMemorableId(memorableId))
     );
   }
 
-  const onPlayerAddedToTeam = async (
+  async function onPlayerAddedToTeam(
     teamIndex: number,
-    memorableId: string,
-  ) => {
-    if (teams.some(team => isPlayerInTeam(team, memorableId))) {
+    playerMemorableId: string,
+  ) {
+    if (teamIndex < 0) {
       setError({
         level: 'info',
-        message: `${seenPlayers[memorableId].firstName} is already in a team`,
+        message: 'All teams are currently full',
+      });
+      return;
+    }
+
+    if (teams.some(team => isPlayerInTeam(team, playerMemorableId))) {
+      setError({
+        level: 'info',
+        message: `${seenPlayers[playerMemorableId].firstName} is already in a team`,
       });
       return;
     }
@@ -148,46 +143,46 @@ export default function PlayerSelection() {
     });
 
     try {
-      // Try load from cache
-      let playerAdded: User = seenPlayers[memorableId];
-
-      if (!playerAdded) {
-        playerAdded = await client.user.getUserByMemorableId(memorableId);
-      }
+      const player = await getPlayer(playerMemorableId);
 
       // Add to team
       teamsDispatch({
         actionType: TeamActionType.PlayerDetailsAdded,
-        payload: { teamIndex, player: playerAdded },
+        payload: { teamIndex, player },
       });
 
       // Add to local player cache
       setSeenPlayers(savedPlayers => {
-        return { ...savedPlayers, [memorableId]: playerAdded };
+        return { ...savedPlayers, [playerMemorableId]: player };
       });
 
       setError(undefined);
     } catch (err) {
       setError({
         level: 'info',
-        message: `No player exits with memorable id: ${memorableId}`,
+        message: `No player exists with memorable id: ${playerMemorableId}`,
       });
       teamsDispatch({
         actionType: TeamActionType.PlayerResolved,
         payload: { teamIndex },
       });
     }
-  };
+  }
 
-  const startGame = async () => {
-    console.log('Starting game...');
+  async function startGame() {
+    const participatingTeams = teams.map(
+      team =>
+        filterFalsey(team, 'playerDetails').map(
+          player => player.playerDetails,
+        ) as User[],
+    );
 
     try {
       await client.matches.initiateNewMatch({
-        gameTypeId: selectedGameTypeId,
-        locationId: selectedLocationId,
-        participatingTeams: Object.values(seenPlayers).map(
-          player => player!.memorableId,
+        gameTypeId: selectedGameType.id,
+        locationId: selectedLocation.id,
+        participatingTeams: participatingTeams.map(team =>
+          generateTeamId(team),
         ),
       });
     } catch (err) {
@@ -197,67 +192,25 @@ export default function PlayerSelection() {
       });
     }
 
-    Object.values(seenPlayers).forEach(player => {
-      dispatch(addRecentlyPlayed(player!));
-    });
-  };
-
-  // Check if minimum required players have been selected
-  const allPlayersSelected = () => {
-    return (
-      teams.length >= minNumberOfTeams &&
-      teams.every(team => filter(team).length >= minPlayersPerTeam)
-    );
-  };
-
-  function filter(arr: LoadingPlayer[]): LoadingPlayer[] {
-    return arr.filter(item => !!item.playerDetails);
+    // Save all recent players
+    participatingTeams
+      .flatMap(team => team)
+      .forEach(player => {
+        reduxDispatch(addRecentlyPlayed(player));
+      });
   }
-
-  const selectedPlayerIds = (): string[] => {
-    return teams.flatMap(
-      team =>
-        team
-          .filter(item => item.playerDetails !== undefined)
-          .map(item => item.playerDetails?.memorableId) as string[],
-    );
-  };
-
-  const hasOpenSlot = (arr: LoadingPlayer[]): boolean => {
-    return arr.some(item => item.playerDetails === undefined);
-  };
-
-  const nextTeamIndex = (): number => {
-    let shortest: number = Number.MAX_VALUE;
-    let shortestIndex: number = Number.MAX_VALUE;
-
-    for (let i = 0; i < teams.length; i++) {
-      const team = teams[i];
-
-      if (hasOpenSlot(team)) {
-        if (team.length === 1) {
-          return i;
-        } else if (team.length < shortest) {
-          shortest = team.length;
-          shortestIndex = i;
-        }
-      }
-    }
-
-    return shortestIndex;
-  };
 
   return (
     <section className="w-full text-center">
       <TeamToggle
-        teamsEnabled={teamsEnabled}
+        initialState={false}
         toggleTeamsEnabled={toggleTeamsEnabled}
       />
 
-      {teamsEnabled && (
+      {additionalTeamsEnabled && (
         <Button
           onClick={() => teamsDispatch({ actionType: TeamActionType.AddTeam })}
-          disabled={teamConfiguration.maxNumberOfTeams === teams.length}
+          disabled={gameRequirements.numberOfTeams === teams.length}
         >
           <TextWithIcon textProps={{ type: 'p' }} icon={AiOutlineUsergroupAdd}>
             Add Team
@@ -296,7 +249,7 @@ export default function PlayerSelection() {
                 payload: { teamIndex, player },
               })
             }
-            maxPlayersPerTeam={teamConfiguration.maxPlayersPerTeam}
+            maxPlayersPerTeam={gameRequirements.playersPerTeam}
             className="min-h-full basis-2/5"
           />
         ))}
@@ -304,16 +257,19 @@ export default function PlayerSelection() {
       <div className="text-center">
         <Button
           text="Start Game"
-          disabled={!allPlayersSelected()}
+          disabled={
+            !minimumRequirementsMet(teams, selectedGameType.requirements.min)
+          }
           onClick={startGame}
         />
       </div>
       <RecentPlayers
         className="mx-10"
         onSelected={user =>
-          onPlayerAddedToTeam(nextTeamIndex(), user.memorableId)
+          onPlayerAddedToTeam(teamWithOpenSlot, user.memorableId)
         }
-        disabled={selectedPlayerIds()}
+        allSlotsFilled={teamWithOpenSlot < 0}
+        disabled={getAllPlayerIds(teams)}
       />
     </section>
   );
