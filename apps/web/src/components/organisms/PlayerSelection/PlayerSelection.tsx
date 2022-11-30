@@ -30,7 +30,8 @@ import {
   AiOutlineUser,
   AiOutlineUsergroupAdd,
 } from 'react-icons/ai';
-import { teamsReducer } from './state';
+import { createInitialState, TeamActionType, teamsReducer } from './state';
+import { toObj } from '@src/uilts/objectUtils';
 
 // This should be dynamic from somewhere
 const gameTypes = {
@@ -86,17 +87,22 @@ function TeamToggle({
 }
 
 export default function PlayerSelection() {
-  const recentPlayers = useSelector(selectRecentlyPlayed);
+  // Maybe from query param
+  const selectedGameTypeId = 1;
 
-  const [teamState, localDispatch] = useReducer(teamsReducer, { teams: [] });
+  // Maybe from query param
+  const selectedLocationId = 1;
 
-  const [teamsEnabled, setTeamsEnabled] = useState(false);
+  // Initialise values
+  const { minNumberOfTeams, minPlayersPerTeam } = gameTypes[selectedGameTypeId];
 
+  const [teams, teamsDispatch] = useReducer(
+    teamsReducer,
+    createInitialState(minNumberOfTeams, minPlayersPerTeam),
+  );
+
+  const [teamsEnabled, toggleTeamsEnabled] = useReducer(val => !val, false);
   const [error, setError] = useState<Error | undefined>();
-
-  const toggleTeamsEnabled = (_e: ChangeEvent<HTMLInputElement>) => {
-    setTeamsEnabled(!teamsEnabled);
-  };
 
   const [teamConfiguration, setTeamConfiguration] = useState<TeamConfiguration>(
     { maxNumberOfTeams: 1, maxPlayersPerTeam: 1 },
@@ -113,142 +119,64 @@ export default function PlayerSelection() {
   const dispatch = useDispatch();
   const client = useContext(ApiContext);
 
-  // Maybe from query param
-  const selectedGameTypeId = 1;
-
-  // Maybe from query param
-  const selectedLocationId = 1;
-
-  // Initialise values
-
-  const { minNumberOfTeams, minPlayersPerTeam } = gameTypes[selectedGameTypeId];
-
-  const initialTeams: LoadingPlayer[][] = [
-    [{ loading: false }],
-    [{ loading: false }],
-  ];
-
-  const [teams, setTeams] = useState(initialTeams);
-
-  const [savedPlayers, setSavedPlayers] = useState<Record<string, User>>(
-    Object.fromEntries(
-      Object.values(recentPlayers)
-        .filter(player => !!player)
-        .map(player => [player?.memorableId, player]),
-    ),
+  const [seenPlayers, setSeenPlayers] = useState<Record<string, User>>(
+    toObj(useSelector(selectRecentlyPlayed), 'memorableId'),
   );
 
-  const setLoadingForTeam = (teamIndex: number, isLoading: boolean) => {
-    setTeams(teams => {
-      const copy: LoadingPlayer[][] = JSON.parse(JSON.stringify(teams));
-      const loadingTeam = copy[teamIndex];
-
-      loadingTeam[loadingTeam.length - 1].loading = isLoading;
-
-      return copy;
-    });
-  };
-
-  const increaseTeamSize = async (teamIndex: number) => {
-    setTeams(teams => {
-      const copy: LoadingPlayer[][] = JSON.parse(JSON.stringify(teams));
-
-      const toIncrease = copy[teamIndex];
-
-      copy[teamIndex] = [...toIncrease, { loading: false }];
-
-      return copy;
-    });
-  };
+  function isPlayerInTeam(team: LoadingPlayer[], memorableId: string): boolean {
+    return team.some(
+      ({ playerDetails }) => playerDetails?.memorableId === memorableId,
+    );
+  }
 
   const onPlayerAddedToTeam = async (
     teamIndex: number,
     memorableId: string,
   ) => {
-    // Make sure player is not already in a team
-
-    if (
-      teams.some(team =>
-        team.some(player => player.playerDetails?.memorableId === memorableId),
-      )
-    ) {
+    if (teams.some(team => isPlayerInTeam(team, memorableId))) {
       setError({
         level: 'info',
-        message: `${savedPlayers[memorableId].firstName} is already in a team`,
+        message: `${seenPlayers[memorableId].firstName} is already in a team`,
       });
       return;
     }
 
-    setLoadingForTeam(teamIndex, true);
+    // Set the team as loading
+    teamsDispatch({
+      actionType: TeamActionType.PlayerLoading,
+      payload: { teamIndex: teamIndex },
+    });
 
     try {
       // Try load from cache
-      let playerAdded: User = savedPlayers[memorableId];
+      let playerAdded: User = seenPlayers[memorableId];
 
       if (!playerAdded) {
         playerAdded = await client.user.getUserByMemorableId(memorableId);
       }
 
-      // ADd to team
-      addPlayerToTeam(playerAdded, teamIndex);
+      // Add to team
+      teamsDispatch({
+        actionType: TeamActionType.PlayerDetailsAdded,
+        payload: { teamIndex, player: playerAdded },
+      });
 
       // Add to local player cache
-      setSavedPlayers(savedPlayers => {
+      setSeenPlayers(savedPlayers => {
         return { ...savedPlayers, [memorableId]: playerAdded };
       });
 
       setError(undefined);
-
-      // setPlayer(id, await fetchPlayer(memorableId));
-      // setErrorForPlayer(id, false);
     } catch (err) {
       setError({
         level: 'info',
         message: `No player exits with memorable id: ${memorableId}`,
       });
-      // setErrorForPlayer(id, true);
-    } finally {
-      setLoadingForTeam(teamIndex, false);
+      teamsDispatch({
+        actionType: TeamActionType.PlayerResolved,
+        payload: { teamIndex },
+      });
     }
-  };
-
-  const addPlayerToTeam = (playerDetails: User, teamIndex: number) => {
-    setTeams(teams => {
-      // Clean this up at some point
-      // Probs a better way
-      const copy: LoadingPlayer[][] = JSON.parse(JSON.stringify(teams));
-
-      copy[teamIndex] = filter([
-        ...copy[teamIndex],
-        { playerDetails, loading: false },
-      ]);
-
-      return copy;
-    });
-  };
-
-  const addTeam = () => {
-    setTeams(teams => {
-      return [...teams, [{ loading: false }]];
-    });
-  };
-
-  const clearPlayerFromTeam = (
-    playerId: string | undefined,
-    teamIndex: number,
-  ) => {
-    setTeams(teams => {
-      // Probs a better way
-      const copy: LoadingPlayer[][] = JSON.parse(JSON.stringify(teams));
-
-      copy[teamIndex] = copy[teamIndex].filter(
-        item => item.playerDetails?.memorableId !== playerId,
-      );
-
-      if (copy[teamIndex].length === 0) copy[teamIndex] = [{ loading: false }];
-
-      return copy;
-    });
   };
 
   const startGame = async () => {
@@ -258,7 +186,7 @@ export default function PlayerSelection() {
       await client.matches.initiateNewMatch({
         gameTypeId: selectedGameTypeId,
         locationId: selectedLocationId,
-        participatingTeams: Object.values(savedPlayers).map(
+        participatingTeams: Object.values(seenPlayers).map(
           player => player!.memorableId,
         ),
       });
@@ -269,7 +197,7 @@ export default function PlayerSelection() {
       });
     }
 
-    Object.values(savedPlayers).forEach(player => {
+    Object.values(seenPlayers).forEach(player => {
       dispatch(addRecentlyPlayed(player!));
     });
   };
@@ -328,7 +256,7 @@ export default function PlayerSelection() {
 
       {teamsEnabled && (
         <Button
-          onClick={addTeam}
+          onClick={() => teamsDispatch({ actionType: TeamActionType.AddTeam })}
           disabled={teamConfiguration.maxNumberOfTeams === teams.length}
         >
           <TextWithIcon textProps={{ type: 'p' }} icon={AiOutlineUsergroupAdd}>
@@ -356,8 +284,18 @@ export default function PlayerSelection() {
             onPlayerAdded={memorableId =>
               onPlayerAddedToTeam(teamIndex, memorableId)
             }
-            increaseTeamSize={() => increaseTeamSize(teamIndex)}
-            clearPlayer={playerId => clearPlayerFromTeam(playerId, teamIndex)}
+            increaseTeamSize={() =>
+              teamsDispatch({
+                actionType: TeamActionType.SlotAdded,
+                payload: { teamIndex },
+              })
+            }
+            clearPlayer={player =>
+              teamsDispatch({
+                actionType: TeamActionType.PlayerRemoved,
+                payload: { teamIndex, player },
+              })
+            }
             maxPlayersPerTeam={teamConfiguration.maxPlayersPerTeam}
             className="min-h-full basis-2/5"
           />

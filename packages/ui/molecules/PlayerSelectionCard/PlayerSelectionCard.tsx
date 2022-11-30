@@ -10,7 +10,7 @@ import LoadingSpinner from '../../atoms/LoadingSpinner/LoadingSpinner';
 type PlayerSelectionCardProps = WithDefaultProps<{
   player?: User;
   loading: boolean;
-  onIdSubmitted: (id: string) => Promise<void>;
+  onIdSubmitted: (id: string) => void;
   clearPlayer: () => void;
 }>;
 

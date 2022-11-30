@@ -5,12 +5,13 @@ import PlayerSelectionCard from '../../molecules/PlayerSelectionCard/PlayerSelec
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import Button from '../../atoms/Button/Button';
 import TextWithIcon from '../../molecules/TextWithIcon/TextWithIcon';
+import { User } from 'schema';
 
 type TeamSelectionCardProps = WithDefaultProps<{
   team: LoadingPlayer[];
-  onPlayerAdded: (id: string) => Promise<void>;
-  increaseTeamSize: () => Promise<void>;
-  clearPlayer: (playerId?: string) => void;
+  onPlayerAdded: (id: string) => void;
+  increaseTeamSize: () => void;
+  clearPlayer: (player?: User) => void;
   maxPlayersPerTeam: number;
   teamNumber: number;
 }>;
@@ -41,7 +42,7 @@ export default function TeamSelectionCard({
           player={playerDetails}
           loading={loading}
           onIdSubmitted={onPlayerAdded}
-          clearPlayer={() => clearPlayer(playerDetails?.memorableId)}
+          clearPlayer={() => clearPlayer(playerDetails)}
           className="min-h-full basis-2/5"
         />
       ))}
