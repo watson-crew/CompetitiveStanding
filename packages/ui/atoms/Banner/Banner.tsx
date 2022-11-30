@@ -1,7 +1,9 @@
 import Card, { CardProps } from '../Card/Card';
-import { MdError } from 'react-icons/md';
+import { MdError, MdInfo } from 'react-icons/md';
 import { IoMdCloseCircleOutline } from 'react-icons/io';
 import { twMerge } from 'tailwind-merge';
+import React from 'react';
+import { IconType } from 'react-icons';
 
 type BannerType = 'info' | 'error';
 
@@ -21,6 +23,13 @@ export default function Banner({
   onClose,
   children,
 }: BannerCardProps) {
+  const iconVariants: Record<BannerType, IconType> = {
+    info: MdInfo,
+    error: MdError,
+  };
+
+  const icon = React.createElement(iconVariants[type], { size: 20 });
+
   return (
     <Card
       className={twMerge(
@@ -29,7 +38,7 @@ export default function Banner({
         className,
       )}
     >
-      <MdError size={20} />
+      {icon}
       <div className="mx-3 flex-1">{children}</div>
       {onClose && (
         <button className="hover:fill-red-800" onClick={onClose}>

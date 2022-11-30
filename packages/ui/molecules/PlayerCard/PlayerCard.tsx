@@ -6,6 +6,9 @@ import Card from '../../atoms/Card/Card';
 import { WithDefaultProps } from '../../types';
 import { twMerge } from 'tailwind-merge';
 import Text from '../../atoms/Text/Text';
+import { useEffect, useState } from 'react';
+
+const defaultProfilePicturePath = '/defaultProfilePicture.jpeg';
 
 const getFullName = (player: User) => `${player.firstName} ${player.lastName}`;
 
@@ -20,23 +23,28 @@ export default function PlayerCard({
   children,
 }: PlayerCardProps) {
   const fullName = getFullName(player);
-  const imageUrl =
-    player.profilePicture ??
-    'https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg';
+
+  useEffect(() => {
+    const { profilePicture } = player;
+    setImgSrc(profilePicture);
+  }, [player]);
+
+  const [imgSrc, setImgSrc] = useState<string>();
 
   return (
-    <Card className={twMerge('flex bg-slate-200', className)}>
+    <Card className={twMerge('flex max-h-32 max-w-sm bg-slate-200', className)}>
       <div className="relative h-24 w-24">
         <Image
-          src={imageUrl}
+          src={imgSrc || defaultProfilePicturePath}
           alt={`${fullName}'s picture`}
+          onError={_e => setImgSrc(defaultProfilePicturePath)}
           fill={true}
           sizes=""
           className="rounded-full"
         />
       </div>
 
-      <section className="pl-10 text-left	">
+      <section className="pl-10 text-left">
         <Text type="h3" className="text-sky-500 dark:text-sky-400">
           {fullName}
         </Text>

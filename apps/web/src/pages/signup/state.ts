@@ -2,63 +2,70 @@ export enum Actions {
   firstNameChange = 'firstNameChange',
   lastNameChange = 'lastNameChange',
   memorableIdChange = 'memorableIdChange',
+  profilePictureChange = 'profilePictureChange',
   memorableIdExists = 'memorableIdExists',
   resetState = 'resetState',
-  setError = 'setError'
+  setError = 'setError',
 }
 
 export type SignupAction = {
-  action: Actions,
-  inputValue?: string,
-  inputCheck?: boolean,
-  errorMessage?: string | undefined
-}
+  action: Actions;
+  inputValue?: string;
+  inputCheck?: boolean;
+  errorMessage?: string | undefined;
+};
 
 export type SignupState = {
-  firstName: string,
-  lastName: string,
-  memorableId: string,
-  memorableIdExists: boolean,
-  errorMessages: Array<string | undefined>
-}
+  firstName: string;
+  lastName: string;
+  memorableId: string;
+  memorableIdExists: boolean;
+  profilePictureUrl?: string;
+  errorMessages: Array<string | undefined>;
+};
 
-export function signupReducer(state: SignupState, action: SignupAction): SignupState {
+export function signupReducer(
+  state: SignupState,
+  action: SignupAction,
+): SignupState {
   switch (action.action) {
     case Actions.firstNameChange:
       return {
         ...state,
         errorMessages: [],
-        firstName: action.inputValue || ''
-      }
+        firstName: action.inputValue || '',
+      };
     case Actions.lastNameChange:
       return {
         ...state,
         errorMessages: [],
-        lastName: action.inputValue || ''
-      }
+        lastName: action.inputValue || '',
+      };
     case Actions.memorableIdChange:
       return {
         ...state,
         errorMessages: [],
-        memorableId: action.inputValue || ''
-      }
+        memorableId: action.inputValue || '',
+      };
+    case Actions.profilePictureChange:
+      return {
+        ...state,
+        profilePictureUrl: action.inputValue,
+      };
     case Actions.memorableIdExists:
       return {
         ...state,
-        memorableIdExists: !!action.inputCheck
-      }
+        memorableIdExists: !!action.inputCheck,
+      };
     case Actions.setError:
       return {
         ...state,
-        errorMessages: [
-          ...state.errorMessages,
-          action.errorMessage
-        ]
-      }
+        errorMessages: [...state.errorMessages, action.errorMessage],
+      };
     case Actions.resetState:
-      return initialState
+      return initialState;
     default:
-      return state
+      return state;
   }
 }
 
@@ -67,5 +74,6 @@ export const initialState: SignupState = {
   lastName: '',
   memorableId: '',
   memorableIdExists: false,
-  errorMessages: []
-}
+  profilePictureUrl: undefined,
+  errorMessages: [],
+};
