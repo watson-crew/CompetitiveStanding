@@ -24,7 +24,7 @@ export default function RecentPlayers({ onSelected, disabled }: RecentPlayersPro
 
     const recentlyPlayedUserCards = () => {
         return recentlyPlayedUsers.map(
-            user => <PlayerCard player={user}><Button text="Add" onClick={() => onClick(user)} disabled={isDisabled(user.id)}/></PlayerCard>
+            user => <PlayerCard key={user.id} player={user}><Button text="Add" onClick={() => onClick(user)} disabled={isDisabled(user.id)}/></PlayerCard>
         )
     }
 
