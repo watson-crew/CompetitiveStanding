@@ -5,7 +5,7 @@ import Text from '../Text/Text';
 type ButtonProps = WithDefaultProps<{
   text?: string;
   disabled?: boolean;
-  onClick: () => void;
+  onClick?: () => void;
   type?: 'submit' | 'button';
 }>;
 
