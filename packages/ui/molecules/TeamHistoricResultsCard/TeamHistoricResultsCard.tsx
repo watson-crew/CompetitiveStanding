@@ -17,11 +17,11 @@ type TeamHistoricResultsProps = WithDefaultProps<{
 
 export default function TeamHistoricResultsCard({team, historicResults, setAsWinner, className}: TeamHistoricResultsProps) {
 
-    const containerClasses = twMerge("bg-slate-100 flex flex-col items-center", className)
+    const containerClasses = twMerge("bg-slate-100 flex flex-col items-center justify-center", className)
 
     return (
         <Card className={containerClasses}>
-            <div className="flex mb-10">
+            <div className="flex-none flex mb-10">
                 <Text type="h1">{team.cumulativeTeamId}</Text>
                 <TextWithIcon
                     icon={CommonIcons.Trophy}
@@ -31,10 +31,11 @@ export default function TeamHistoricResultsCard({team, historicResults, setAsWin
                     {historicResults.wins}
                 </TextWithIcon>
             </div>
-            <div className="flex w-full space-x-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                {team.players.map((player) => <PlayerCard player={player} className=""/>)}
+
+            <div className="flex-grow items-center flex w-full space-x-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                {team.players.map((player) => <PlayerCard player={player} className="h-1/2"/>)}
             </div>
-            <Button onClick={setAsWinner} text="Mark as Winner" className="w-fit"/>
+            <Button onClick={setAsWinner} text="Mark as Winner" className="w-fit flex-none"/>
         </Card>
     )
 }
