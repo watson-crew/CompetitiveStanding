@@ -1,6 +1,14 @@
-import { GetRankingsForLocationAndGameTypeResult, GetResultsForLocationResult } from '@src/types';
+import {
+  GetRankingsForLocationAndGameTypeResult,
+  GetResultsForLocationResult,
+} from '@src/types';
 import { TeamWithPlayers } from 'database';
-import { GameResult, GetRankingsForLocationData, GetRecentMatchesData, User } from 'schema';
+import {
+  GameResult,
+  GetRankingsForLocationData,
+  GetRecentMatchesData,
+  User,
+} from 'schema';
 import { Mapper } from './generics';
 import { distinct } from '@src/utils/collectionUtils';
 
@@ -22,6 +30,7 @@ export const gameResultMapper: Mapper<
 > = {
   map: queryResult => {
     const results: GameResult[] = queryResult.map(res => {
+      console.log(res);
       return {
         id: res.id,
         participatingTeams: res.teams.map(team => team.cumulativeTeamId),
@@ -56,13 +65,13 @@ export const gameRankingsMapper: Mapper<
           firstName: res.firstName,
           lastName: res.lastName,
           profilePicture: res.profilePicture,
-          locationId: res.locationId
+          locationId: res.locationId,
         },
         gamesPlayed: res.gamesPlayed,
-        wins: res.gamesWon
+        wins: res.gamesWon,
       };
-    })
+    });
 
     return results;
-  }
-}
+  },
+};
