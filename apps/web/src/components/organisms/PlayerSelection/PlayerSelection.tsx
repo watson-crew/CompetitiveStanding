@@ -180,21 +180,30 @@ export default function PlayerSelection() {
 
   return (
     <section className="w-full text-center">
-      <TeamToggle
-        toggled={teamsEnabled}
-        onChange={() => setTeamsEnabled(!teamsEnabled)}
-      />
+      <div className="text-end">
+        {additionalTeamsEnabled && (
+          <Button
+            className="my-0 mr-5 inline-block"
+            onClick={() =>
+              teamsDispatch({ actionType: TeamActionType.AddTeam })
+            }
+            disabled={gameRequirements.numberOfTeams === teams.length}
+          >
+            <TextWithIcon
+              textProps={{ type: 'p' }}
+              icon={AiOutlineUsergroupAdd}
+            >
+              Add Team
+            </TextWithIcon>
+          </Button>
+        )}
 
-      {additionalTeamsEnabled && (
-        <Button
-          onClick={() => teamsDispatch({ actionType: TeamActionType.AddTeam })}
-          disabled={gameRequirements.numberOfTeams === teams.length}
-        >
-          <TextWithIcon textProps={{ type: 'p' }} icon={AiOutlineUsergroupAdd}>
-            Add Team
-          </TextWithIcon>
-        </Button>
-      )}
+        <TeamToggle
+          className="my-2 mr-10"
+          toggled={teamsEnabled}
+          onChange={() => setTeamsEnabled(!teamsEnabled)}
+        />
+      </div>
 
       {error && (
         <Banner

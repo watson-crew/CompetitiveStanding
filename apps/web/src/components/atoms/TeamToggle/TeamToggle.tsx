@@ -1,14 +1,19 @@
-import { Toggle, TextWithIcon } from 'ui';
+import { Toggle, TextWithIcon, WithDefaultProps } from 'ui';
 import { AiOutlineTeam, AiOutlineUser } from 'react-icons/ai';
 
-type TeamToggleProps = {
+type TeamToggleProps = WithDefaultProps<{
   toggled: boolean;
   onChange: () => void;
-};
+}>;
 
-export default function TeamToggle({ toggled, onChange }: TeamToggleProps) {
+export default function TeamToggle({
+  className,
+  toggled,
+  onChange,
+}: TeamToggleProps) {
   return (
     <Toggle
+      className={className}
       isToggled={toggled}
       onChange={onChange}
       defaultColor="yellow-500"
