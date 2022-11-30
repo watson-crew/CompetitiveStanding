@@ -8,6 +8,7 @@ import Text from "../../atoms/Text/Text"
 import TextWithIcon from '../TextWithIcon/TextWithIcon';
 import { Button } from '../..';
 import { CommonIcons } from '../../types/icons'
+import WithScrollbar from '../../atoms/WithScrollbar/WithScrollbar';
 
 type TeamHistoricResultsProps = WithDefaultProps<{
     team: Team,
@@ -32,9 +33,10 @@ export default function TeamHistoricResultsCard({team, historicResults, setAsWin
                 </TextWithIcon>
             </div>
 
-            <div className="flex-grow items-center justify-center flex w-full space-x-4 overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <WithScrollbar className="flex-grow items-center">
                 {team.players.map((player) => <PlayerCard player={player} className="h-1/2"/>)}
-            </div>
+            </WithScrollbar>
+
             <Button onClick={setAsWinner} text="Mark as Winner" className="w-fit flex-none"/>
         </Card>
     )
