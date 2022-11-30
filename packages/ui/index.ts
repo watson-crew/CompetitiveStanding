@@ -7,6 +7,7 @@ import LoadingSpinner from './atoms/LoadingSpinner/LoadingSpinner';
 import WithCloseButton from './atoms/WithCloseButton/WithCloseButton';
 import Text from './atoms/Text/Text';
 import Toggle from './atoms/Toggle/Toggle';
+import Tooltip from './atoms/Tooltip/Tooltip';
 import Link from './atoms/Link/Link';
 
 export {
@@ -18,6 +19,7 @@ export {
   WithCloseButton,
   Text,
   Toggle,
+  Tooltip,
   Link,
 };
 

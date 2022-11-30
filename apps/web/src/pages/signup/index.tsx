@@ -1,4 +1,4 @@
-import { CreateUserPayload } from 'schema';
+import { CreateUserPayload, User } from 'schema';
 import { ApiContext } from '@src/context/ApiContext';
 import {
   ChangeEvent,
@@ -7,8 +7,9 @@ import {
   useEffect,
   useReducer,
 } from 'react';
-import { Banner, Button, Card, Text, TextInput } from 'ui';
-import { Actions, initialState, signupReducer } from './state';
+import { Banner, Button, Card, PlayerCard, Text, TextInput } from 'ui';
+import { Actions, initialState, signupReducer, SignupState } from './state';
+import Image from 'next/image';
 import Head from 'next/head';
 
 export default function Index() {
@@ -36,13 +37,20 @@ export default function Index() {
   const createUser = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let error = false;
-    const { firstName, lastName, memorableId, memorableIdExists } = signupState;
+    const {
+      firstName,
+      lastName,
+      memorableId,
+      memorableIdExists,
+      profilePictureUrl,
+    } = signupState;
 
     const user: CreateUserPayload = {
       firstName,
       lastName,
       memorableId,
       homeLocationId: 1,
+      profilePictureUrl,
     };
 
     if (
@@ -77,6 +85,22 @@ export default function Index() {
     }
   };
 
+  const placeholders: Omit<SignupState, 'memorableIdExists' | 'errorMessages'> =
+    {
+      firstName: 'Joe',
+      lastName: 'Bloggs',
+      memorableId: 'abc',
+    };
+
+  const playerPreview: User = {
+    id: -1,
+    firstName: signupState.firstName || placeholders.firstName,
+    lastName: signupState.lastName || placeholders.lastName,
+    memorableId: signupState.memorableId || placeholders.memorableId,
+    profilePicture: signupState.profilePictureUrl,
+    location: 'Nottingham',
+  };
+
   return (
     <main className="mt-20 flex h-screen flex-col items-center">
       <Head>
@@ -93,36 +117,70 @@ export default function Index() {
           ))}
         </Banner>
       ) : null}
-      <Card className="w-96">
-        <form onSubmit={createUser}>
-          <TextInput
-            id="firstName"
-            title="First Name"
-            value={signupState.firstName}
-            onChange={event => handleOnChange(Actions.firstNameChange, event)}
-            maxLength={24}
-          />
-          <TextInput
-            id="lastName"
-            title="Last Name"
-            value={signupState.lastName}
-            onChange={event => handleOnChange(Actions.lastNameChange, event)}
-            maxLength={24}
-          />
-          <TextInput
-            id="memorableId"
-            title="Memorable ID"
-            value={signupState.memorableId}
-            onChange={event => handleOnChange(Actions.memorableIdChange, event)}
-            maxLength={3}
-          />
-          <Button
-            type="submit"
-            text="Create player"
-            className="mt-8 mb-2 w-full"
-          />
-        </form>
-      </Card>
+      <div className="flex">
+        <Card className="mx-5 w-96">
+          <form onSubmit={createUser}>
+            <TextInput
+              id="firstName"
+              title="First Name"
+              placeholder={placeholders.firstName}
+              value={signupState.firstName}
+              onChange={event => handleOnChange(Actions.firstNameChange, event)}
+              maxLength={24}
+            />
+            <TextInput
+              id="lastName"
+              title="Last Name"
+              placeholder={placeholders.lastName}
+              value={signupState.lastName}
+              onChange={event => handleOnChange(Actions.lastNameChange, event)}
+              maxLength={24}
+            />
+            <TextInput
+              id="memorableId"
+              title="Memorable ID"
+              placeholder={placeholders.memorableId}
+              value={signupState.memorableId}
+              onChange={event =>
+                handleOnChange(Actions.memorableIdChange, event)
+              }
+              maxLength={3}
+            />
+            <TextInput
+              id="profilePicture"
+              title="Profile Picture Url"
+              placeholder="https://ca.slack-edge.com/..."
+              tooltipContent={
+                <div className="m-2 flex max-w-min flex-col">
+                  <Text type="p" className="whitespace-normal text-xs">
+                    Currently only Slack images are supported
+                  </Text>
+                  <div className="relative mt-2 h-32 w-32">
+                    <Image
+                      src="/profileUrlTooltip.gif"
+                      fill={true}
+                      alt=""
+                      className="inline-block"
+                    />
+                  </div>
+                </div>
+              }
+              value={signupState.profilePictureUrl || ''}
+              onChange={event =>
+                handleOnChange(Actions.profilePictureChange, event)
+              }
+            />
+            <Button
+              type="submit"
+              text="Create player"
+              className="mt-8 mb-2 w-full"
+            />
+          </form>
+        </Card>
+        <div className="mx-5 h-full w-96">
+          <PlayerCard player={playerPreview} />
+        </div>
+      </div>
     </main>
   );
 }
