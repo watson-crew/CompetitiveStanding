@@ -3,12 +3,46 @@ import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import { ApiContext } from "@src/context/ApiContext";
 import GameComponent from "@src/components/organisms/GameComponent/GameComponent";
 import Head from 'next/head';
-import { Team, TeamHistoricResult, User } from "@src/../../../packages/schema";
-import { match } from "assert";
+import { GameType, Team, TeamHistoricResult, User, Location, InitiateMatchResponse } from "@src/../../../packages/schema";
+import { GameRequirements } from "@src/types/games";
+import { generateTeamId } from '@src/uilts/teamUtils';
 
 export default function Index() {
+  function useSelectedGameType(): GameType & { requirements: GameRequirements } {
+    return {
+      id: 1,
+      name: 'Pool',
+      maxNumberOfPlayers: 2, // Obsolete now
+      requirements: {
+        min: {
+          playersPerTeam: 1,
+          numberOfTeams: 2,
+        },
+        max: {
+          playersPerTeam: 4,
+          numberOfTeams: 3, // Just for testing purposes
+        },
+      },
+    };
+  }
+
+  function useSelectedLocation(): Location {
+    return {
+      id: 1,
+      name: 'Nottingham',
+      urlPath: 'nottingham',
+    };
+  }
 
   const client = useContext(ApiContext)
+
+  // Use a proper react hook to load this from somewhere
+  // TODO: Look at passing game and location in as props
+  const [selectedGameType] = useState(useSelectedGameType());
+
+  // Use a proper react hook to load this from somewhere
+  const [selectedLocation] = useState(useSelectedLocation());
+
   const [matchId, setMatchId] = useState<number>()
   const [teams, setTeams] = useState<Omit<Team, "id">[]>([])
   const [historicData, setHistoricData] = useState<Record<string, TeamHistoricResult>>({})
@@ -18,10 +52,28 @@ export default function Index() {
   //       We should store the current initiateMatch results (i.e matchId, historicResults, teams) in some global persisted state
   //       Then on refresh, we start it up again.
 
-  const startMatch = (newMatchId: number, historicResults: Record<string, TeamHistoricResult>, teams: Omit<Team, "id">[]) => {
-    setMatchId(newMatchId)
-    setHistoricData(historicResults)
-    setTeams(teams)
+  const startMatch = async (teams: User[][]) => {
+    try {
+      const response: InitiateMatchResponse = await client.matches.initiateNewMatch({
+        gameTypeId: selectedGameType.id,
+        locationId: selectedLocation.id,
+        participatingTeams: teams.map(team =>
+          generateTeamId(team),
+        ),
+      });
+
+      const teamRecords: Omit<Team, "id">[] = teams.map(team => {
+        return {
+          cumulativeTeamId: generateTeamId(team),
+          players: team}
+      })
+
+      setMatchId(response.matchId)
+      setHistoricData(response.historicResults)
+      setTeams(teamRecords)
+    } catch (err) {
+      throw err
+    }
   }
 
   const clearGameDetails = () => {
@@ -52,7 +104,11 @@ export default function Index() {
 
       {shouldDisplayPlayerSelection()
         &&
-        <PlayerSelection startMatch={startMatch}/>
+        <PlayerSelection
+          selectedGameType={selectedGameType}
+          selectedLocation={selectedLocation}
+          startMatch={startMatch}
+        />
       }
 
       {shouldDisplayGame()

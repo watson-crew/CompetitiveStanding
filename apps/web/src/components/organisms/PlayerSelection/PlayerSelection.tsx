@@ -23,47 +23,15 @@ import { GameRequirements, GameRequirement } from '@src/types/games';
 import { generateTeamId } from '@src/uilts/teamUtils';
 
 type PlayerSelectionProps = {
-  startMatch: (matchId: number, historicResults: Record<string, TeamHistoricResult>, teams: Omit<Team, "id">[]) => void;
+  selectedGameType: GameType & { requirements: GameRequirements },
+  selectedLocation: Location,
+  startMatch: (teams: User[][]) => void;
   // startMatch: (teams: Team[], historicData: Record<string, TeamHistoricResult>) => void;
 };
 
-function useSelectedGameType(): GameType & { requirements: GameRequirements } {
-  return {
-    id: 1,
-    name: 'Pool',
-    maxNumberOfPlayers: 2, // Obsolete now
-    requirements: {
-      min: {
-        playersPerTeam: 1,
-        numberOfTeams: 2,
-      },
-      max: {
-        playersPerTeam: 4,
-        numberOfTeams: 3, // Just for testing purposes
-      },
-    },
-  };
-}
-
-function useSelectedLocation(): Location {
-  return {
-    id: 1,
-    name: 'Nottingham',
-    urlPath: 'nottingham',
-  };
-}
-
-export default function PlayerSelection({ startMatch }: PlayerSelectionProps) {
-  const dispatch = useDispatch();
+export default function PlayerSelection({ selectedGameType, selectedLocation, startMatch }: PlayerSelectionProps) {
 
 // This component is currently re-rendering twice, I'm not sure if this is correct or not
-  // Use a proper react hook to load this from somewhere
-  // TODO: Look at passing game and location in as props
-  const [selectedGameType] = useState(useSelectedGameType());
-
-  // Use a proper react hook to load this from somewhere
-  const [selectedLocation] = useState(useSelectedLocation());
-
   const gameMinRequirements = selectedGameType.requirements.min;
 
   const [gameRequirements, setGameRequirements] =
@@ -164,22 +132,7 @@ export default function PlayerSelection({ startMatch }: PlayerSelectionProps) {
     );
 
     try {
-      // startMatch();
-      const response: InitiateMatchResponse = await client.matches.initiateNewMatch({
-        gameTypeId: selectedGameType.id,
-        locationId: selectedLocation.id,
-        participatingTeams: participatingTeams.map(team =>
-          generateTeamId(team),
-        ),
-      });
-
-      const teamRecords: Omit<Team, "id">[] = participatingTeams.map(team => {
-        return {
-          cumulativeTeamId: generateTeamId(team),
-          players: team}
-      })
-
-      startMatch(response.matchId, response.historicResults, teamRecords)
+      await startMatch(participatingTeams);
     } catch (err) {
       setError({
         level: 'error',
