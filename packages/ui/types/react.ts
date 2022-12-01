@@ -6,10 +6,10 @@ export type DefaultProps = {
 };
 
 export type LoadingProps = {
-  loading: boolean
-}
+  loading: boolean;
+};
 
-export type WithLoadingProps<T> = T & LoadingProps
+export type WithLoadingProps<T> = T & LoadingProps;
 
 export type WithDefaultProps<T> = T & DefaultProps;
 

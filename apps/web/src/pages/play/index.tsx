@@ -2,13 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import { ApiContext } from "@src/context/ApiContext";
 import GameComponent from "@src/components/organisms/GameComponent/GameComponent";
-
+import Head from 'next/head';
 import { Team, TeamHistoricResult } from "@src/../../../packages/schema";
 
 export default function Index() {
 
   const client = useContext(ApiContext)
-  const fetchUser = async (userId: string) => client.user.getUserByMemorableId(userId)
 
   // TEST DATA FOR GAME COMPONENT
   // WILL BE SET BY startGame later
@@ -50,23 +49,26 @@ export default function Index() {
   // TODO: Figure out what happens if screen is refreshed.
   //       If we haven't stored the local state that a game is happening, we can't re-hydrate state
   //       We should store the current initiateMatch results (i.e matchId, historicResults, teams) in some global persisted state
-  //       Then on refresh, we start it up again. 
+  //       Then on refresh, we start it up again.
+
+
   return (
-    <div className="flex h-screen flex-col items-center">
+    <main className="flex h-screen flex-col items-center">
+      <Head>
+        <title>Competitive Standing | Play</title>
+      </Head>
       <h1 className="text-3xl font-bold underline">Competitive standing</h1>
 
       {
         (!teams || !teams[0])
         &&
-        <PlayerSelection fetchPlayer={fetchUser} startMatch={setTestData}/>
+        <PlayerSelection startMatch={setTestData}/>
       }
 
       {historicData && teams && teams[0] && teams[1]
         &&
         <GameComponent historicData={historicData} teams={teams}/>
       }
-
-
-    </div>
+    </main>
   );
 }

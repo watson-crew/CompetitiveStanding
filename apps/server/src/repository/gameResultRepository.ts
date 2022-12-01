@@ -1,5 +1,11 @@
-import { gameResultMapper, gameRankingsMapper } from '@src/mappers/gameResultMapper';
-import { GetResultsForLocationResult, GetRankingsForLocationAndGameTypeResult } from '@src/types';
+import {
+  gameResultMapper,
+  gameRankingsMapper,
+} from '@src/mappers/gameResultMapper';
+import {
+  GetResultsForLocationResult,
+  GetRankingsForLocationAndGameTypeResult,
+} from '@src/types';
 import { prismaClient as prisma, Prisma } from 'database';
 import {
   GetRecentMatchesData,
@@ -174,6 +180,9 @@ export async function getResultsForLocation(
     await prisma.gameResult.findMany({
       where: {
         locationPlayedId: locationId,
+        winningTeamId: {
+          not: null,
+        },
       },
       include: {
         winningTeam: {
@@ -207,42 +216,44 @@ export const getRankingsForLocation = async (
   locationId: number,
   gameTypeId: number,
   offset = 0,
-  total = 3
+  total = 3,
 ): Promise<GetRankingsForLocationData> => {
-    // Number of wins/games played per team
-    // const rankings = await prisma.team.findMany({
-    //   include: {
-    //     _count: {
-    //       select: {
-    //         gameResults: true,
-    //         wonGames: true
-    //       }
-    //     }
-    //   },
-    //   orderBy: [
-    //     { wonGames: { _count: 'desc' }},
-    //     { gameResults: { _count: 'asc' }}
-    //   ],
-    //   take: total
-    // })
+  // Number of wins/games played per team
+  // const rankings = await prisma.team.findMany({
+  //   include: {
+  //     _count: {
+  //       select: {
+  //         gameResults: true,
+  //         wonGames: true
+  //       }
+  //     }
+  //   },
+  //   orderBy: [
+  //     { wonGames: { _count: 'desc' }},
+  //     { gameResults: { _count: 'asc' }}
+  //   ],
+  //   take: total
+  // })
 
-    // Number of wins/games played per team that each player is in
-    // const rankings = await prisma.user.findMany({
-    //   include: {
-    //     teams: {
-    //       include: {
-    //         _count: {
-    //           select: {
-    //             gameResults: true,
-    //             wonGames: true
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // });
+  // Number of wins/games played per team that each player is in
+  // const rankings = await prisma.user.findMany({
+  //   include: {
+  //     teams: {
+  //       include: {
+  //         _count: {
+  //           select: {
+  //             gameResults: true,
+  //             wonGames: true
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // });
 
-    const rankings = await prisma.$queryRaw<GetRankingsForLocationAndGameTypeResult[]>`
+  const rankings = await prisma.$queryRaw<
+    GetRankingsForLocationAndGameTypeResult[]
+  >`
         SELECT
           u.*,
           COUNT(*) AS gamesPlayed,
@@ -261,5 +272,5 @@ export const getRankingsForLocation = async (
         ;
     `;
 
-    return gameRankingsMapper.map(rankings);
-}
+  return gameRankingsMapper.map(rankings);
+};
