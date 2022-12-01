@@ -4,18 +4,21 @@ import { IconBaseProps, IconType } from 'react-icons';
 import { WithDefaultProps } from '../../types';
 import { twMerge } from 'tailwind-merge';
 
+type IconSize = 's' | 'm' | 'l' | 'xl';
+
 type TextWithIconProps = WithDefaultProps<{
   icon: IconType;
-  iconSize?: 's' | 'm' | 'l';
+  iconSize?: IconSize;
   textProps: TextProps;
   iconProps?: React.Attributes & IconBaseProps;
   reversed?: boolean;
 }>;
 
-const iconSizes = {
+const iconSizes: Record<IconSize, number> = {
   s: 20,
   m: 24,
   l: 30,
+  xl: 50
 };
 
 export default function TextWithIcon({

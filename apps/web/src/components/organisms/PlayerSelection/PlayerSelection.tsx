@@ -20,42 +20,16 @@ import {
   minimumRequirementsMet,
 } from '@src/uilts/gamesUtils';
 import { GameRequirements, GameRequirement } from '@src/types/games';
-import { generateTeamId } from '@src/uilts/teamUtils';
 
-function useSelectedGameType(): GameType & { requirements: GameRequirements } {
-  return {
-    id: 1,
-    name: 'Pool',
-    maxNumberOfPlayers: 2, // Obsolete now
-    requirements: {
-      min: {
-        playersPerTeam: 1,
-        numberOfTeams: 2,
-      },
-      max: {
-        playersPerTeam: 4,
-        numberOfTeams: 3, // Just for testing purposes
-      },
-    },
-  };
-}
+type PlayerSelectionProps = {
+  selectedGameType: GameType & { requirements: GameRequirements },
+  selectedLocation: Location,
+  startMatch: (teams: User[][]) => Promise<void>;
+};
 
-function useSelectedLocation(): Location {
-  return {
-    id: 1,
-    name: 'Nottingham',
-    urlPath: 'nottingham',
-  };
-}
+export default function PlayerSelection({ selectedGameType, startMatch }: PlayerSelectionProps) {
 
 // This component is currently re-rendering twice, I'm not sure if this is correct or not
-export default function PlayerSelection() {
-  // Use a proper react hook to load this from somewhere
-  const [selectedGameType] = useState(useSelectedGameType());
-
-  // Use a proper react hook to load this from somewhere
-  const [selectedLocation] = useState(useSelectedLocation());
-
   const gameMinRequirements = selectedGameType.requirements.min;
 
   const [gameRequirements, setGameRequirements] =
@@ -156,13 +130,7 @@ export default function PlayerSelection() {
     );
 
     try {
-      await client.matches.initiateNewMatch({
-        gameTypeId: selectedGameType.id,
-        locationId: selectedLocation.id,
-        participatingTeams: participatingTeams.map(team =>
-          generateTeamId(team),
-        ),
-      });
+      await startMatch(participatingTeams);
     } catch (err) {
       setError({
         level: 'error',
