@@ -64,7 +64,7 @@ const getPlayer = (payload?: TeamActionPayload): User => {
 };
 
 const getTeamIndex = (payload?: TeamActionPayload): number => {
-  if (payload && payload.teamIndex) {
+  if (payload && payload.teamIndex !== undefined) {
     return payload.teamIndex;
   }
   throw Error();
@@ -80,6 +80,7 @@ export function teamsReducer(
   switch (actionType) {
     case TeamActionType.PlayerDetailsAdded:
       player = getPlayer(payload);
+      console.log(payload)
       teamIndex = getTeamIndex(payload);
 
       return withIndexReplaced(
