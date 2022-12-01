@@ -215,7 +215,7 @@ export default function PlayerSelection() {
         </Banner>
       )}
 
-      <section className="my-10 flex min-h-fit w-full items-center justify-around align-middle">
+      <section className="my-10 flex min-h-fit w-full items-center justify-between align-middle">
         {teams.map((team, teamIndex) => (
           <TeamSelectionCard
             teamNumber={teamIndex}
@@ -249,7 +249,6 @@ export default function PlayerSelection() {
         />
       </div>
       <RecentPlayers
-        className="mx-10"
         onSelected={user =>
           onPlayerAddedToTeam(teamWithOpenSlot, user.memorableId)
         }

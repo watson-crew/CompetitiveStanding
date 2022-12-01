@@ -1,7 +1,9 @@
-import { WithDefaultProps, PlayerCard, Button, Text } from 'ui';
+import { WithDefaultProps, PlayerCard, Button, Text, Card } from 'ui';
 import { useSelector } from 'react-redux';
 import { selectRecentlyPlayed } from '@src/store/reducers/playerSlice';
 import { User } from 'schema';
+import { twMerge } from 'tailwind-merge';
+import { useEffect, useState } from 'react';
 
 type RecentPlayersProps = WithDefaultProps<{
   onSelected: (user: User) => void;
@@ -16,6 +18,12 @@ export default function RecentPlayers({
   allSlotsFilled = false,
 }: RecentPlayersProps) {
   const recentlyPlayedUsers = useSelector(selectRecentlyPlayed);
+
+  const [hasRecentPlayers, setHasRecentPlayers] = useState(false);
+
+  useEffect(() => {
+    setHasRecentPlayers(recentlyPlayedUsers.length > 0);
+  }, [recentlyPlayedUsers]);
 
   const isDisabled = (memorableId: string) => {
     return disabled.includes(memorableId);
@@ -34,11 +42,12 @@ export default function RecentPlayers({
   };
 
   return (
-    <section className={className}>
-      <Text type="h2">Recently Played</Text>
-      <div className="flex h-full w-full flex-row gap-x-4 overflow-scroll">
-        {recentlyPlayedUserCards()}
+    <Card className={twMerge('w-full text-left', className)}>
+      <Text type="h2">Recent players</Text>
+      <div className="min-h-20 flex h-full w-full flex-row justify-center gap-x-4 overflow-scroll">
+        {hasRecentPlayers && recentlyPlayedUserCards()}
+        {!hasRecentPlayers && <Text type="p">No recent players</Text>}
       </div>
-    </section>
+    </Card>
   );
 }
