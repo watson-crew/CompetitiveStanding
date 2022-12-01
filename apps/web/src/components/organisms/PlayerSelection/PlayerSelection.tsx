@@ -1,5 +1,5 @@
 import { useContext, useEffect, useReducer, useState } from 'react';
-import { GameType, Location, User } from 'schema';
+import { GameType, InitiateMatchResponse, Location, Team, TeamHistoricResult, User } from 'schema';
 import { Banner, Button, TeamSelectionCard, Text, TextWithIcon } from 'ui';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -23,7 +23,7 @@ import { GameRequirements, GameRequirement } from '@src/types/games';
 import { generateTeamId } from '@src/uilts/teamUtils';
 
 type PlayerSelectionProps = {
-  startMatch: () => void;
+  startMatch: (matchId: number, historicResults: Record<string, TeamHistoricResult>, teams: Omit<Team, "id">[]) => void;
   // startMatch: (teams: Team[], historicData: Record<string, TeamHistoricResult>) => void;
 };
 
@@ -165,13 +165,21 @@ export default function PlayerSelection({ startMatch }: PlayerSelectionProps) {
 
     try {
       // startMatch();
-      await client.matches.initiateNewMatch({
+      const response: InitiateMatchResponse = await client.matches.initiateNewMatch({
         gameTypeId: selectedGameType.id,
         locationId: selectedLocation.id,
         participatingTeams: participatingTeams.map(team =>
           generateTeamId(team),
         ),
       });
+
+      const teamRecords: Omit<Team, "id">[] = participatingTeams.map(team => {
+        return {
+          cumulativeTeamId: generateTeamId(team),
+          players: team}
+      })
+
+      startMatch(response.matchId, response.historicResults, teamRecords)
     } catch (err) {
       setError({
         level: 'error',

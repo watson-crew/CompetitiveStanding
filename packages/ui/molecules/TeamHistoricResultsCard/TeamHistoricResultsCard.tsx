@@ -11,7 +11,7 @@ import { CommonIcons } from '../../types/icons'
 import WithScrollbar from '../../atoms/WithScrollbar/WithScrollbar';
 
 type TeamHistoricResultsProps = WithDefaultProps<{
-    team: Team,
+    team: Omit<Team, "id">,
     historicResults: TeamHistoricResult,
     setAsWinner: () => void
 }>
@@ -26,8 +26,8 @@ export default function TeamHistoricResultsCard({team, historicResults, setAsWin
                 <Text type="h1">{team.cumulativeTeamId}</Text>
                 <TextWithIcon
                     icon={CommonIcons.Trophy}
+                    iconSize="xl"
                     textProps={{type:"h3", className:"text-3xl"}}
-                    iconProps={{size: 50}}
                 >
                     {historicResults.wins}
                 </TextWithIcon>

@@ -1,8 +1,8 @@
-import { Team, TeamHistoricResult } from "@src/../../../packages/schema";
+import { Team, User, TeamHistoricResult } from "@src/../../../packages/schema";
 import { TeamHistoricResultsCard, Button } from 'ui'
 
 type GameComponentProps = {
-    teams: Team[]
+    teams: Omit<Team, "id">[]
     historicData: Record<string, TeamHistoricResult>
 };
 
@@ -14,18 +14,18 @@ export default function GameComponent({ teams, historicData }: GameComponentProp
         return <div>No Data</div>
     }
 
-    const teamOne = teams[0]
-    const historicDataForTeamOne = historicData[teamOne.cumulativeTeamId]
-    const teamTwo = teams[1]
-    const historicDataForTeamTwo = historicData[teamTwo.cumulativeTeamId]
-
     const abandonGame = () => {
         console.log("Abandon game")
     }
 
-    const setWinner = (team: Team) => {
+    const setWinner = (team: Omit<Team, "id">) => {
         console.log(`Winner: ${team.cumulativeTeamId}`)
     }
+
+    const teamOne = teams[0]
+    const historicDataForTeamOne = historicData[teamOne.cumulativeTeamId]
+    const teamTwo = teams[1]
+    const historicDataForTeamTwo = historicData[teamTwo.cumulativeTeamId]
 
     // TODO: Display current game length
     //       For this we need to know the startTime of the match. We can get the matchId, or the full matchDetails as a prop
