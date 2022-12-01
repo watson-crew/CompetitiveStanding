@@ -3,11 +3,11 @@ import { FaTableTennis } from 'react-icons/fa';
 import { MdOutlineLocationCity } from 'react-icons/md';
 import { RiBilliardsFill } from 'react-icons/ri';
 import { SiDart } from 'react-icons/si';
-import { AiOutlineTrophy } from 'react-icons/ai'
+import { AiOutlineTrophy } from 'react-icons/ai';
 
 export const CommonIcons: Record<string, IconType> = {
   HomeLocation: MdOutlineLocationCity,
-  Trophy: AiOutlineTrophy
+  Trophy: AiOutlineTrophy,
 };
 
 export const SportIcons: Record<string, IconType> = {

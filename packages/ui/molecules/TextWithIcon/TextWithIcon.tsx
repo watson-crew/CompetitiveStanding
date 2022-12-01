@@ -18,7 +18,7 @@ const iconSizes: Record<IconSize, number> = {
   s: 20,
   m: 24,
   l: 30,
-  xl: 50
+  xl: 50,
 };
 
 export default function TextWithIcon({

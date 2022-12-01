@@ -22,14 +22,16 @@ import {
 import { GameRequirements, GameRequirement } from '@src/types/games';
 
 type PlayerSelectionProps = {
-  selectedGameType: GameType & { requirements: GameRequirements },
-  selectedLocation: Location,
+  selectedGameType: GameType & { requirements: GameRequirements };
+  selectedLocation: Location;
   startMatch: (teams: User[][]) => Promise<void>;
 };
 
-export default function PlayerSelection({ selectedGameType, startMatch }: PlayerSelectionProps) {
-
-// This component is currently re-rendering twice, I'm not sure if this is correct or not
+export default function PlayerSelection({
+  selectedGameType,
+  startMatch,
+}: PlayerSelectionProps) {
+  // This component is currently re-rendering twice, I'm not sure if this is correct or not
   const gameMinRequirements = selectedGameType.requirements.min;
 
   const [gameRequirements, setGameRequirements] =
@@ -183,7 +185,7 @@ export default function PlayerSelection({ selectedGameType, startMatch }: Player
         </Banner>
       )}
 
-      <section className="my-10 flex min-h-fit w-full items-center justify-around align-middle">
+      <section className="my-10 flex min-h-fit w-full items-center justify-between align-middle">
         {teams.map((team, teamIndex) => (
           <TeamSelectionCard
             teamNumber={teamIndex}
@@ -217,7 +219,6 @@ export default function PlayerSelection({ selectedGameType, startMatch }: Player
         />
       </div>
       <RecentPlayers
-        className="mx-10"
         onSelected={user =>
           onPlayerAddedToTeam(teamWithOpenSlot, user.memorableId)
         }

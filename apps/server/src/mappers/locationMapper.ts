@@ -3,7 +3,7 @@ import { Location as LocationDto } from 'schema';
 import { Mapper } from './generics';
 
 export const LocationGetMapper: Mapper<PrismaLocation, LocationDto> = {
-  map: (prismaModel) => {
+  map: prismaModel => {
     return prismaModel as LocationDto;
-  }
-}
+  },
+};

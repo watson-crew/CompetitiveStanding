@@ -54,8 +54,8 @@ export default function PlayerCard({
         <TextWithIcon icon={CommonIcons.HomeLocation} textProps={{ type: 'p' }}>
           {player.location}
         </TextWithIcon>
-        {children && <section>{children}</section>}
       </section>
+      {children && <section className="ml-5 flex">{children}</section>}
     </Card>
   );
 }

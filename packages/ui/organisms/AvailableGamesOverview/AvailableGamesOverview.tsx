@@ -9,7 +9,9 @@ type AvailableGamesOverviewProps = WithDefaultProps<{
   availableGames: GameType[];
 }>;
 
-export default function AvailableGamesOverview({ className }: AvailableGamesOverviewProps) {
+export default function AvailableGamesOverview({
+  className,
+}: AvailableGamesOverviewProps) {
   const count = 3;
 
   const cardsToRender = [];
@@ -19,9 +21,16 @@ export default function AvailableGamesOverview({ className }: AvailableGamesOver
   }
 
   return (
-    <Card color="slate-200" className={twMerge("h-full w-full flex flex-col max-2-lg", className)}>
-      <Text type="h2" className='block'>Start a game...</Text>
-      <div className="h-full w-full flex-row flex overflow-scroll">{cardsToRender}</div>
+    <Card
+      color="slate-200"
+      className={twMerge('max-2-lg flex h-full w-full flex-col', className)}
+    >
+      <Text type="h2" className="block">
+        Start a game...
+      </Text>
+      <div className="flex h-full w-full flex-row overflow-scroll">
+        {cardsToRender}
+      </div>
     </Card>
-  )
+  );
 }

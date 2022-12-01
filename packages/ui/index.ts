@@ -29,7 +29,7 @@ import PlayerIdInput from './molecules/PlayerIdInput/PlayerIdInput';
 import PlayerSelectionCard from './molecules/PlayerSelectionCard/PlayerSelectionCard';
 import TextInput from './molecules/TextInput/TextInput';
 import TextWithIcon from './molecules/TextWithIcon/TextWithIcon';
-import TeamHistoricResultsCard from './molecules/TeamHistoricResultsCard/TeamHistoricResultsCard'
+import TeamHistoricResultsCard from './molecules/TeamHistoricResultsCard/TeamHistoricResultsCard';
 
 export {
   PlayerCard,
