@@ -12,11 +12,6 @@ type GameComponentProps = {
 export default function GameComponent({ matchId, teams, historicData, abandonMatch, setMatchWinner }: GameComponentProps) {
     // TODO: Refactor to work with more than 2 teams
 
-    // TODO: Remove this after testing
-    if(!teams || !teams[0] || !teams[1]) {
-        return <div>No Data</div>
-    }
-
     const abandonGame = () => {
         console.log("Abandon game")
         abandonMatch()

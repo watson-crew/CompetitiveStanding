@@ -20,13 +20,11 @@ import {
   minimumRequirementsMet,
 } from '@src/uilts/gamesUtils';
 import { GameRequirements, GameRequirement } from '@src/types/games';
-import { generateTeamId } from '@src/uilts/teamUtils';
 
 type PlayerSelectionProps = {
   selectedGameType: GameType & { requirements: GameRequirements },
   selectedLocation: Location,
-  startMatch: (teams: User[][]) => void;
-  // startMatch: (teams: Team[], historicData: Record<string, TeamHistoricResult>) => void;
+  startMatch: (teams: User[][]) => Promise<void>;
 };
 
 export default function PlayerSelection({ selectedGameType, selectedLocation, startMatch }: PlayerSelectionProps) {
