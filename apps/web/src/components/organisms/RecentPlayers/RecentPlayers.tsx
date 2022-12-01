@@ -4,6 +4,7 @@ import { selectRecentlyPlayed } from '@src/store/reducers/playerSlice';
 import { User } from 'schema';
 import { twMerge } from 'tailwind-merge';
 import { useEffect, useState } from 'react';
+import WithScrollbar from '@src/../../../packages/ui/atoms/WithScrollbar/WithScrollbar';
 
 type RecentPlayersProps = WithDefaultProps<{
   onSelected: (user: User) => void;
@@ -32,7 +33,7 @@ export default function RecentPlayers({
   const recentlyPlayedUserCards = () => {
     return recentlyPlayedUsers.map((user, i) => (
       <PlayerCard player={user} key={`recent-player-${i}`}>
-        <Button
+      <Button
           text="Add"
           onClick={() => onSelected(user)}
           disabled={allSlotsFilled || isDisabled(user.memorableId)}
@@ -44,14 +45,18 @@ export default function RecentPlayers({
   return (
     <Card className={twMerge('w-full text-left', className)}>
       <Text type="h2">Recent players</Text>
-      <div
-        className={`min-h-20 flex h-full w-full flex-row ${
-          !hasRecentPlayers ? 'justify-center' : ''
-        } gap-x-4 overflow-scroll`}
-      >
-        {hasRecentPlayers && recentlyPlayedUserCards()}
-        {!hasRecentPlayers && <Text type="p">No recent players</Text>}
+
+      {!hasRecentPlayers &&
+      <div className="text-center">
+        <Text type="p">No recent players</Text>
       </div>
+      }
+
+      {hasRecentPlayers &&
+        <WithScrollbar className="flex-grow items-center">
+          {recentlyPlayedUserCards()}
+        </WithScrollbar>
+      }
     </Card>
   );
 }
