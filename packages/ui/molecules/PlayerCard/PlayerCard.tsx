@@ -58,7 +58,7 @@ export default function PlayerCard({
   // For 'm' variant - default
   return (
     <Card className={twMerge('flex max-h-32 max-w-sm bg-slate-200', className)}>
-      <div className="relative h-24 w-24">
+      <div className="relative h-24 w-24 flex-none">
         <Image
           src={imgSrc || defaultProfilePicturePath}
           alt={`${fullName}'s picture`}
