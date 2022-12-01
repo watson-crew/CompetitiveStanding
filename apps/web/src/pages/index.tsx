@@ -49,16 +49,6 @@ export default function Index({ locations }: RootPageProps) {
       <Link href="/play">Play game</Link>
 
       <Link href="/signup">Sign up</Link>
-
-      <hr />
-
-      <h1>Recently Played</h1>
-      {recentlyPlayedUsers &&
-        recentlyPlayedUsers.map(user => <PlayerCard player={user} />)}
-
-      <button onClick={clearRecentlyPlayedUsers}>
-        Clear Recently Selected
-      </button>
     </main>
   );
 }
