@@ -31,7 +31,7 @@ export default function RecentPlayers({
   };
 
   const recentlyPlayedUserCards = () => {
-    return recentlyPlayedUsers.map((user, i) => (
+    return recentlyPlayedUsers.reverse().map((user, i) => (
       <PlayerCard player={user} key={`recent-player-${i}`}>
       <Button
           text="Add"
