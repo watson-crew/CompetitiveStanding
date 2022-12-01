@@ -32,8 +32,12 @@ export default function RecentPlayers({
 
   const recentlyPlayedUserCards = () => {
     return recentlyPlayedUsers.reverse().map((user, i) => (
-      <PlayerCard player={user} key={`recent-player-${i}`} variant="s">
-      <Button
+      <PlayerCard
+        player={user}
+        key={`recent-player-${i}`}
+        variant="s"
+      >
+        <Button
           onClick={() => onSelected(user)}
           disabled={allSlotsFilled || isDisabled(user.memorableId)}
           className="rounded-full px-2 py-2"
