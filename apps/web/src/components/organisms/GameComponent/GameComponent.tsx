@@ -1,4 +1,4 @@
-import { Team, User, TeamHistoricResult } from "@src/../../../packages/schema";
+import { Team, TeamHistoricResult } from "@src/../../../packages/schema";
 import { TeamHistoricResultsCard, Button } from 'ui'
 
 type GameComponentProps = {
@@ -9,7 +9,7 @@ type GameComponentProps = {
     setMatchWinner: (cumulativeTeamId: string) => void
 };
 
-export default function GameComponent({ matchId, teams, historicData, abandonMatch, setMatchWinner }: GameComponentProps) {
+export default function GameComponent({teams, historicData, abandonMatch, setMatchWinner }: GameComponentProps) {
     // TODO: Refactor to work with more than 2 teams
 
     const abandonGame = () => {

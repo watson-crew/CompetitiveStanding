@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import PlayerSelection from "@organisms/PlayerSelection/PlayerSelection";
 import { ApiContext } from "@src/context/ApiContext";
 import GameComponent from "@src/components/organisms/GameComponent/GameComponent";

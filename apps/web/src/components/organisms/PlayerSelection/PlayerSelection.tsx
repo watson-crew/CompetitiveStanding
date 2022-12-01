@@ -1,5 +1,5 @@
 import { useContext, useEffect, useReducer, useState } from 'react';
-import { GameType, InitiateMatchResponse, Location, Team, TeamHistoricResult, User } from 'schema';
+import { GameType, Location, User } from 'schema';
 import { Banner, Button, TeamSelectionCard, Text, TextWithIcon } from 'ui';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -27,7 +27,7 @@ type PlayerSelectionProps = {
   startMatch: (teams: User[][]) => Promise<void>;
 };
 
-export default function PlayerSelection({ selectedGameType, selectedLocation, startMatch }: PlayerSelectionProps) {
+export default function PlayerSelection({ selectedGameType, startMatch }: PlayerSelectionProps) {
 
 // This component is currently re-rendering twice, I'm not sure if this is correct or not
   const gameMinRequirements = selectedGameType.requirements.min;
