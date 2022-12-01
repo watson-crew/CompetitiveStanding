@@ -4,10 +4,12 @@ import { ApiContext } from "@src/context/ApiContext";
 import GameComponent from "@src/components/organisms/GameComponent/GameComponent";
 import Head from 'next/head';
 import { Team, TeamHistoricResult, User } from "@src/../../../packages/schema";
+import { match } from "assert";
 
 export default function Index() {
 
   const client = useContext(ApiContext)
+  const [matchId, setMatchId] = useState<number>()
   const [teams, setTeams] = useState<Omit<Team, "id">[]>([])
   const [historicData, setHistoricData] = useState<Record<string, TeamHistoricResult>>({})
 
@@ -16,11 +18,26 @@ export default function Index() {
   //       We should store the current initiateMatch results (i.e matchId, historicResults, teams) in some global persisted state
   //       Then on refresh, we start it up again.
 
-  const startMatch = (matchId: number, historicResults: Record<string, TeamHistoricResult>, teams: Omit<Team, "id">[]) => {
-    // TODO: Sort out types
-    // TODO: Do anything with matchId
+  const startMatch = (newMatchId: number, historicResults: Record<string, TeamHistoricResult>, teams: Omit<Team, "id">[]) => {
+    setMatchId(newMatchId)
     setHistoricData(historicResults)
     setTeams(teams)
+  }
+
+  const clearGameDetails = () => {
+    setMatchId(undefined)
+    setTeams([])
+    setHistoricData({})
+  }
+
+  const setWinner = async (cumulativeTeamId: string) => {
+    await client.matches.recordMatchResults(matchId!, {updateType: 'SET_WINNER', updateDetails: { winningTeamId: cumulativeTeamId}})
+    clearGameDetails()
+  }
+
+  const abandonMatch = async () => {
+    await client.matches.recordMatchResults(matchId!, {updateType: 'ABANDON_GAME'})
+    clearGameDetails()
   }
 
   const shouldDisplayGame = () => teams.length > 0 && teams.length === Object.keys(historicData).length;
@@ -40,7 +57,13 @@ export default function Index() {
 
       {shouldDisplayGame()
         &&
-        <GameComponent historicData={historicData} teams={teams}/>
+        <GameComponent
+          matchId={matchId!}
+          historicData={historicData}
+          teams={teams}
+          abandonMatch={abandonMatch}
+          setMatchWinner={setWinner}
+        />
       }
     </main>
   );

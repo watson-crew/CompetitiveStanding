@@ -200,11 +200,22 @@
         }
       }
     },
-    "/matches/${matchId}": {
+    "/matches/{matchId}": {
       "put": {
         "tags": ["matches"],
         "summary": "Record the results of a given match",
         "operationId": "recordMatchResults",
+        "parameters": [
+          {
+            "name": "matchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {

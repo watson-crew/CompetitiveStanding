@@ -3,10 +3,13 @@ import { TeamHistoricResultsCard, Button } from 'ui'
 
 type GameComponentProps = {
     teams: Omit<Team, "id">[]
-    historicData: Record<string, TeamHistoricResult>
+    historicData: Record<string, TeamHistoricResult>,
+    matchId: number,
+    abandonMatch: () => void,
+    setMatchWinner: (cumulativeTeamId: string) => void
 };
 
-export default function GameComponent({ teams, historicData }: GameComponentProps) {
+export default function GameComponent({ matchId, teams, historicData, abandonMatch, setMatchWinner }: GameComponentProps) {
     // TODO: Refactor to work with more than 2 teams
 
     // TODO: Remove this after testing
@@ -16,10 +19,12 @@ export default function GameComponent({ teams, historicData }: GameComponentProp
 
     const abandonGame = () => {
         console.log("Abandon game")
+        abandonMatch()
     }
 
     const setWinner = (team: Omit<Team, "id">) => {
         console.log(`Winner: ${team.cumulativeTeamId}`)
+        setMatchWinner(team.cumulativeTeamId)
     }
 
     const teamOne = teams[0]
