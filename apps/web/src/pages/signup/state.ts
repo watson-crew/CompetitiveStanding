@@ -45,7 +45,7 @@ export function signupReducer(
       return {
         ...state,
         errorMessages: [],
-        memorableId: action.inputValue || '',
+        memorableId: action.inputValue?.toLowerCase() || '',
       };
     case Actions.profilePictureChange:
       return {

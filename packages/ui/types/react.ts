@@ -1,6 +1,7 @@
 import React from 'react';
 
 export type DefaultProps = {
+  id?: string;
   className?: string;
   children?: React.ReactNode | React.ReactNode[] | string;
 };
