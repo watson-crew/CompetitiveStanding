@@ -1,7 +1,7 @@
 import { Team, TeamHistoricResult } from '@src/../../../packages/schema';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
-import { TeamHistoricResultsCard, Button, Text, TextWithIcon } from 'ui';
+import { TeamHistoricResultsCard, Button, TextWithIcon } from 'ui';
 import { IoMdTime } from 'react-icons/io';
 
 type GameComponentProps = {
