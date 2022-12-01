@@ -1,13 +1,7 @@
 import { Location } from 'schema';
-import { PlayerCard, Text, Link } from 'ui';
+import { Text, Link } from 'ui';
 import { getApiInstance } from '@src/context/ApiContext';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
-
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  selectRecentlyPlayed,
-  clearRecentlyPlayed,
-} from '@src/store/reducers/playerSlice';
 import Head from 'next/head';
 
 type RootPageProps = {
@@ -25,11 +19,6 @@ export async function getStaticProps(
 }
 
 export default function Index({ locations }: RootPageProps) {
-  const dispatch = useDispatch();
-  const recentlyPlayedUsers = useSelector(selectRecentlyPlayed);
-
-  const clearRecentlyPlayedUsers = () => dispatch(clearRecentlyPlayed());
-
   return (
     <main className="flex h-screen flex-col items-center">
       <Head>
