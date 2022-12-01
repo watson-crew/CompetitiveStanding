@@ -32,7 +32,11 @@ export default function TextInput({
         >
           {title}
         </label>
-        {tooltipContent && <Tooltip className="ml-1">{tooltipContent}</Tooltip>}
+        {tooltipContent && (
+          <Tooltip className="ml-1" id={id}>
+            {tooltipContent}
+          </Tooltip>
+        )}
       </span>
       <input
         id={id}

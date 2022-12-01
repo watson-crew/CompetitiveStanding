@@ -1,11 +1,11 @@
 import Card, { CardProps } from '../Card/Card';
-import { MdError, MdInfo } from 'react-icons/md';
+import { MdError, MdInfo, MdCheckCircle } from 'react-icons/md';
 import { IoMdCloseCircleOutline } from 'react-icons/io';
 import { twMerge } from 'tailwind-merge';
 import React from 'react';
 import { IconType } from 'react-icons';
 
-type BannerType = 'info' | 'error';
+type BannerType = 'info' | 'error' | 'success';
 
 export type BannerCardProps = CardProps & {
   type: BannerType;
@@ -13,6 +13,7 @@ export type BannerCardProps = CardProps & {
 };
 
 const styles: Record<BannerType, string> = {
+  success: 'bg-green-100 fill-green-600 text-green-700 border-green-600',
   error: 'bg-red-100 fill-red-600 text-red-600 border-red-600',
   info: 'bg-blue-100 fill-blue-900 text-blue-900 border-blue-900',
 };
@@ -24,6 +25,7 @@ export default function Banner({
   children,
 }: BannerCardProps) {
   const iconVariants: Record<BannerType, IconType> = {
+    success: MdCheckCircle,
     info: MdInfo,
     error: MdError,
   };

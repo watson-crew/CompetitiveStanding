@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useReducer,
+  useState,
 } from 'react';
 import { Banner, Button, Card, PlayerCard, Text, TextInput } from 'ui';
 import { Actions, initialState, signupReducer, SignupState } from './state';
@@ -15,6 +16,10 @@ import Head from 'next/head';
 export default function Index() {
   const api = useContext(ApiContext);
   const [signupState, dispatch] = useReducer(signupReducer, initialState);
+
+  const [signedUpPlayer, setSignedUpPlayer] = useState<
+    CreateUserPayload | undefined
+  >();
 
   useEffect(() => {
     if (signupState.memorableId.length === 3) {
@@ -30,8 +35,12 @@ export default function Index() {
   };
 
   const handleError = (message: string) => {
-    if (signupState.errorMessages.find(text => text === message) === undefined)
+    if (
+      signupState.errorMessages.find(text => text === message) === undefined
+    ) {
       dispatch({ action: Actions.setError, errorMessage: message });
+      setSignedUpPlayer(undefined);
+    }
   };
 
   const createUser = async (e: FormEvent<HTMLFormElement>) => {
@@ -71,25 +80,26 @@ export default function Index() {
       if (error) return;
       await api.user.createUser(user);
       dispatch({ action: Actions.resetState });
+      setSignedUpPlayer(user);
     } catch (e) {
       handleError('Error creating player');
     }
   };
 
-  const doesMemorableIdExist = async (memborableId: string) => {
+  async function doesMemorableIdExist(memorableId: string) {
     try {
-      await api.user.getUserByMemorableId(memborableId);
+      await api.user.getUserByMemorableId(memorableId);
       dispatch({ action: Actions.memorableIdExists, inputCheck: true });
     } catch (e) {
       dispatch({ action: Actions.memorableIdExists, inputCheck: false });
     }
-  };
+  }
 
   const placeholders: Omit<SignupState, 'memorableIdExists' | 'errorMessages'> =
     {
       firstName: 'Joe',
       lastName: 'Bloggs',
-      memorableId: 'abc',
+      memorableId: 'a1b',
     };
 
   const playerPreview: User = {
@@ -107,7 +117,7 @@ export default function Index() {
         <title>{`Competitive Standing | Sign Up`}</title>
       </Head>
 
-      <h1 className="mb-24 text-3xl font-bold underline">Sign up</h1>
+      <h1 className="mb-10 text-3xl font-bold underline">Sign up</h1>
       {signupState.errorMessages.length > 0 ? (
         <Banner className="mb-6 w-96" type="error">
           {signupState.errorMessages.map((error, index) => (
@@ -117,6 +127,22 @@ export default function Index() {
           ))}
         </Banner>
       ) : null}
+
+      {signedUpPlayer && (
+        <Banner
+          type="success"
+          className="mb-10 text-center"
+          onClose={() => setSignedUpPlayer(undefined)}
+        >
+          <Text type="p" className="px-20">
+            User signed up successfully.
+          </Text>
+          <Text type="p" className="px-20">
+            Welcome {signedUpPlayer.firstName}! Your player id is:{' '}
+            <span className="font-extrabold">{signedUpPlayer.memorableId}</span>
+          </Text>
+        </Banner>
+      )}
       <div className="flex">
         <Card className="mx-5 w-96">
           <form onSubmit={createUser}>
@@ -140,6 +166,14 @@ export default function Index() {
               id="memorableId"
               title="Memorable ID"
               placeholder={placeholders.memorableId}
+              tooltipContent={
+                <span className="flex w-32 p-2 text-center">
+                  <Text type="p" className="whitespace-normal text-xs">
+                    Your memorable id is a unique 3 character id that you will
+                    use to join games
+                  </Text>
+                </span>
+              }
               value={signupState.memorableId}
               onChange={event =>
                 handleOnChange(Actions.memorableIdChange, event)
