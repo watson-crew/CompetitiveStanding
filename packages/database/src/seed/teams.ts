@@ -2,29 +2,34 @@ import { Team, User, PrismaClient, Prisma } from '@prisma/client';
 import { toId } from './maps';
 
 type SeedDependencies = {
-    users: Record<string, User>;
-}
+  users: Record<string, User>;
+};
 
 const usersToCumulativeId = (users: User[]): string => {
-  const usersSortedAlphabetically = users.sort((a, b) => a.memorableId.localeCompare(b.memorableId))
+  const usersSortedAlphabetically = users.sort((a, b) =>
+    a.memorableId.localeCompare(b.memorableId),
+  );
 
-  return usersSortedAlphabetically.reduce((acc, currentUser) => acc + currentUser.memorableId, "");
-}
+  return usersSortedAlphabetically.reduce(
+    (acc, currentUser) => acc + currentUser.memorableId,
+    '',
+  );
+};
 
 const userToTeam = (user: User): Prisma.TeamCreateInput => usersToTeam([user]);
 
 const usersToTeam = (users: User[]): Prisma.TeamCreateInput => {
-    return {
-        cumulativeTeamId: usersToCumulativeId(users),
-        players: {
-            connect: users.map(toId)
-        }
-    }
-}
+  return {
+    cumulativeTeamId: usersToCumulativeId(users),
+    players: {
+      connect: users.map(toId),
+    },
+  };
+};
 
 async function seedTeams(
   prisma: PrismaClient,
-  { users }: SeedDependencies
+  { users }: SeedDependencies,
 ): Promise<Record<string, Team>> {
   const seededTeams: Record<string, Team> = {};
 

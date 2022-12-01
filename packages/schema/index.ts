@@ -123,7 +123,8 @@ export interface RankedPlayer {
 export type RecordMatchResultsData = any;
 
 export interface RecordMatchResultsPayload {
-  winningTeamId: number;
+  updateType: 'SET_WINNER' | 'ABANDON_GAME';
+  updateDetails?: WinningTeamDetails;
 }
 
 export interface Team {
@@ -155,6 +156,10 @@ export interface User {
   memorableId: string;
   /** @example "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg" */
   profilePicture?: string;
+}
+
+export interface WinningTeamDetails {
+  winningTeamId: string;
 }
 
 export namespace User {
@@ -248,7 +253,8 @@ export namespace Matches {
    */
   export namespace RecordMatchResults {
     export type RequestParams = {
-      matchId: string;
+      /** @example 1 */
+      matchId: number;
     };
     export type RequestQuery = {};
     export type RequestBody = RecordMatchResultsPayload;
@@ -277,13 +283,11 @@ export namespace Matches {
    * No description
    * @tags matches, location
    * @name GetRankingsForLocation
-   * @summary Get rankings by urlPath and gameType
+   * @summary Get top players for a given location and game type
    * @request GET:/matches/rankings
    */
   export namespace GetRankingsForLocation {
-    export type RequestParams = {
-      urlPath: string;
-    };
+    export type RequestParams = {};
     export type RequestQuery = {
       locationId: number;
       gameTypeId: number;
@@ -565,12 +569,12 @@ export class ApiClient<
      * @request PUT:/matches/${matchId}
      */
     recordMatchResults: (
-      matchId: string,
+      matchId: number,
       data: RecordMatchResultsPayload,
       params: RequestParams = {},
     ) =>
       this.request<RecordMatchResultsData, any>({
-        path: `/matches/$${matchId}`,
+        path: `/matches/${matchId}`,
         method: 'PUT',
         body: data,
         type: ContentType.Json,
@@ -605,11 +609,10 @@ export class ApiClient<
      *
      * @tags matches, location
      * @name GetRankingsForLocation
-     * @summary Get rankings by urlPath and gameType
+     * @summary Get top players for a given location and game type
      * @request GET:/matches/rankings
      */
     getRankingsForLocation: (
-      urlPath: string,
       query: {
         locationId: number;
         gameTypeId: number;

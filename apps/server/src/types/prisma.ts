@@ -12,3 +12,8 @@ export type GetResultsForLocationResult = GameResult & {
     players: User[];
   }[];
 };
+
+export type GetRankingsForLocationAndGameTypeResult = User & {
+  gamesPlayed: number;
+  gamesWon: number;
+};

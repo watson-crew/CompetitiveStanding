@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = "debian-openssl-1.1.x"
 }
 
 generator erd {
@@ -64,8 +65,8 @@ model Team {
 model GameResult {
   id               Int       @id @default(autoincrement())
   teams            Team[]
-  winningTeam      Team?     @relation(name: "WinningTeamRelation", fields: [winningTeamId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  winningTeamId    Int?
+  winningTeam      Team?     @relation(name: "WinningTeamRelation", fields: [winningTeamId], references: [cumulativeTeamId], onDelete: NoAction, onUpdate: NoAction)
+  winningTeamId    String?
   gameType         GameType  @relation(fields: [gameTypeId], references: [id])
   gameTypeId       Int
   locationPlayed   Location  @relation(fields: [locationPlayedId], references: [id])

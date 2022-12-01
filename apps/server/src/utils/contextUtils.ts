@@ -40,6 +40,18 @@ export const set204Response = (
   };
 };
 
+export const set400Response = (log: Logger, context: ErrorContext) => {
+  log(`Returning 404 response`);
+
+  context.res = {
+    headers: defaultHeaders,
+    statusCode: StatusCodes.BAD_REQUEST,
+    body: {
+      error: 'Bad request',
+    },
+  };
+};
+
 export const set404Response = (log: Logger, context: ErrorContext) => {
   log(`Returning 404 response`);
 

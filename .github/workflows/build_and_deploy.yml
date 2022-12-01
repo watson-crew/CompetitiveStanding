@@ -14,7 +14,6 @@ env:
   FRONTEND_OUTPUT_LOCATION: './apps/web/out'
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
   DISABLE_ERD: true
-  NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
 
 jobs:
   cancel-existing:
@@ -36,8 +35,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
-      - name: Node build
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Node Clean Install
         run: npm ci
 
   lint:
@@ -52,7 +51,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Lint
         run: npm run lint
 
@@ -66,7 +65,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Unit Test
         run: npm test
 
@@ -76,13 +75,15 @@ jobs:
       - test
     runs-on: ubuntu-latest
     name: Build backend
+    env: 
+      NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
     steps:
       - uses: actions/checkout@v3
       - name: Load node_modules
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Build
         run: |
           npm run build
@@ -103,7 +104,7 @@ jobs:
       DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
       DATABASE_PACKAGE_PATH: './packages/database'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Get changed files in the migrations folder
         id: changed-files-specific
         uses: tj-actions/changed-files@v34
@@ -115,7 +116,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Run database migration
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run deploy
@@ -178,13 +179,14 @@ jobs:
     name: Build frontend
     env:
       API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
+      NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
     steps:
       - uses: actions/checkout@v3
       - name: Load node_modules
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Build
         run: |
           npm run next:build -w web
