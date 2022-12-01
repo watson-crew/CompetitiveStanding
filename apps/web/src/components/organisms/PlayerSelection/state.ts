@@ -16,12 +16,14 @@ export enum TeamActionType {
   AddTeam,
 }
 
+type TeamActionPayload = {
+  teamIndex?: number;
+  player?: User;
+};
+
 export type TeamAction = {
   actionType: TeamActionType;
-  payload?: {
-    teamIndex?: number;
-    player?: User;
-  };
+  payload?: TeamActionPayload;
 };
 
 export type TeamState = LoadingPlayer[][];
@@ -54,15 +56,32 @@ export function createInitialState({
   return initialState;
 }
 
+const getPlayer = (payload?: TeamActionPayload): User => {
+  if (payload && payload.player) {
+    return payload.player;
+  }
+  throw Error();
+};
+
+const getTeamIndex = (payload?: TeamActionPayload): number => {
+  if (payload && payload.teamIndex) {
+    return payload.teamIndex;
+  }
+  throw Error();
+};
+
 export function teamsReducer(
   state: TeamState,
   { actionType, payload }: TeamAction,
 ): TeamState {
-  const player = payload!.player!;
-  const teamIndex = payload!.teamIndex!;
+  let player: User;
+  let teamIndex: number;
 
   switch (actionType) {
     case TeamActionType.PlayerDetailsAdded:
+      player = getPlayer(payload);
+      teamIndex = getTeamIndex(payload);
+
       return withIndexReplaced(
         state,
         [
@@ -73,6 +92,8 @@ export function teamsReducer(
       );
 
     case TeamActionType.PlayerLoading:
+      teamIndex = getTeamIndex(payload);
+
       return withIndexReplaced(
         state,
         [...state[teamIndex].slice(0, -1), PlayerFactory.createLoading()],
@@ -80,6 +101,8 @@ export function teamsReducer(
       );
 
     case TeamActionType.PlayerResolved:
+      teamIndex = getTeamIndex(payload);
+
       return withIndexReplaced(
         state,
         [...state[teamIndex].slice(0, -1), { loading: false }],
@@ -87,6 +110,8 @@ export function teamsReducer(
       );
 
     case TeamActionType.PlayerRemoved:
+      teamIndex = getTeamIndex(payload);
+
       const withPlayerRemoved = state[teamIndex].filter(
         ({ playerDetails }) =>
           playerDetails?.memorableId !== player.memorableId,
@@ -99,6 +124,8 @@ export function teamsReducer(
       );
 
     case TeamActionType.SlotAdded:
+      teamIndex = getTeamIndex(payload);
+
       const withSlotAddded: LoadingPlayer[] = [
         ...state[teamIndex],
         PlayerFactory.createSlot(),
