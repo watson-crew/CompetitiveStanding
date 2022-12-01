@@ -55,7 +55,7 @@ export default function PlayerCard({
           {player.location}
         </TextWithIcon>
       </section>
-      {children && <section className="pl-5">{children}</section>}
+      {children && <section className="ml-5 flex">{children}</section>}
     </Card>
   );
 }

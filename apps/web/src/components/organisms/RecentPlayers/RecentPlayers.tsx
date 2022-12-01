@@ -44,7 +44,11 @@ export default function RecentPlayers({
   return (
     <Card className={twMerge('w-full text-left', className)}>
       <Text type="h2">Recent players</Text>
-      <div className="min-h-20 flex h-full w-full flex-row justify-center gap-x-4 overflow-scroll">
+      <div
+        className={`min-h-20 flex h-full w-full flex-row ${
+          !hasRecentPlayers ? 'justify-center' : ''
+        } gap-x-4 overflow-scroll`}
+      >
         {hasRecentPlayers && recentlyPlayedUserCards()}
         {!hasRecentPlayers && <Text type="p">No recent players</Text>}
       </div>
