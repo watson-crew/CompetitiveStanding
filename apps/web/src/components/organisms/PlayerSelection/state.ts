@@ -74,14 +74,10 @@ export function teamsReducer(
   state: TeamState,
   { actionType, payload }: TeamAction,
 ): TeamState {
-  let player: User;
-  let teamIndex: number;
-
   switch (actionType) {
-    case TeamActionType.PlayerDetailsAdded:
-      player = getPlayer(payload);
-      console.log(payload)
-      teamIndex = getTeamIndex(payload);
+    case TeamActionType.PlayerDetailsAdded: {
+      const player = getPlayer(payload);
+      const teamIndex = getTeamIndex(payload);
 
       return withIndexReplaced(
         state,
@@ -91,27 +87,29 @@ export function teamsReducer(
         ],
         teamIndex,
       );
+    }
 
-    case TeamActionType.PlayerLoading:
-      teamIndex = getTeamIndex(payload);
+    case TeamActionType.PlayerLoading: {
+      const teamIndex = getTeamIndex(payload);
 
       return withIndexReplaced(
         state,
         [...state[teamIndex].slice(0, -1), PlayerFactory.createLoading()],
         teamIndex,
       );
-
-    case TeamActionType.PlayerResolved:
-      teamIndex = getTeamIndex(payload);
+    }
+    case TeamActionType.PlayerResolved: {
+      const teamIndex = getTeamIndex(payload);
 
       return withIndexReplaced(
         state,
         [...state[teamIndex].slice(0, -1), { loading: false }],
         teamIndex,
       );
-
-    case TeamActionType.PlayerRemoved:
-      teamIndex = getTeamIndex(payload);
+    }
+    case TeamActionType.PlayerRemoved: {
+      const teamIndex = getTeamIndex(payload);
+      const player = getPlayer(payload);
 
       const withPlayerRemoved = state[teamIndex].filter(
         ({ playerDetails }) =>
@@ -123,9 +121,9 @@ export function teamsReducer(
         defaultIfEmpty(withPlayerRemoved, { loading: false }),
         teamIndex,
       );
-
-    case TeamActionType.SlotAdded:
-      teamIndex = getTeamIndex(payload);
+    }
+    case TeamActionType.SlotAdded: {
+      const teamIndex = getTeamIndex(payload);
 
       const withSlotAddded: LoadingPlayer[] = [
         ...state[teamIndex],
@@ -133,10 +131,10 @@ export function teamsReducer(
       ];
 
       return withIndexReplaced(state, withSlotAddded, teamIndex);
-
-    case TeamActionType.AddTeam:
+    }
+    case TeamActionType.AddTeam: {
       return [...state, [PlayerFactory.createSlot()]];
-
+    }
     default:
       return state;
   }
