@@ -253,7 +253,8 @@ export namespace Matches {
    */
   export namespace RecordMatchResults {
     export type RequestParams = {
-      matchId: string;
+      /** @example 1 */
+      matchId: number;
     };
     export type RequestQuery = {};
     export type RequestBody = RecordMatchResultsPayload;
@@ -299,7 +300,11 @@ export namespace Matches {
   }
 }
 
-import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosRequestConfig,
+  ResponseType,
+} from 'axios';
 
 export type QueryParamsType = Record<string | number, any>;
 
@@ -377,7 +382,10 @@ export class HttpClient<SecurityDataType = unknown> {
       ...params1,
       ...(params2 || {}),
       headers: {
-        ...((method && this.instance.defaults.headers[method.toLowerCase()]) ||
+        ...((method &&
+          this.instance.defaults.headers[
+            method.toLowerCase()
+          ]) ||
           {}),
         ...(params1.headers || {}),
         ...((params2 && params2.headers) || {}),
@@ -568,12 +576,12 @@ export class ApiClient<
      * @request PUT:/matches/${matchId}
      */
     recordMatchResults: (
-      matchId: string,
+      matchId: number,
       data: RecordMatchResultsPayload,
       params: RequestParams = {},
     ) =>
       this.request<RecordMatchResultsData, any>({
-        path: `/matches/$${matchId}`,
+        path: `/matches/${matchId}`,
         method: 'PUT',
         body: data,
         type: ContentType.Json,
