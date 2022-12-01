@@ -47,15 +47,15 @@ export default function ResultCard({
       children,
     );
 
-  if (loading) {
+  if (loading || !gameResult) {
     return renderWithChildren(ResultCardLoadingStateContent());
   }
 
   // Clean this up
-  const p1 = gameResult?.teams[0].players[0];
-  const p2 = gameResult?.teams[1].players[0];
+  const p1 = gameResult.teams[0].players[0];
+  const p2 = gameResult.teams[1].players[0];
 
-  const timeTaken = gameResult!.startTime.diff(gameResult!.endTime);
+  const timeTaken = gameResult.endTime.diff(gameResult.startTime);
 
   const duration = dayjs
     .duration(timeTaken, 'milliseconds')
