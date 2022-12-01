@@ -80,7 +80,6 @@ export function teamsReducer(
   switch (actionType) {
     case TeamActionType.PlayerDetailsAdded:
       player = getPlayer(payload);
-      console.log(payload)
       teamIndex = getTeamIndex(payload);
 
       return withIndexReplaced(
