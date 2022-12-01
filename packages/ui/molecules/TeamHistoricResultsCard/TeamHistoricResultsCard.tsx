@@ -28,8 +28,10 @@ export default function TeamHistoricResultsCard({
 
   return (
     <Card className={containerClasses}>
-      <div className="mb-10 flex flex-none">
-        <Text type="h1">{team.cumulativeTeamId}</Text>
+      <div className="flex-end mb-10 flex flex-none">
+        <Text type="h2" className="text-3xl">
+          {team.cumulativeTeamId}
+        </Text>
         <TextWithIcon
           icon={CommonIcons.Trophy}
           iconSize="xl"
@@ -39,7 +41,7 @@ export default function TeamHistoricResultsCard({
         </TextWithIcon>
       </div>
 
-      <WithScrollbar className="flex-grow items-center">
+      <WithScrollbar className="flex-grow items-center justify-center">
         {team.players.map(player => (
           <PlayerCard player={player} className="h-1/2" />
         ))}
