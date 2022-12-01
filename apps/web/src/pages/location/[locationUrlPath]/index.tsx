@@ -1,5 +1,10 @@
 import { Location, RankedPlayer } from 'schema';
-import { GetStaticPathsContext, GetStaticPathsResult, GetStaticPropsContext, GetStaticPropsResult } from 'next';
+import {
+  GetStaticPathsContext,
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+} from 'next';
 import {
   AvailableGamesOverview,
   Card,
@@ -11,20 +16,25 @@ import {
 import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { useContext, useEffect, useState } from 'react';
 import mapRecentResults from '@src/mappers/recentResultsMapper';
+import Head from 'next/head';
 
 type LocationPageProps = {
   location: Location;
 };
 
-type LocationPageDynamicPath = { locationUrlPath: string }
+type LocationPageDynamicPath = { locationUrlPath: string };
 
-export async function getStaticPaths(_context: GetStaticPathsContext): Promise<GetStaticPathsResult<LocationPageDynamicPath>> {
-    const locations = await getApiInstance().location.getAllLocations()
+export async function getStaticPaths(
+  _context: GetStaticPathsContext,
+): Promise<GetStaticPathsResult<LocationPageDynamicPath>> {
+  const locations = await getApiInstance().location.getAllLocations();
 
-    return {
-      paths: locations.map(location => ({ params: { locationUrlPath: location.urlPath } })),
-      fallback: false
-    }
+  return {
+    paths: locations.map(location => ({
+      params: { locationUrlPath: location.urlPath },
+    })),
+    fallback: false,
+  };
 }
 
 export async function getStaticProps({
@@ -32,60 +42,65 @@ export async function getStaticProps({
 }: GetStaticPropsContext<LocationPageDynamicPath>): Promise<
   GetStaticPropsResult<LocationPageProps>
 > {
-  if (!params) throw new Error()
+  if (!params) throw new Error();
 
   return {
     props: {
-      location: await getApiInstance().location.getLocationByUrl(params.locationUrlPath),
+      location: await getApiInstance().location.getLocationByUrl(
+        params.locationUrlPath,
+      ),
     },
   };
 }
 
 export default function Index({ location }: LocationPageProps) {
+  const api = useContext(ApiContext);
 
+  const [loadingRecentMatches, setLoadingRecentMatches] = useState(true);
+  const [recentMatches, setRecentMatches] = useState<GameResult[]>([]);
 
-  const api = useContext(ApiContext)
-
-  const [ loadingRecentMatches, setLoadingRecentMatches ] = useState(true)
-  const [ recentMatches, setRecentMatches ] = useState<GameResult[]>([])
-
-  const [ loadingRankedPlayers, setLoadingRankedPlayers ] = useState(true)
-  const [ rankedPlayers, setRankedPlayers ] = useState<RankedPlayer[]>([])
+  const [loadingRankedPlayers, setLoadingRankedPlayers] = useState(true);
+  const [rankedPlayers, setRankedPlayers] = useState<RankedPlayer[]>([]);
 
   const fetchRecentGames = async () => {
-    const data = await api.matches.getRecentMatches({ locationId: location.id })
+    const data = await api.matches.getRecentMatches({
+      locationId: location.id,
+    });
 
-    setRecentMatches(mapRecentResults(data))
+    setRecentMatches(mapRecentResults(data));
 
-    setLoadingRecentMatches(false)
-  }
+    setLoadingRecentMatches(false);
+  };
 
   const fetchRankings = async () => {
     // TODO: Look at where game type should come from
-    const data = await api.matches.getRankingsForLocation({ locationId: location.id, gameTypeId: 1, total: 3});
+    const data = await api.matches.getRankingsForLocation({
+      locationId: location.id,
+      gameTypeId: 1,
+      total: 3,
+    });
 
-    setRankedPlayers(data)
+    setRankedPlayers(data);
 
-    setLoadingRankedPlayers(false)
-  }
+    setLoadingRankedPlayers(false);
+  };
 
   useEffect(() => {
-
-    fetchRecentGames()
-    fetchRankings()
-
-  }, [])
-
+    fetchRecentGames();
+    fetchRankings();
+  }, []);
 
   return (
-    <div className="flex h-screen flex-col items-center">
+    <main className="flex h-screen flex-col items-center">
+      <Head>
+        <title>{`Competitive Standing | ${location.name}`}</title>
+      </Head>
+
       <Text type="h1" className="my-5">
         {location.name}
       </Text>
 
-      <Card
-        className="grid h-full w-full grid-flow-col grid-rows-4 gap-4"
-      >
+      <Card className="grid h-full w-full grid-flow-col grid-rows-4 gap-4">
         <AvailableGamesOverview
           availableGames={[]}
           className="col-span-2 row-span-2 bg-red-100"
@@ -103,6 +118,6 @@ export default function Index({ location }: LocationPageProps) {
           loading={loadingRecentMatches}
         />
       </Card>
-    </div>
+    </main>
   );
 }

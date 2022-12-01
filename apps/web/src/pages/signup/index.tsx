@@ -10,6 +10,7 @@ import {
 import { Banner, Button, Card, PlayerCard, Text, TextInput } from 'ui';
 import { Actions, initialState, signupReducer, SignupState } from './state';
 import Image from 'next/image';
+import Head from 'next/head';
 
 export default function Index() {
   const api = useContext(ApiContext);
@@ -101,7 +102,11 @@ export default function Index() {
   };
 
   return (
-    <div className="mt-20 flex h-screen flex-col items-center">
+    <main className="mt-20 flex h-screen flex-col items-center">
+      <Head>
+        <title>{`Competitive Standing | Sign Up`}</title>
+      </Head>
+
       <h1 className="mb-24 text-3xl font-bold underline">Sign up</h1>
       {signupState.errorMessages.length > 0 ? (
         <Banner className="mb-6 w-96" type="error">
@@ -176,6 +181,6 @@ export default function Index() {
           <PlayerCard player={playerPreview} />
         </div>
       </div>
-    </div>
+    </main>
   );
 }
