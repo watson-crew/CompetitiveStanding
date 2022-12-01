@@ -1,20 +1,20 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { rootReducer } from "./reducers";
+import { configureStore } from '@reduxjs/toolkit';
+import { rootReducer } from './reducers';
 
-import storage from 'redux-persist/lib/storage'
-import { persistReducer, persistStore } from "redux-persist";
-import thunk from 'redux-thunk'
+import storage from 'redux-persist/lib/storage';
+import { persistReducer, persistStore } from 'redux-persist';
+import thunk from 'redux-thunk';
 
 const persistConfig = {
-    key: 'root',
-    storage
-}
+  key: 'root',
+  storage,
+};
 
-const persistedRootReducer = persistReducer(persistConfig, rootReducer)
+const persistedRootReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-    reducer: persistedRootReducer,
-    middleware: [thunk]
-})
+  reducer: persistedRootReducer,
+  middleware: [thunk],
+});
 
-export const persistor = persistStore(store)
+export const persistor = persistStore(store);

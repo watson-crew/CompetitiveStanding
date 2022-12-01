@@ -22,14 +22,16 @@ import {
 import { GameRequirements, GameRequirement } from '@src/types/games';
 
 type PlayerSelectionProps = {
-  selectedGameType: GameType & { requirements: GameRequirements },
-  selectedLocation: Location,
+  selectedGameType: GameType & { requirements: GameRequirements };
+  selectedLocation: Location;
   startMatch: (teams: User[][]) => Promise<void>;
 };
 
-export default function PlayerSelection({ selectedGameType, startMatch }: PlayerSelectionProps) {
-
-// This component is currently re-rendering twice, I'm not sure if this is correct or not
+export default function PlayerSelection({
+  selectedGameType,
+  startMatch,
+}: PlayerSelectionProps) {
+  // This component is currently re-rendering twice, I'm not sure if this is correct or not
   const gameMinRequirements = selectedGameType.requirements.min;
 
   const [gameRequirements, setGameRequirements] =

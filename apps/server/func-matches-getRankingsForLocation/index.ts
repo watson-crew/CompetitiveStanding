@@ -31,10 +31,10 @@ const httpTrigger = async function (
       parseInt(total) || undefined,
     );
 
-    log(`Found rankings`)
+    log(`Found rankings`);
     set200Response(log, context, rankings);
   } catch (e) {
-    set500Response(log, context, e)
+    set500Response(log, context, e);
   }
 };
 

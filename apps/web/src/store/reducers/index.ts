@@ -1,8 +1,8 @@
-import { combineReducers } from "@reduxjs/toolkit";
-import playerReducer from './playerSlice'
+import { combineReducers } from '@reduxjs/toolkit';
+import playerReducer from './playerSlice';
 
 export const rootReducer = combineReducers({
-    players: playerReducer
-})
+  players: playerReducer,
+});
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;
