@@ -9,6 +9,13 @@ export const getLocations = async (): Promise<Location[]> => {
 
 export const getLocationByUrl = async (urlPath: string): Promise<Location> => {
   const location = await prisma.location.findFirst({
+    include: {
+      users: {
+        select: {
+          _count: true,
+        },
+      },
+    },
     where: {
       urlPath: urlPath,
     },

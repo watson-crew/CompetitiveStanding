@@ -30,13 +30,13 @@ export default function LocationLinkCard({ location }: LocationLinkCardProps) {
   return (
     <Link
       className={twMerge(
-        'min-w-content z-1 relative h-fit rounded-xl bg-transparent hover:bg-transparent ',
+        'min-w-content z-1 relative h-fit w-full rounded-xl bg-transparent hover:bg-transparent xl:w-5/12',
       )}
       href={href}
     >
-      <Card className="w-96 bg-slate-200 xl:w-5/12">
+      <Card className="w-full bg-slate-200">
         <article>
-          <div className="relative h-32 w-96 rounded-xl xl:w-5/12">
+          <div className="relative h-32 w-full rounded-xl">
             <Image
               src={`/${urlPath}.jpeg`}
               fill={true}
