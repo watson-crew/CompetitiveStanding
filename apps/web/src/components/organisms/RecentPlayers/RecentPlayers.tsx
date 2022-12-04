@@ -1,4 +1,11 @@
-import { WithDefaultProps, PlayerCard, Button, Text, Card, CommonIcons } from 'ui';
+import {
+  WithDefaultProps,
+  PlayerCard,
+  Button,
+  Text,
+  Card,
+  CommonIcons,
+} from 'ui';
 import { useSelector } from 'react-redux';
 import { selectRecentlyPlayed } from '@src/store/reducers/playerSlice';
 import { User } from 'schema';
@@ -32,11 +39,7 @@ export default function RecentPlayers({
 
   const recentlyPlayedUserCards = () => {
     return recentlyPlayedUsers.reverse().map((user, i) => (
-      <PlayerCard
-        player={user}
-        key={`recent-player-${i}`}
-        variant="s"
-      >
+      <PlayerCard player={user} key={`recent-player-${i}`} variant="s">
         <Button
           onClick={() => onSelected(user)}
           disabled={allSlotsFilled || isDisabled(user.memorableId)}
@@ -52,17 +55,17 @@ export default function RecentPlayers({
     <Card className={twMerge('w-full text-left', className)}>
       <Text type="h2">Recent players</Text>
 
-      {!hasRecentPlayers &&
-      <div className="text-center">
-        <Text type="p">No recent players</Text>
-      </div>
-      }
+      {!hasRecentPlayers && (
+        <div className="text-center">
+          <Text type="p">No recent players</Text>
+        </div>
+      )}
 
-      {hasRecentPlayers &&
+      {hasRecentPlayers && (
         <WithScrollbar className="flex-grow items-center">
           {recentlyPlayedUserCards()}
         </WithScrollbar>
-      }
+      )}
     </Card>
   );
 }

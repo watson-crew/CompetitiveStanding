@@ -20,8 +20,8 @@ export default function LocationLinkCard({ location }: LocationLinkCardProps) {
   const getSportIcon = (iconId: number): IconType => {
     const iconMappings: Record<number, IconType> = {
       1: SportIcons.Pool,
-      2: SportIcons.Pool,
-      3: SportIcons.Pool,
+      2: SportIcons.Darts,
+      3: SportIcons.TableTennis,
     };
 
     return iconMappings[iconId] || SportIcons.Pool;
@@ -38,7 +38,7 @@ export default function LocationLinkCard({ location }: LocationLinkCardProps) {
         <article>
           <div className="relative h-32 w-full rounded-xl">
             <Image
-              src={`/${urlPath}.jpeg`}
+              src={`/locations/${urlPath}.jpeg`}
               fill={true}
               alt={'TODO'}
               className="rounded-xl object-cover"
@@ -51,12 +51,13 @@ export default function LocationLinkCard({ location }: LocationLinkCardProps) {
               {name}
             </Text>
             <TextWithIcon textProps={{ type: 'p' }} icon={CommonIcons.Person}>
-              4
+              {location.playerCount}
             </TextWithIcon>
           </section>
-          <section className="flex">
+          <section className="flex flex-col gap-5 pt-5">
             {availableGames?.map(game => (
               <TextWithIcon
+                key={game.id}
                 icon={getSportIcon(game.id)}
                 textProps={{ type: 'p' }}
               >

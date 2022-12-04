@@ -5,29 +5,31 @@ import seedGroups from './groups';
 import seedGameTypes from './gameTypes';
 import seedTeams from './teams';
 import seedGameResults from './gameResults';
+import seedGameRequirements from './gameRequirements';
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 async function main() {
-  // Seed locations
   const locations = await seedLocations(prisma);
 
-  // Seed users
-  const users = await seedUsers(prisma, { locations });
-
-  // Seed game types
   const gameTypes = await seedGameTypes(prisma, { locations });
+  await seedGameRequirements(prisma, { gameTypes });
 
-  // Seed groups
-  const _groups = await seedGroups(prisma, { users });
+  // Everything here is test data for development sake, not data required to run the app.
+  if (!isProduction) {
+    const users = await seedUsers(prisma, { locations });
 
-  // Seed teams - each player in their own team
-  const teams = await seedTeams(prisma, { users });
+    await seedGroups(prisma, { users });
 
-  // Seed game results
-  const _gameResults = await seedGameResults(prisma, {
-    locations,
-    gameTypes,
-    teams,
-  });
+    // Seed teams - each player in their own team
+    const teams = await seedTeams(prisma, { users });
+
+    await seedGameResults(prisma, {
+      locations,
+      gameTypes,
+      teams,
+    });
+  }
 }
 
 main()
