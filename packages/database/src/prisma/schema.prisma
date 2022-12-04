@@ -3,7 +3,7 @@
 
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["binaryTargets", "debian-openssl-1.1.x"] // Azure func box, development macs, GitHub runner boxes
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 generator erd {
