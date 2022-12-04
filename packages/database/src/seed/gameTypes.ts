@@ -12,14 +12,6 @@ const generateGameTypes = (
   return [
     {
       name: 'Pool',
-      requirements: {
-        create: {
-          minPlayersPerTeam: 1,
-          minNumberOfTeams: 2,
-          maxNumberOfTeams: 2,
-          maxPlayersPerTeam: 4,
-        },
-      },
       locations: {
         connect: [
           { id: nottingham.id },
@@ -31,28 +23,12 @@ const generateGameTypes = (
     },
     {
       name: 'Darts',
-      requirements: {
-        create: {
-          minPlayersPerTeam: 1,
-          minNumberOfTeams: 2,
-          maxNumberOfTeams: 6,
-          maxPlayersPerTeam: 6,
-        },
-      },
       locations: {
         connect: [{ id: nottingham.id }],
       },
     },
     {
       name: 'Table Tennis',
-      requirements: {
-        create: {
-          minPlayersPerTeam: 1,
-          minNumberOfTeams: 2,
-          maxNumberOfTeams: 2,
-          maxPlayersPerTeam: 2,
-        },
-      },
       locations: {
         connect: [{ id: london.id }],
       },
