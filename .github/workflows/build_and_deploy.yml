@@ -144,6 +144,9 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Generate Prisma Client
+        if: steps.changed-seed-files.outputs.any_changed == 'true'
+        run: npm run generate -w database
       - name: Run database migration
         if: steps.changed-seed-files.outputs.any_changed == 'true'
         run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run seed
