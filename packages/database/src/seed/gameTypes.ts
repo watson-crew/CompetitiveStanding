@@ -7,7 +7,7 @@ type SeedDependencies = {
 const generateGameTypes = (
   locations: Record<string, Location>,
 ): Prisma.GameTypeCreateInput[] => {
-  const { nottingham, london, leeds, manchester, birmingham } = locations;
+  const { birmingham, london, leeds, manchester, nottingham } = locations;
 
   return [
     {
