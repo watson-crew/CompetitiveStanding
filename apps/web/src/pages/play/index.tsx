@@ -4,53 +4,51 @@ import { ApiContext } from '@src/context/ApiContext';
 import GameComponent from '@src/components/organisms/GameComponent/GameComponent';
 import Head from 'next/head';
 import {
-  GameType,
   Team,
   TeamHistoricResult,
   User,
   Location,
   InitiateMatchResponse,
-} from '@src/../../../packages/schema';
-import { GameRequirements } from '@src/types/games';
+  GameType,
+} from 'schema';
 import { generateTeamId } from '@src/uilts/teamUtils';
 
 export default function Index() {
-  function useSelectedGameType(): GameType & {
-    requirements: GameRequirements;
-  } {
-    return {
-      id: 1,
-      name: 'Pool',
-      maxNumberOfPlayers: 2, // Obsolete now
-      requirements: {
-        min: {
-          playersPerTeam: 1,
-          numberOfTeams: 2,
-        },
-        max: {
-          playersPerTeam: 4,
-          numberOfTeams: 3, // Just for testing purposes
-        },
-      },
-    };
-  }
-
   function useSelectedLocation(): Location {
     return {
       id: 1,
       name: 'Nottingham',
       urlPath: 'nottingham',
+      playerCount: 10,
+      availableGames: [
+        {
+          id: 1,
+          name: 'Pool',
+          requirements: {
+            min: {
+              playersPerTeam: 1,
+              numberOfTeams: 2,
+            },
+            max: {
+              playersPerTeam: 4,
+              numberOfTeams: 3, // Just for testing purposes
+            },
+          },
+        },
+      ],
     };
   }
 
   const client = useContext(ApiContext);
 
   // Use a proper react hook to load this from somewhere
-  // TODO: Look at passing game and location in as props
-  const [selectedGameType] = useState(useSelectedGameType());
+  const [selectedLocation] = useState(useSelectedLocation());
 
   // Use a proper react hook to load this from somewhere
-  const [selectedLocation] = useState(useSelectedLocation());
+  // TODO: Look at passing game and location in as props
+  const [selectedGameType] = useState<GameType>(
+    selectedLocation.availableGames[0],
+  );
 
   const [matchId, setMatchId] = useState<number>();
   const [teams, setTeams] = useState<Omit<Team, 'id'>[]>([]);

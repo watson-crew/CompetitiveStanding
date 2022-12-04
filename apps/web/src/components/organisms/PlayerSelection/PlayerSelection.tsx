@@ -19,10 +19,10 @@ import {
   isPlayerInTeam,
   minimumRequirementsMet,
 } from '@src/uilts/gamesUtils';
-import { GameRequirements, GameRequirement } from '@src/types/games';
+import { GameRequirement } from '@src/types/games';
 
 type PlayerSelectionProps = {
-  selectedGameType: GameType & { requirements: GameRequirements };
+  selectedGameType: GameType;
   selectedLocation: Location;
   startMatch: (teams: User[][]) => Promise<void>;
 };

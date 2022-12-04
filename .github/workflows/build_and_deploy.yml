@@ -106,23 +106,52 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get changed files in the migrations folder
-        id: changed-files-specific
+        id: changed-migration-files
         uses: tj-actions/changed-files@v34
         with:
           files: "**/migrations/**"
           base_sha: ${{ github.event.before }}
       - name: Load node_modules
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        if: steps.changed-migration-files.outputs.any_changed == 'true'
         uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Run database migration
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        if: steps.changed-migration-files.outputs.any_changed == 'true'
         run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run deploy
 
-  deploy-backend:
+  seed-database:
+    name: Database Seeding
+    runs-on: ubuntu-latest
+    needs:
+      - migrate-database
+    env:
+      DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
+      DATABASE_PACKAGE_PATH: './packages/database'
+      NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }} # Needed for seeding
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get changed files in the seed folder
+        id: changed-seed-files
+        uses: tj-actions/changed-files@v34
+        with:
+          files: "**/seed/**"
+          base_sha: ${{ github.event.before }}
+      - name: Load node_modules
+        if: steps.changed-seed-files.outputs.any_changed == 'true'
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Generate Prisma Client
+        if: steps.changed-seed-files.outputs.any_changed == 'true'
+        run: npm run generate -w database
+      - name: Run database migration
+        if: steps.changed-seed-files.outputs.any_changed == 'true'
+        run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run seed
 
+  deploy-backend:
     name: Backend Deploy
     runs-on: ubuntu-latest
     needs:
@@ -165,7 +194,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
       - deploy-backend
-      - migrate-database
+      - seed-database
     env:
       API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
     steps:

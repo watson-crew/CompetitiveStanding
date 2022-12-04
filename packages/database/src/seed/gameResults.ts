@@ -87,8 +87,8 @@ const gameResults = (
   gameTypes: Record<string, GameType>,
   teams: Record<string, Team>,
 ): Omit<Prisma.GameResultUncheckedCreateInput, 'id'>[] => {
-  const nottingham = locations['nottingham'];
-  const pool = gameTypes['pool'];
+  const { nottingham } = locations;
+  const { pool } = gameTypes;
 
   const results: Omit<Prisma.GameResultUncheckedCreateInput, 'id'>[] = [];
   games.forEach(game => {

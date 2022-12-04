@@ -24,6 +24,7 @@ export {
 };
 
 // Molecules
+import LocationLinkCard from './molecules/LocationLinkCard/LocationLinkCard';
 import PlayerCard from './molecules/PlayerCard/PlayerCard';
 import PlayerIdInput from './molecules/PlayerIdInput/PlayerIdInput';
 import PlayerSelectionCard from './molecules/PlayerSelectionCard/PlayerSelectionCard';
@@ -32,6 +33,7 @@ import TextWithIcon from './molecules/TextWithIcon/TextWithIcon';
 import TeamHistoricResultsCard from './molecules/TeamHistoricResultsCard/TeamHistoricResultsCard';
 
 export {
+  LocationLinkCard,
   PlayerCard,
   PlayerIdInput,
   PlayerSelectionCard,

@@ -12,19 +12,19 @@ const defaultProfilePicturePath = '/defaultProfilePicture.jpeg';
 
 const getFullName = (player: User) => `${player.firstName} ${player.lastName}`;
 
-type PlayerVariant = 's' | 'm'
+type PlayerVariant = 's' | 'm';
 
 type PlayerCardProps = WithDefaultProps<{
   player: User;
   children?: React.ReactNode;
-  variant?: PlayerVariant
+  variant?: PlayerVariant;
 }>;
 
 export default function PlayerCard({
   player,
   className,
   children,
-  variant = 'm'
+  variant = 'm',
 }: PlayerCardProps) {
   const fullName = getFullName(player);
 
@@ -35,24 +35,25 @@ export default function PlayerCard({
 
   const [imgSrc, setImgSrc] = useState<string>();
 
-  if (variant == 's')
-  {
+  if (variant == 's') {
     return (
       <Card className={twMerge('flex flex-col items-center', className)}>
-        <Text type="h3" className="mb-3">{player.firstName}</Text>
+        <Text type="h3" className="mb-3">
+          {player.firstName}
+        </Text>
         <div className="relative h-24 w-24">
           <Image
-              src={imgSrc || defaultProfilePicturePath}
-              alt={`${fullName}'s picture`}
-              onError={_e => setImgSrc(defaultProfilePicturePath)}
-              fill={true}
-              sizes=""
-              className="rounded-full"
-            />
+            src={imgSrc || defaultProfilePicturePath}
+            alt={`${fullName}'s picture`}
+            onError={_e => setImgSrc(defaultProfilePicturePath)}
+            fill={true}
+            sizes=""
+            className="rounded-full"
+          />
         </div>
         {children && <section className="flex">{children}</section>}
       </Card>
-    )
+    );
   }
 
   // For 'm' variant - default

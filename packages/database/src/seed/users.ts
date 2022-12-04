@@ -28,8 +28,8 @@ const users = (locations: Record<string, Location>): Omit<User, 'id'>[] => {
       firstName: 'Stephen',
       lastName: 'Church',
       memorableId: 'stc',
-      locationId: nottingham.id,
       profilePicture: null,
+      locationId: nottingham.id,
     },
     {
       firstName: 'Tom',

@@ -1,5 +1,5 @@
 import { Location } from 'schema';
-import { Text, Link } from 'ui';
+import { Text, Link, Card, LocationLinkCard } from 'ui';
 import { getApiInstance } from '@src/context/ApiContext';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
@@ -19,8 +19,10 @@ export async function getStaticProps(
 }
 
 export default function Index({ locations }: RootPageProps) {
+  console.log(locations);
+
   return (
-    <main className="flex h-screen flex-col items-center">
+    <main className="flex h-screen flex-col items-center px-10 xl:px-28">
       <Head>
         <title>Competitive Standing</title>
       </Head>
@@ -29,10 +31,17 @@ export default function Index({ locations }: RootPageProps) {
         Competitive standing
       </Text>
 
-      <h1>Locations</h1>
-      {locations.map(location => (
-        <Text type="h2">{JSON.stringify(location)}</Text>
-      ))}
+      <Card id="locations" className="my-5 w-full text-center">
+        <Text type="h1" className="my-5">
+          Locations
+        </Text>
+        <section className="flex flex-wrap justify-around gap-10">
+          {locations.map(location => (
+            <LocationLinkCard location={location} />
+          ))}
+        </section>
+      </Card>
+
       <hr />
 
       <Link href="/play">Play game</Link>

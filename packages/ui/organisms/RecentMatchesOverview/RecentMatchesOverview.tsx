@@ -46,8 +46,10 @@ export default function RecentMatchesOverview({
           !hasRecentMatches ? 'items-center justify-center' : ''
         }`}
       >
-        {!hasRecentMatches && <Text type="p">No recent matches</Text>}
-        {hasRecentMatches && cardsToRender}
+        {!loading && !hasRecentMatches && (
+          <Text type="p">No recent matches</Text>
+        )}
+        {(loading || hasRecentMatches) && cardsToRender}
       </div>
     </Card>
   );
