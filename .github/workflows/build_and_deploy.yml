@@ -152,7 +152,6 @@ jobs:
         run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run seed
 
   deploy-backend:
-
     name: Backend Deploy
     runs-on: ubuntu-latest
     needs:
@@ -195,7 +194,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
       - deploy-backend
-      - migrate-database
+      - seed-database
     env:
       API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
     steps:
