@@ -570,7 +570,7 @@
       },
       "Team": {
         "type": "object",
-        "required": ["id", "cumulativeTeamId", "players"],
+        "required": ["cumulativeTeamId", "players"],
         "properties": {
           "id": {
             "type": "integer",

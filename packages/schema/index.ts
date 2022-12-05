@@ -146,7 +146,7 @@ export interface Team {
   /** @example "abcxyz" */
   cumulativeTeamId: string;
   /** @example 1 */
-  id: number;
+  id?: number;
   /**
    * @minItems 1
    * @uniqueItems true
