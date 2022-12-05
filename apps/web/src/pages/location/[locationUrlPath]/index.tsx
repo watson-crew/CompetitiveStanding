@@ -1,4 +1,4 @@
-import { Location, RankedPlayer } from 'schema';
+import { GameType, Location, RankedPlayer } from 'schema';
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -37,6 +37,21 @@ export async function getStaticPaths(
   };
 }
 
+const gameTypes: Record<number, Omit<GameType, 'requirements'>> = {
+  1: {
+    id: 1,
+    name: 'Pool',
+  },
+  2: {
+    id: 2,
+    name: 'Darts',
+  },
+  3: {
+    id: 3,
+    name: 'Table Tennis',
+  },
+};
+
 export async function getStaticProps({
   params,
 }: GetStaticPropsContext<LocationPageDynamicPath>): Promise<
@@ -67,7 +82,7 @@ export default function Index({ location }: LocationPageProps) {
       locationId: location.id,
     });
 
-    setRecentMatches(mapRecentResults(data));
+    setRecentMatches(mapRecentResults(data, gameTypes));
 
     setLoadingRecentMatches(false);
   };
