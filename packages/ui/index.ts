@@ -33,6 +33,7 @@ import PlayerSelectionCard from './molecules/PlayerSelectionCard/PlayerSelection
 import TextInput from './molecules/TextInput/TextInput';
 import TextWithIcon from './molecules/TextWithIcon/TextWithIcon';
 import TeamHistoricResultsCard from './molecules/TeamHistoricResultsCard/TeamHistoricResultsCard';
+import TeamCard from './molecules/TeamCard/TeamCard';
 
 export {
   LocationLinkCard,
@@ -40,6 +41,7 @@ export {
   PlayerIdInput,
   PlayerSelectionCard,
   TeamHistoricResultsCard,
+  TeamCard,
   TextInput,
   TextWithIcon,
 };

@@ -7,14 +7,14 @@ import duration from 'dayjs/plugin/duration';
 import { Team } from 'schema';
 dayjs.extend(duration);
 
-type ResultCardTeamProps = WithDefaultProps<
+type TeamCardProps = WithDefaultProps<
   WithLoadingProps<{
     team?: Omit<Team, 'id'>;
     isWinningTeam: boolean;
   }>
 >;
 
-function ResultCardTeamLoadingStateContent() {
+function TeamCardLoadingState() {
   return (
     <div className="flex w-fit animate-pulse flex-col gap-2">
       <div className="h-2 w-12 rounded-full bg-slate-700"></div>
@@ -23,14 +23,14 @@ function ResultCardTeamLoadingStateContent() {
   );
 }
 
-export default function ResultCardTeam({
+export default function TeamCard({
   className,
   team,
   isWinningTeam,
   loading,
-}: ResultCardTeamProps) {
+}: TeamCardProps) {
   if (loading) {
-    return ResultCardTeamLoadingStateContent();
+    return TeamCardLoadingState();
   }
 
   return (

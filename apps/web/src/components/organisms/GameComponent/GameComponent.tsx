@@ -17,8 +17,6 @@ export default function GameComponent({
   abandonMatch,
   setMatchWinner,
 }: GameComponentProps) {
-  // TODO: Refactor to work with more than 2 teams
-
   const [gameStartTime] = useState<Dayjs>(dayjs());
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
 
@@ -40,17 +38,10 @@ export default function GameComponent({
     setMatchWinner(team.cumulativeTeamId);
   };
 
-  const teamOne = teams[0];
-  const historicDataForTeamOne = historicData[teamOne.cumulativeTeamId];
-  const teamTwo = teams[1];
-  const historicDataForTeamTwo = historicData[teamTwo.cumulativeTeamId];
-
   const duration = dayjs
     .duration(timeElapsed, 'milliseconds')
     .format('m[m] ss[s]');
 
-  // TODO: Display current game length
-  //       For this we need to know the startTime of the match. We can get the matchId, or the full matchDetails as a prop
   return (
     <section className="h-full w-full px-10">
       <div id="control-bar" className="flex justify-end">
@@ -68,19 +59,15 @@ export default function GameComponent({
         />
       </div>
       <section className="h-min-content flex w-full items-center space-x-4">
-        <TeamHistoricResultsCard
-          team={teamOne}
-          historicResults={historicDataForTeamOne}
-          setAsWinner={() => setWinner(teamOne)}
-          className="h-4/5 w-1/2"
-        />
-
-        <TeamHistoricResultsCard
-          team={teamTwo}
-          historicResults={historicDataForTeamTwo}
-          setAsWinner={() => setWinner(teamTwo)}
-          className="h-4/5 w-1/2"
-        />
+        {teams.map((team, i) => (
+          <TeamHistoricResultsCard
+            key={i}
+            team={team}
+            historicResults={historicData[team.cumulativeTeamId]}
+            className="h-4/5 w-1/2"
+            setAsWinner={() => setWinner(team)}
+          />
+        ))}
       </section>
     </section>
   );
