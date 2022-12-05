@@ -185,6 +185,7 @@ export async function getResultsForLocation(
         },
       },
       include: {
+        gameType: true,
         winningTeam: {
           select: {
             cumulativeTeamId: true,

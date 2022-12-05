@@ -1,7 +1,7 @@
 import { Team, TeamHistoricResult } from '@src/../../../packages/schema';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
-import { TeamHistoricResultsCard, Button, TextWithIcon } from 'ui';
+import { TeamHistoricResultsCard, Button, TextWithIcon, CommonIcons } from 'ui';
 import { IoMdTime } from 'react-icons/io';
 
 type GameComponentProps = {
@@ -57,7 +57,7 @@ export default function GameComponent({
       <div id="control-bar" className="flex justify-end">
         <TextWithIcon
           textProps={{ type: 'p' }}
-          icon={IoMdTime}
+          icon={CommonIcons.Clock}
           className="pr-10"
         >
           {duration}

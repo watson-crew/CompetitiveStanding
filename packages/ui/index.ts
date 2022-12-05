@@ -9,6 +9,7 @@ import Text from './atoms/Text/Text';
 import Toggle from './atoms/Toggle/Toggle';
 import Tooltip from './atoms/Tooltip/Tooltip';
 import Link from './atoms/Link/Link';
+import PlayerImage from './atoms/PlayerImage/PlayerImage';
 
 export {
   Banner,
@@ -16,6 +17,7 @@ export {
   Card,
   IconButton,
   LoadingSpinner,
+  PlayerImage,
   WithCloseButton,
   Text,
   Toggle,

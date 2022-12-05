@@ -1,23 +1,22 @@
 import TextWithIcon from '../TextWithIcon/TextWithIcon';
-import Image from 'next/image';
 import { User } from 'schema';
 import { CommonIcons } from '../../types/icons';
 import Card from '../../atoms/Card/Card';
 import { WithDefaultProps } from '../../types';
 import { twMerge } from 'tailwind-merge';
 import Text from '../../atoms/Text/Text';
-import { useEffect, useState } from 'react';
-
-const defaultProfilePicturePath = '/defaultProfilePicture.jpeg';
+import PlayerImage from '../../atoms/PlayerImage/PlayerImage';
 
 const getFullName = (player: User) => `${player.firstName} ${player.lastName}`;
 
-type PlayerVariant = 's' | 'm';
+type PlayerVariant = 'xs' | 's' | 'm';
 
 type PlayerCardProps = WithDefaultProps<{
   player: User;
   children?: React.ReactNode;
   variant?: PlayerVariant;
+  textClassName?: string;
+  imageClassName?: string;
 }>;
 
 export default function PlayerCard({
@@ -25,32 +24,33 @@ export default function PlayerCard({
   className,
   children,
   variant = 'm',
+  textClassName = '',
+  imageClassName = '',
 }: PlayerCardProps) {
   const fullName = getFullName(player);
 
-  useEffect(() => {
-    const { profilePicture } = player;
-    setImgSrc(profilePicture);
-  }, [player]);
+  if (variant == 's' || variant == 'xs') {
+    const textStyle = variant === 'xs' ? 'p' : 'h3';
+    const imageVariant = variant === 'xs' ? 's' : 'm';
 
-  const [imgSrc, setImgSrc] = useState<string>();
-
-  if (variant == 's') {
     return (
-      <Card className={twMerge('flex flex-col items-center', className)}>
-        <Text type="h3" className="mb-3">
+      <Card
+        className={twMerge('flex flex-col items-center', className)}
+        color="transparent"
+      >
+        <Text
+          type="p"
+          style={textStyle}
+          className={twMerge('mb-3', textClassName)}
+        >
           {player.firstName}
         </Text>
-        <div className="relative h-24 w-24">
-          <Image
-            src={imgSrc || defaultProfilePicturePath}
-            alt={`${fullName}'s picture`}
-            onError={_e => setImgSrc(defaultProfilePicturePath)}
-            fill={true}
-            sizes=""
-            className="rounded-full"
-          />
-        </div>
+        <PlayerImage
+          src={player.profilePicture}
+          playerName={fullName}
+          variant={imageVariant}
+          className={imageClassName}
+        />
         {children && <section className="flex">{children}</section>}
       </Card>
     );
@@ -59,16 +59,11 @@ export default function PlayerCard({
   // For 'm' variant - default
   return (
     <Card className={twMerge('flex max-h-32 max-w-sm bg-slate-200', className)}>
-      <div className="relative h-24 w-24 flex-none">
-        <Image
-          src={imgSrc || defaultProfilePicturePath}
-          alt={`${fullName}'s picture`}
-          onError={_e => setImgSrc(defaultProfilePicturePath)}
-          fill={true}
-          sizes=""
-          className="rounded-full"
-        />
-      </div>
+      <PlayerImage
+        className="flex-none"
+        src={player.profilePicture}
+        playerName={fullName}
+      />
 
       <section className="pl-10 text-left">
         <Text type="h3" className="text-sky-500 dark:text-sky-400">
