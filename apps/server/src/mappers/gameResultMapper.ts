@@ -37,6 +37,7 @@ export const gameResultMapper: Mapper<
         endTime: res.endTime.toISOString(),
         winningTeamId: res.winningTeam.cumulativeTeamId,
         locationPlayed: res.locationPlayed.name,
+        gameTypeId: res.gameType.id,
       } as GameResult;
     });
 

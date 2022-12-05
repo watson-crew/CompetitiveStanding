@@ -42,6 +42,8 @@ export interface GameResult {
    */
   endTime: string;
   /** @example 1 */
+  gameTypeId: number;
+  /** @example 1 */
   id: number;
   /** @example "Nottingham" */
   locationPlayed: string;
