@@ -14,11 +14,15 @@ export enum TeamActionType {
   PlayerResolved,
   SlotAdded,
   AddTeam,
+  ApplyTeamCap,
+  ApplyPlayerCap,
 }
 
 type TeamActionPayload = {
   teamIndex?: number;
   player?: User;
+  maxNumberOfTeams?: number;
+  maxNumberOfPlayers?: number;
 };
 
 export type TeamAction = {
@@ -66,6 +70,20 @@ const getPlayer = (payload?: TeamActionPayload): User => {
 const getTeamIndex = (payload?: TeamActionPayload): number => {
   if (payload && payload.teamIndex !== undefined) {
     return payload.teamIndex;
+  }
+  throw Error();
+};
+
+const getMaxNumberOfPlayers = (payload?: TeamActionPayload): number => {
+  if (payload && payload.maxNumberOfPlayers !== undefined) {
+    return payload.maxNumberOfPlayers;
+  }
+  throw Error();
+};
+
+const getMaxNumberOfTeams = (payload?: TeamActionPayload): number => {
+  if (payload && payload.maxNumberOfTeams !== undefined) {
+    return payload.maxNumberOfTeams;
   }
   throw Error();
 };
@@ -125,15 +143,25 @@ export function teamsReducer(
     case TeamActionType.SlotAdded: {
       const teamIndex = getTeamIndex(payload);
 
-      const withSlotAddded: LoadingPlayer[] = [
+      const withSlotAdded: LoadingPlayer[] = [
         ...state[teamIndex],
         PlayerFactory.createSlot(),
       ];
 
-      return withIndexReplaced(state, withSlotAddded, teamIndex);
+      return withIndexReplaced(state, withSlotAdded, teamIndex);
     }
     case TeamActionType.AddTeam: {
       return [...state, [PlayerFactory.createSlot()]];
+    }
+    case TeamActionType.ApplyTeamCap: {
+      const maxNumberOfPlayers = getMaxNumberOfPlayers(payload);
+      const maxNumberOfTeams = getMaxNumberOfTeams(payload);
+
+      state = [...state]
+        .slice(0, maxNumberOfTeams)
+        .map(team => team.slice(0, maxNumberOfPlayers));
+
+      return state;
     }
     default:
       return state;
