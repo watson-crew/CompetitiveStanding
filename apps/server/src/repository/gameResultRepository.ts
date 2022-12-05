@@ -262,10 +262,12 @@ export const getRankingsForLocation = async (
         JOIN [dbo].[_TeamToUser] AS t2u ON u.id = t2u.B
         JOIN [dbo].[Team] AS t ON t2u.A = t.id
         JOIN [dbo].[_GameResultToTeam] AS gr2t ON gr2t.B = t.id
-        JOIN [dbo].[GameResult] AS gr ON gr.id = gr2t.A
+        JOIN [dbo].[GameResult] AS gr ON gr.id = gr2t.A AND gr.endTime IS NOT NULL
         WHERE gr.locationPlayedId = ${locationId}
         AND gr.gameTypeId = ${gameTypeId}
+        AND gr.
         GROUP BY u.id, u.memorableId, u.firstName, u.lastName, u.profilePicture, u.locationId
+        HAVING COUNT(CASE WHEN t.cumulativeTeamId = gr.winningTeamId THEN 1 END) > 0
         ORDER BY GamesWon DESC, GamesPlayed ASC
         OFFSET ${offset} ROWS
         FETCH NEXT ${total} ROWS ONLY
