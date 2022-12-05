@@ -51,7 +51,7 @@ export default function Index() {
   );
 
   const [matchId, setMatchId] = useState<number>();
-  const [teams, setTeams] = useState<Omit<Team, 'id'>[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [historicData, setHistoricData] = useState<
     Record<string, TeamHistoricResult>
   >({});
@@ -70,7 +70,7 @@ export default function Index() {
           participatingTeams: teams.map(team => generateTeamId(team)),
         });
 
-      const teamRecords: Omit<Team, 'id'>[] = teams.map(team => {
+      const teamRecords: Team[] = teams.map(team => {
         return {
           cumulativeTeamId: generateTeamId(team),
           players: team,
@@ -96,7 +96,6 @@ export default function Index() {
       updateType: 'SET_WINNER',
       updateDetails: { winningTeamId: cumulativeTeamId },
     });
-    clearGameDetails();
   };
 
   const abandonMatch = async () => {
@@ -131,7 +130,9 @@ export default function Index() {
           historicData={historicData}
           teams={teams}
           abandonMatch={abandonMatch}
+          finishMatch={clearGameDetails}
           setMatchWinner={setWinner}
+          playAgain={startMatch}
         />
       )}
     </main>
