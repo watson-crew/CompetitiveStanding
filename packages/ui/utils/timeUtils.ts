@@ -26,7 +26,12 @@ export function getFormattedDatePlayed(gameEndTime: Dayjs): string {
   }
 
   if (gameEndTime.isAfter(now.startOf('day'))) {
-    return formatDuration(gameEndTime, now, 'H [hours ago]');
+    const hoursDiff = now.diff(gameEndTime, 'hours');
+    return formatDuration(
+      gameEndTime,
+      now,
+      `H [hour${hoursDiff > 1 ? 's' : ''} ago]`,
+    );
   }
 
   if (gameEndTime.isAfter(now.subtract(7, 'days'))) {

@@ -10,6 +10,7 @@ import {
   WithDefaultProps,
   WithLoadingProps,
 } from '../../types';
+import { insertBetween } from '../../utils/reactComponentUtils';
 import { formatDuration, getFormattedDatePlayed } from '../../utils/timeUtils';
 import TeamCard from '../TeamCard/TeamCard';
 
@@ -88,20 +89,22 @@ export default function ResultCard({
       </section>
 
       <section className="flex items-center justify-between gap-2">
-        {gameResult.teams.map((team, i) => (
-          <>
+        {insertBetween(
+          gameResult.teams.map(team => (
             <TeamCard
+              key={`team-${team.cumulativeTeamId}`}
               loading={false}
               team={team}
               isWinningTeam={gameResult.winningTeamId === team.cumulativeTeamId}
             />
-            {i !== gameResult.teams.length - 1 && (
-              <Text type="p" className="font-bold">
-                vs
-              </Text>
-            )}
-          </>
-        ))}
+          )),
+          key => (
+            <Text type="p" className="font-bold" key={key}>
+              vs
+            </Text>
+          ),
+          i => `vs-${i}`,
+        )}
       </section>
     </div>,
   );

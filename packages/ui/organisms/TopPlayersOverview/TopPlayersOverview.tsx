@@ -35,14 +35,15 @@ export default function TopPlayersOverview({
     },
   ];
 
-  cardDetailsToRender.forEach(details => {
+  cardDetailsToRender.forEach((details, i) => {
     if (loading || !details.rankedPlayer) {
       cardsToRender.push(
-        <TopPlayersCard loading={true} cardType={details.cardType} />,
+        <TopPlayersCard key={i} loading={true} cardType={details.cardType} />,
       );
     } else {
       cardsToRender.push(
         <TopPlayersCard
+          key={i}
           rankedPlayer={details.rankedPlayer}
           loading={false}
           cardType={details.cardType}

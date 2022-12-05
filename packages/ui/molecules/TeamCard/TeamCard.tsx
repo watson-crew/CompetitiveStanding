@@ -1,11 +1,7 @@
-import dayjs from 'dayjs';
-import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { PlayerCard } from '../..';
 import { WithDefaultProps, WithLoadingProps } from '../../types';
-import duration from 'dayjs/plugin/duration';
 import { Team } from 'schema';
-dayjs.extend(duration);
 
 type TeamCardProps = WithDefaultProps<
   WithLoadingProps<{
@@ -39,7 +35,7 @@ export default function TeamCard({
     >
       {team?.players.map(player => (
         <PlayerCard
-          key={player.memorableId}
+          key={`player-card-${player.memorableId}`}
           player={player}
           variant="xs"
           className="bg-none p-0 md:p-0"
