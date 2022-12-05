@@ -3,6 +3,7 @@ import Card from '../../atoms/Card/Card';
 import ResultCard from '../../molecules/ResultCard.tsx/ResultCard';
 import { twMerge } from 'tailwind-merge';
 import Text from '../../atoms/Text/Text';
+import { useEffect, useState } from 'react';
 
 type RecentMatchesOverviewProps = WithDefaultProps<
   WithLoadingProps<{
@@ -16,6 +17,12 @@ export default function RecentMatchesOverview({
   recentMatches,
 }: RecentMatchesOverviewProps) {
   let cardsToRender: JSX.Element[] = [];
+
+  const [hasRecentMatches, setHasRecentPlayers] = useState(false);
+
+  useEffect(() => {
+    setHasRecentPlayers(recentMatches.length > 0);
+  }, [recentMatches]);
 
   if (loading) {
     const skeletonsToRender = 8;
@@ -34,8 +41,15 @@ export default function RecentMatchesOverview({
       className={twMerge('flex h-full w-full flex-col', className)}
     >
       <Text type="h2">Recent matches</Text>
-      <div className="mt-2 flex h-full w-full flex-col gap-2 overflow-scroll">
-        {cardsToRender}
+      <div
+        className={`mt-2 flex h-full w-full flex-col gap-2 overflow-scroll ${
+          !hasRecentMatches ? 'items-center justify-center' : ''
+        }`}
+      >
+        {!loading && !hasRecentMatches && (
+          <Text type="p">No recent matches</Text>
+        )}
+        {(loading || hasRecentMatches) && cardsToRender}
       </div>
     </Card>
   );

@@ -430,9 +430,43 @@
           }
         }
       },
+      "GameRequirement": {
+        "type": "object",
+        "required": ["playersPerTeam", "numberOfTeams"],
+        "properties": {
+          "playersPerTeam": {
+            "type": "integer"
+          },
+          "numberOfTeams": {
+            "type": "integer"
+          }
+        }
+      },
+      "GameRequirements": {
+        "required": ["min", "max"],
+        "type": "object",
+        "properties": {
+          "min": {
+            "$ref": "#/components/schemas/GameRequirement"
+          },
+          "max": {
+            "$ref": "#/components/schemas/GameRequirement"
+          }
+        },
+        "example": {
+          "min": {
+            "playersPerTeam": 1,
+            "numberOfTeams": 2
+          },
+          "max": {
+            "playersPerTeam": 6,
+            "numberOfTeams": 2
+          }
+        }
+      },
       "GameType": {
         "type": "object",
-        "required": ["id", "name", "maxNumberOfPlayers"],
+        "required": ["id", "name", "requirements"],
         "properties": {
           "id": {
             "type": "integer",
@@ -442,9 +476,8 @@
             "type": "string",
             "example": "Pool"
           },
-          "maxNumberOfPlayers": {
-            "type": "integer",
-            "example": "1"
+          "requirements": {
+            "$ref": "#/components/schemas/GameRequirements"
           }
         }
       },
@@ -478,7 +511,7 @@
       },
       "Location": {
         "type": "object",
-        "required": ["id", "name", "urlPath"],
+        "required": ["id", "name", "urlPath", "availableGames", "playerCount"],
         "properties": {
           "id": {
             "type": "integer",
@@ -492,16 +525,21 @@
             "type": "string",
             "example": "Nottingham"
           },
-          "coverPhoto": {
-            "type": "string",
-            "example": "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg"
-          },
           "availableGames": {
             "type": "array",
             "uniqueItems": true,
             "items": {
               "$ref": "#/components/schemas/GameType"
             }
+          },
+          "playerCount": {
+            "type": "integer",
+            "example": 65
+          },
+          "mostPopularGame": {
+            "description": "The most played game at the given location",
+            "type": "integer",
+            "example": 1
           }
         }
       },

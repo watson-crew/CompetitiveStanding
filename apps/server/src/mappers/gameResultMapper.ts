@@ -30,7 +30,6 @@ export const gameResultMapper: Mapper<
 > = {
   map: queryResult => {
     const results: GameResult[] = queryResult.map(res => {
-      console.log(res);
       return {
         id: res.id,
         participatingTeams: res.teams.map(team => team.cumulativeTeamId),

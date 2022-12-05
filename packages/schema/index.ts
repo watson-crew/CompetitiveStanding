@@ -24,6 +24,17 @@ export interface CreateUserPayload {
   homeLocationId?: number;
 }
 
+export interface GameRequirement {
+  numberOfTeams: number;
+  playersPerTeam: number;
+}
+
+/** @example {"min":{"playersPerTeam":1,"numberOfTeams":2},"max":{"playersPerTeam":6,"numberOfTeams":2}} */
+export interface GameRequirements {
+  max: GameRequirement;
+  min: GameRequirement;
+}
+
 export interface GameResult {
   /**
    * @format date-time
@@ -52,10 +63,9 @@ export interface GameResult {
 export interface GameType {
   /** @example 1 */
   id: number;
-  /** @example "1" */
-  maxNumberOfPlayers: number;
   /** @example "Pool" */
   name: string;
+  requirements: GameRequirements;
 }
 
 export type GetAllLocationsData = Location[];
@@ -101,13 +111,18 @@ export interface InitiateNewMatchPayload {
 
 export interface Location {
   /** @uniqueItems true */
-  availableGames?: GameType[];
-  /** @example "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg" */
-  coverPhoto?: string;
+  availableGames: GameType[];
   /** @example 1 */
   id: number;
+  /**
+   * The most played game at the given location
+   * @example 1
+   */
+  mostPopularGame?: number;
   /** @example "Nottingham" */
   name: string;
+  /** @example 65 */
+  playerCount: number;
   /** @example "nottingham" */
   urlPath: string;
 }
@@ -249,7 +264,7 @@ export namespace Matches {
    * @tags matches
    * @name RecordMatchResults
    * @summary Record the results of a given match
-   * @request PUT:/matches/${matchId}
+   * @request PUT:/matches/{matchId}
    */
   export namespace RecordMatchResults {
     export type RequestParams = {
@@ -566,7 +581,7 @@ export class ApiClient<
      * @tags matches
      * @name RecordMatchResults
      * @summary Record the results of a given match
-     * @request PUT:/matches/${matchId}
+     * @request PUT:/matches/{matchId}
      */
     recordMatchResults: (
       matchId: number,

@@ -28,37 +28,37 @@ const games: Game[] = [
     teams: [1, 2],
     winningTeam: 1,
     start: new Date(2022, 11, 21, 10, 30),
-    end: new Date(2022, 11, 10, 45),
+    end: new Date(2022, 11, 21, 10, 45),
   },
   {
     teams: [1, 2],
     winningTeam: 2,
     start: new Date(2022, 11, 21, 10, 47),
-    end: new Date(2022, 11, 11, 4),
+    end: new Date(2022, 11, 21, 11, 4),
   },
   {
     teams: [3, 5],
     winningTeam: 5,
     start: new Date(2022, 11, 21, 16, 22),
-    end: new Date(2022, 11, 16, 35),
+    end: new Date(2022, 11, 21, 16, 35),
   },
   {
     teams: [1, 3],
     winningTeam: 3,
     start: new Date(2022, 11, 21, 16, 22),
-    end: new Date(2022, 11, 16, 35),
+    end: new Date(2022, 11, 21, 16, 35),
   },
   {
     teams: [1, 5],
     winningTeam: 5,
     start: new Date(2022, 11, 21, 16, 22),
-    end: new Date(2022, 11, 16, 35),
+    end: new Date(2022, 11, 21, 16, 35),
   },
   {
     teams: [1, 2],
     winningTeam: 1,
     start: new Date(2022, 11, 21, 10, 47),
-    end: new Date(2022, 11, 11, 4),
+    end: new Date(2022, 11, 21, 11, 4),
   },
 ];
 
@@ -87,8 +87,8 @@ const gameResults = (
   gameTypes: Record<string, GameType>,
   teams: Record<string, Team>,
 ): Omit<Prisma.GameResultUncheckedCreateInput, 'id'>[] => {
-  const nottingham = locations['nottingham'];
-  const pool = gameTypes['pool'];
+  const { nottingham } = locations;
+  const { pool } = gameTypes;
 
   const results: Omit<Prisma.GameResultUncheckedCreateInput, 'id'>[] = [];
   games.forEach(game => {

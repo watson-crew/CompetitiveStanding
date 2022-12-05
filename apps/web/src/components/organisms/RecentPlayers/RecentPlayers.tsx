@@ -1,9 +1,17 @@
-import { WithDefaultProps, PlayerCard, Button, Text, Card } from 'ui';
+import {
+  WithDefaultProps,
+  PlayerCard,
+  Button,
+  Text,
+  Card,
+  CommonIcons,
+} from 'ui';
 import { useSelector } from 'react-redux';
 import { selectRecentlyPlayed } from '@src/store/reducers/playerSlice';
 import { User } from 'schema';
 import { twMerge } from 'tailwind-merge';
 import { useEffect, useState } from 'react';
+import WithScrollbar from '@src/../../../packages/ui/atoms/WithScrollbar/WithScrollbar';
 
 type RecentPlayersProps = WithDefaultProps<{
   onSelected: (user: User) => void;
@@ -30,13 +38,15 @@ export default function RecentPlayers({
   };
 
   const recentlyPlayedUserCards = () => {
-    return recentlyPlayedUsers.map((user, i) => (
-      <PlayerCard player={user} key={`recent-player-${i}`}>
+    return [...recentlyPlayedUsers].reverse().map((user, i) => (
+      <PlayerCard player={user} key={`recent-player-${i}`} variant="s">
         <Button
-          text="Add"
           onClick={() => onSelected(user)}
           disabled={allSlotsFilled || isDisabled(user.memorableId)}
-        />
+          className="rounded-full px-2 py-2"
+        >
+          <CommonIcons.Plus></CommonIcons.Plus>
+        </Button>
       </PlayerCard>
     ));
   };
@@ -44,14 +54,18 @@ export default function RecentPlayers({
   return (
     <Card className={twMerge('w-full text-left', className)}>
       <Text type="h2">Recent players</Text>
-      <div
-        className={`min-h-20 flex h-full w-full flex-row ${
-          !hasRecentPlayers ? 'justify-center' : ''
-        } gap-x-4 overflow-scroll`}
-      >
-        {hasRecentPlayers && recentlyPlayedUserCards()}
-        {!hasRecentPlayers && <Text type="p">No recent players</Text>}
-      </div>
+
+      {!hasRecentPlayers && (
+        <div className="text-center">
+          <Text type="p">No recent players</Text>
+        </div>
+      )}
+
+      {hasRecentPlayers && (
+        <WithScrollbar className="flex-grow items-center">
+          {recentlyPlayedUserCards()}
+        </WithScrollbar>
+      )}
     </Card>
   );
 }

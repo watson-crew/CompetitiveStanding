@@ -1,5 +1,8 @@
 import { Team, TeamHistoricResult } from '@src/../../../packages/schema';
-import { TeamHistoricResultsCard, Button } from 'ui';
+import dayjs, { Dayjs } from 'dayjs';
+import { useEffect, useState } from 'react';
+import { TeamHistoricResultsCard, Button, TextWithIcon } from 'ui';
+import { IoMdTime } from 'react-icons/io';
 
 type GameComponentProps = {
   teams: Omit<Team, 'id'>[];
@@ -17,13 +20,24 @@ export default function GameComponent({
 }: GameComponentProps) {
   // TODO: Refactor to work with more than 2 teams
 
+  const [gameStartTime] = useState<Dayjs>(dayjs());
+  const [timeElapsed, setTimeElapsed] = useState<number>(0);
+
+  useEffect(() => {
+    const interval = setInterval(
+      () => setTimeElapsed(dayjs().diff(gameStartTime)),
+      1000,
+    );
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   const abandonGame = () => {
-    console.log('Abandon game');
     abandonMatch();
   };
 
   const setWinner = (team: Omit<Team, 'id'>) => {
-    console.log(`Winner: ${team.cumulativeTeamId}`);
     setMatchWinner(team.cumulativeTeamId);
   };
 
@@ -32,11 +46,29 @@ export default function GameComponent({
   const teamTwo = teams[1];
   const historicDataForTeamTwo = historicData[teamTwo.cumulativeTeamId];
 
+  const duration = dayjs
+    .duration(timeElapsed, 'milliseconds')
+    .format('m[m] ss[s]');
+
   // TODO: Display current game length
   //       For this we need to know the startTime of the match. We can get the matchId, or the full matchDetails as a prop
   return (
-    <section className="h-full w-full">
-      <section className="flex h-full w-full items-center space-x-4 px-10">
+    <section className="h-full w-full px-10">
+      <div id="control-bar" className="flex justify-end">
+        <TextWithIcon
+          textProps={{ type: 'p' }}
+          icon={IoMdTime}
+          className="pr-10"
+        >
+          {duration}
+        </TextWithIcon>
+        <Button
+          text="Abandon"
+          onClick={abandonGame}
+          className="w-fit text-2xl font-bold"
+        />
+      </div>
+      <section className="h-min-content flex w-full items-center space-x-4">
         <TeamHistoricResultsCard
           team={teamOne}
           historicResults={historicDataForTeamOne}
@@ -49,13 +81,6 @@ export default function GameComponent({
           historicResults={historicDataForTeamTwo}
           setAsWinner={() => setWinner(teamTwo)}
           className="h-4/5 w-1/2"
-        />
-      </section>
-      <section className="absolute top-5 left-10">
-        <Button
-          text="Abandon"
-          onClick={abandonGame}
-          className="w-fit text-2xl font-bold"
         />
       </section>
     </section>
