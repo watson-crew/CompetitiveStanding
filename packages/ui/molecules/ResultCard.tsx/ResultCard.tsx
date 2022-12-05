@@ -1,11 +1,18 @@
-import dayjs from 'dayjs';
 import React from 'react';
+import { IconType } from 'react-icons';
 import { twMerge } from 'tailwind-merge';
-import { Text } from '../..';
+import { Text, TextWithIcon } from '../..';
 import Card from '../../atoms/Card/Card';
-import { GameResult, WithDefaultProps, WithLoadingProps } from '../../types';
-import duration from 'dayjs/plugin/duration';
-dayjs.extend(duration);
+import {
+  CommonIcons,
+  GameResult,
+  SportIcons,
+  WithDefaultProps,
+  WithLoadingProps,
+} from '../../types';
+import { insertBetween } from '../../utils/reactComponentUtils';
+import { formatDuration, getFormattedDatePlayed } from '../../utils/timeUtils';
+import TeamCard from '../TeamCard/TeamCard';
 
 type ResultCardProps = WithDefaultProps<
   WithLoadingProps<{
@@ -15,22 +22,33 @@ type ResultCardProps = WithDefaultProps<
 
 function ResultCardLoadingStateContent() {
   return (
-    <div className="flex w-full animate-pulse space-x-4">
-      <div className="h-10 w-10 rounded-full bg-slate-700"></div>
-      <div className="flex-1 space-y-6 py-1">
-        <div className="h-2 rounded bg-slate-700"></div>
-        <div className="space-y-3">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2 h-2 rounded bg-slate-700"></div>
-            <div className="col-span-1 h-2 rounded bg-slate-700"></div>
-          </div>
-          <div className="h-2 rounded bg-slate-700"></div>
-        </div>
+    <div className="flex w-full animate-pulse flex-col space-x-4">
+      <div className="mb-5 grid w-full grid-cols-10 gap-4 ">
+        <div className="col-span-2 h-2 rounded bg-slate-700"></div>
+        <div className="col-span-2" />
+        <div className="col-span-2 h-2 rounded bg-slate-700"></div>
+        <div className="col-span-2" />
+        <div className="col-span-2 h-2 rounded bg-slate-700"></div>
       </div>
-      <div className="h-10 w-10 rounded-full bg-slate-700"></div>
+      <div className="flex items-center justify-around gap-2">
+        <TeamCard loading={true} isWinningTeam={false} />
+        <Text type="p"> vs </Text>
+        <TeamCard loading={true} isWinningTeam={false} />
+      </div>
     </div>
   );
 }
+
+// Move this somewhere
+const getSportIcon = (iconId: number): IconType => {
+  const iconMappings: Record<number, IconType> = {
+    1: SportIcons.Pool,
+    2: SportIcons.Darts,
+    3: SportIcons.TableTennis,
+  };
+
+  return iconMappings[iconId] || SportIcons.Pool;
+};
 
 export default function ResultCard({
   className,
@@ -51,31 +69,43 @@ export default function ResultCard({
     return renderWithChildren(ResultCardLoadingStateContent());
   }
 
-  // Clean this up
-  const p1 = gameResult.teams[0].players[0];
-  const p2 = gameResult.teams[1].players[0];
-
-  const timeTaken = gameResult.endTime.diff(gameResult.startTime);
-
-  const duration = dayjs
-    .duration(timeTaken, 'milliseconds')
-    .format('m[m] s[s]');
-
   return renderWithChildren(
-    <div className="flex justify-between">
-      <Text
-        type="p"
-        className={`${
-          gameResult?.winningTeamId === p1?.memorableId ? 'text-green-500' : ''
-        }`}
-      >{`${p1?.firstName} ${p1?.lastName} - ${p1?.memorableId}`}</Text>
-      <Text type="p">{duration}</Text>
-      <Text
-        type="p"
-        className={`${
-          gameResult?.winningTeamId === p2?.memorableId ? 'text-green-500' : ''
-        }`}
-      >{`${p2?.firstName} ${p2?.lastName} - ${p2?.memorableId}`}</Text>
+    <div>
+      <section className="mb-2 flex flex-row justify-between">
+        <TextWithIcon
+          textProps={{ type: 'p' }}
+          icon={getSportIcon(gameResult.gameType.id)}
+        >
+          {gameResult.gameType.name}
+        </TextWithIcon>
+        <TextWithIcon textProps={{ type: 'p' }} icon={CommonIcons.Clock}>
+          {formatDuration(
+            gameResult.startTime,
+            gameResult.endTime,
+            'm[m] s[s]',
+          )}
+        </TextWithIcon>
+        <Text type="p">{getFormattedDatePlayed(gameResult.endTime)}</Text>
+      </section>
+
+      <section className="flex items-center justify-between gap-2">
+        {insertBetween(
+          gameResult.teams.map(team => (
+            <TeamCard
+              key={`team-${team.cumulativeTeamId}`}
+              loading={false}
+              team={team}
+              isWinningTeam={gameResult.winningTeamId === team.cumulativeTeamId}
+            />
+          )),
+          key => (
+            <Text type="p" className="font-bold" key={key}>
+              vs
+            </Text>
+          ),
+          i => `vs-${i}`,
+        )}
+      </section>
     </div>,
   );
 }

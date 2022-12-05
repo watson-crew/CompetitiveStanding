@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal'
 import dayjs, { Dayjs } from 'dayjs';
-import { TeamHistoricResultsCard, Button, TextWithIcon } from 'ui';
+import { TeamHistoricResultsCard, Button, TextWithIcon, CommonIcons } from 'ui';
 import { Team, TeamHistoricResult, User } from 'schema';
-import { IoMdTime } from 'react-icons/io';
 
 enum GameEndType {
   NewGame = 'NewGame',
@@ -74,17 +73,10 @@ export default function GameComponent({
     setIsGameFinished(false)
   }
 
-  const teamOne = teams[0];
-  const historicDataForTeamOne = historicData[teamOne.cumulativeTeamId];
-  const teamTwo = teams[1];
-  const historicDataForTeamTwo = historicData[teamTwo.cumulativeTeamId];
-
   const duration = dayjs
     .duration(timeElapsed, 'milliseconds')
     .format('m[m] ss[s]');
 
-  // TODO: Display current game length
-  //       For this we need to know the startTime of the match. We can get the matchId, or the full matchDetails as a prop
   return (
     <section className="h-full w-full px-10">
       <Modal 
@@ -103,7 +95,7 @@ export default function GameComponent({
       <div id="control-bar" className="flex justify-end">
         <TextWithIcon
           textProps={{ type: 'p' }}
-          icon={IoMdTime}
+          icon={CommonIcons.Clock}
           className="pr-10"
         >
           {duration}
@@ -115,19 +107,15 @@ export default function GameComponent({
         />
       </div>
       <section className="h-min-content flex w-full items-center space-x-4">
-        <TeamHistoricResultsCard
-          team={teamOne}
-          historicResults={historicDataForTeamOne}
-          setAsWinner={() => setWinner(teamOne)}
-          className="h-4/5 w-1/2"
-        />
-
-        <TeamHistoricResultsCard
-          team={teamTwo}
-          historicResults={historicDataForTeamTwo}
-          setAsWinner={() => setWinner(teamTwo)}
-          className="h-4/5 w-1/2"
-        />
+        {teams.map((team, i) => (
+          <TeamHistoricResultsCard
+            key={i}
+            team={team}
+            historicResults={historicData[team.cumulativeTeamId]}
+            className="h-4/5 w-1/2"
+            setAsWinner={() => setWinner(team)}
+          />
+        ))}
       </section>
     </section>
   );

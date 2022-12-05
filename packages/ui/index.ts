@@ -9,6 +9,7 @@ import Text from './atoms/Text/Text';
 import Toggle from './atoms/Toggle/Toggle';
 import Tooltip from './atoms/Tooltip/Tooltip';
 import Link from './atoms/Link/Link';
+import PlayerImage from './atoms/PlayerImage/PlayerImage';
 
 export {
   Banner,
@@ -16,6 +17,7 @@ export {
   Card,
   IconButton,
   LoadingSpinner,
+  PlayerImage,
   WithCloseButton,
   Text,
   Toggle,
@@ -31,6 +33,7 @@ import PlayerSelectionCard from './molecules/PlayerSelectionCard/PlayerSelection
 import TextInput from './molecules/TextInput/TextInput';
 import TextWithIcon from './molecules/TextWithIcon/TextWithIcon';
 import TeamHistoricResultsCard from './molecules/TeamHistoricResultsCard/TeamHistoricResultsCard';
+import TeamCard from './molecules/TeamCard/TeamCard';
 
 export {
   LocationLinkCard,
@@ -38,6 +41,7 @@ export {
   PlayerIdInput,
   PlayerSelectionCard,
   TeamHistoricResultsCard,
+  TeamCard,
   TextInput,
   TextWithIcon,
 };

@@ -33,8 +33,15 @@ async function seedTeams(
 ): Promise<Record<string, Team>> {
   const seededTeams: Record<string, Team> = {};
 
+  const allUsers = Object.values(users);
+
   // Each user in their own team for 1v1 games
-  const teamsData = Object.values(users).map(userToTeam);
+  const teamsData = [
+    ...allUsers.map(userToTeam),
+    usersToTeam(allUsers.slice(0, 2)),
+    usersToTeam(allUsers.slice(2, 5)),
+    usersToTeam(allUsers.slice(1, 4)),
+  ];
 
   for (let i = 0; i < teamsData.length; i++) {
     const insertedTeam = await prisma.team.upsert({
@@ -45,7 +52,7 @@ async function seedTeams(
       create: teamsData[i],
     });
 
-    seededTeams[insertedTeam.id] = insertedTeam;
+    seededTeams[insertedTeam.cumulativeTeamId] = insertedTeam;
   }
 
   return seededTeams;

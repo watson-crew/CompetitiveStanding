@@ -394,7 +394,8 @@
           "winningTeamId",
           "startTime",
           "endTime",
-          "locationPlayed"
+          "locationPlayed",
+          "gameTypeId"
         ],
         "properties": {
           "id": {
@@ -427,6 +428,10 @@
           "locationPlayed": {
             "type": "string",
             "example": "Nottingham"
+          },
+          "gameTypeId": {
+            "type": "number",
+            "example": 1
           }
         }
       },
