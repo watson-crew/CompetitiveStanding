@@ -32,7 +32,6 @@
   },
   "packageManager": "npm@8.5.0",
   "dependencies": {
-    "knex": "^2.2.0",
-    "react-confetti": "^6.1.0"
+    "knex": "^2.2.0"
   }
 }
