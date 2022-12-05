@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Confetti from 'react-confetti'
 import Modal from 'react-modal'
 import dayjs, { Dayjs } from 'dayjs';
 import { TeamHistoricResultsCard, Button, TextWithIcon, CommonIcons } from 'ui';
@@ -79,6 +80,7 @@ export default function GameComponent({
 
   return (
     <section className="h-full w-full px-10">
+      {isGameFinished ? <Confetti /> : null}
       <Modal 
         isOpen={isGameFinished}
         style={{ content: {
