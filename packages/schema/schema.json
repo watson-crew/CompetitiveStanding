@@ -488,7 +488,7 @@
       },
       "InitiateMatchResponse": {
         "type": "object",
-        "required": ["matchId", "historicResults"],
+        "required": ["matchId", "historicResults", "playerElos"],
         "properties": {
           "matchId": {
             "type": "integer",
@@ -510,6 +510,16 @@
               "bbbyyyzzz": {
                 "wins": 9
               }
+            }
+          },
+          "playerElos": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "example": {
+              "abc": 980,
+              "xyz": 1214
             }
           }
         }

@@ -5,6 +5,8 @@ import {
   TeamEloParameters,
 } from '@src/types/rankings';
 
+export const DEFAULT_ELO = 1200;
+
 // Rating constants
 const d = 400;
 const k = 32;

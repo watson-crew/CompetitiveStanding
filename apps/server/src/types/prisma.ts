@@ -5,7 +5,17 @@ import {
   User,
   Location,
   GameRequirement,
+  Team,
 } from 'database';
+
+export type GetTeamRankingsResult = {
+  players: {
+    memorableId: string;
+    ranking: {
+      elo: number;
+    }[];
+  }[];
+};
 
 export type GetResultsForLocationResult = GameResult & {
   gameType: GameType;

@@ -94,6 +94,8 @@ export interface InitiateMatchResponse {
   historicResults: Record<string, TeamHistoricResult>;
   /** @example 519 */
   matchId: number;
+  /** @example {"abc":980,"xyz":1214} */
+  playerElos: Record<string, number>;
 }
 
 export type InitiateNewMatchData = InitiateMatchResponse;
