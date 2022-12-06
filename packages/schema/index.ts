@@ -74,7 +74,10 @@ export type GetAllLocationsData = Location[];
 
 export type GetLocationByUrlData = Location;
 
-export type GetRankingsForLocationData = RankedPlayer[];
+export interface GetRankingsForLocationData {
+  byWins?: RankedPlayer[];
+  byPercentage?: RankedPlayer[];
+}
 
 export interface GetRecentMatchesData {
   results: GameResult[];
@@ -317,7 +320,11 @@ export namespace Matches {
   }
 }
 
-import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosRequestConfig,
+  ResponseType,
+} from 'axios';
 
 export type QueryParamsType = Record<string | number, any>;
 
@@ -395,7 +402,10 @@ export class HttpClient<SecurityDataType = unknown> {
       ...params1,
       ...(params2 || {}),
       headers: {
-        ...((method && this.instance.defaults.headers[method.toLowerCase()]) ||
+        ...((method &&
+          this.instance.defaults.headers[
+            method.toLowerCase()
+          ]) ||
           {}),
         ...(params1.headers || {}),
         ...((params2 && params2.headers) || {}),
