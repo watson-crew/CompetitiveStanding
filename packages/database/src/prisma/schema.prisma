@@ -18,15 +18,27 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   firstName      String
   lastName       String
-  memorableId    String    @unique
+  memorableId    String          @unique
   profilePicture String?
-  location       Location? @relation(fields: [locationId], references: [id])
+  location       Location?       @relation(fields: [locationId], references: [id])
   locationId     Int?
   groups         Group[]
   teams          Team[]
+  ranking        PlayerRanking[]
+}
+
+model PlayerRanking {
+  id              Int      @id @default(autoincrement())
+  elo             Int
+  player          User?    @relation(fields: [userMemorableId], references: [memorableId])
+  userMemorableId String?
+  gameType        GameType @relation(fields: [gameTypeId], references: [id])
+  gameTypeId      Int
+
+  @@unique([userMemorableId, gameTypeId])
 }
 
 model Group {
@@ -51,6 +63,7 @@ model GameType {
   locations    Location[]
   gameResults  GameResult[]
   requirements GameRequirement?
+  rankings     PlayerRanking[]
 }
 
 model GameRequirement {
