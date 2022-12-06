@@ -1,4 +1,4 @@
-import { GameType, Location, RankedPlayer } from 'schema';
+import { GameType, Location, GetRankingsForLocationData } from 'schema';
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -75,7 +75,7 @@ export default function Index({ location }: LocationPageProps) {
   const [recentMatches, setRecentMatches] = useState<GameResult[]>([]);
 
   const [loadingRankedPlayers, setLoadingRankedPlayers] = useState(true);
-  const [rankedPlayers, setRankedPlayers] = useState<RankedPlayer[]>([]);
+  const [rankedPlayers, setRankedPlayers] = useState<GetRankingsForLocationData>({});
 
   const fetchRecentGames = async () => {
     const data = await api.matches.getRecentMatches({
@@ -94,6 +94,8 @@ export default function Index({ location }: LocationPageProps) {
       gameTypeId: 1,
       total: 3,
     });
+
+    console.log(data);
 
     setRankedPlayers(data);
 
@@ -124,7 +126,8 @@ export default function Index({ location }: LocationPageProps) {
         <TopPlayersOverview
           className="col-span-2 row-span-2 h-full w-full"
           loading={loadingRankedPlayers}
-          rankedPlayers={rankedPlayers}
+          rankedPlayersByWins={rankedPlayers.byWins!}
+          rankedPlayersByPercentage={rankedPlayers.byPercentage!}
         />
 
         <RecentMatchesOverview

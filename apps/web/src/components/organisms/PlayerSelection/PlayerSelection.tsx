@@ -51,7 +51,12 @@ export default function PlayerSelection({
 
   useEffect(() => {
     const requirementsToUse = teamsEnabled ? 'max' : 'min';
-    setGameRequirements(selectedGameType.requirements[requirementsToUse]);
+    const newRequirements = selectedGameType.requirements[requirementsToUse];
+    setGameRequirements(newRequirements);
+    teamsDispatch({
+      actionType: TeamActionType.ApplyTeamCap,
+      payload: { maxNumberOfTeams: newRequirements.numberOfTeams, maxNumberOfPlayers: newRequirements.playersPerTeam },
+    });
   }, [teamsEnabled, selectedGameType]);
 
   const reduxDispatch = useDispatch();

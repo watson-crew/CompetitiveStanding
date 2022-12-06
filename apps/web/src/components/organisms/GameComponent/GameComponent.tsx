@@ -9,6 +9,7 @@ import {
 } from 'ui';
 import { RankingChanges, Team, TeamHistoricResult, User } from 'schema';
 import GameWonModal from '../GameWonModal/GameWonModal';
+import Confetti from 'react-confetti';
 
 enum GameEndType {
   NewGame = 'NewGame',
@@ -86,6 +87,8 @@ export default function GameComponent({
 
   return (
     <section className="h-full w-full px-10">
+      {!!winningTeam && <Confetti />}
+
       <GameWonModal
         allTeams={teams}
         winningTeam={winningTeam}

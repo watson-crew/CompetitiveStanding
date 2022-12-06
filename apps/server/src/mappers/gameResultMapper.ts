@@ -5,7 +5,7 @@ import {
 import { TeamWithPlayers } from 'database';
 import {
   GameResult,
-  GetRankingsForLocationData,
+  RankedPlayer,
   GetRecentMatchesData,
   User,
 } from 'schema';
@@ -60,10 +60,10 @@ export const gameResultMapper: Mapper<
 
 export const gameRankingsMapper: Mapper<
   GetRankingsForLocationAndGameTypeResult[],
-  GetRankingsForLocationData
+  RankedPlayer[]
 > = {
   map: queryResult => {
-    const results: GetRankingsForLocationData = queryResult.map(res => {
+    const results: RankedPlayer[] = queryResult.map(res => {
       return {
         player: {
           id: res.id,
