@@ -89,10 +89,10 @@ export default function TopPlayersOverview({
           defaultColor="yellow-500"
           toggledColor="cyan-800"
           beforeChild={
-            <Text type="p">#</Text>
+            <Text type="p">By Wins</Text>
           }
           afterChild={
-            <Text type="p">%</Text>
+            <Text type="p">By Percentage</Text>
           }
         />
       </div>
