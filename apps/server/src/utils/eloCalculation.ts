@@ -70,7 +70,7 @@ const parseTeamRatings = ({
   };
 };
 
-const getUpdatedRankings = (
+export const getUpdatedRankings = (
   teams: RankedTeam[],
   winningTeamId: string,
 ): Record<string, number> => {
@@ -108,9 +108,10 @@ const getUpdatedRankings = (
         const playerRatingProportion =
           teamEloParameters[teamId].ratingShares[player.id];
 
-        const updatedRanking =
+        const updatedRanking = Math.round(
           player.ranking +
-          ratingDifferentials[teamId] * teamSize * playerRatingProportion;
+            ratingDifferentials[teamId] * teamSize * playerRatingProportion,
+        );
 
         return [player.id, updatedRanking] as [string, number];
       });

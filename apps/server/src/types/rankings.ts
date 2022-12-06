@@ -8,11 +8,6 @@ export type RankedTeam = {
   players: RankedEntity[];
 };
 
-type PlayerEloShare = {
-  playerId: string;
-  percentage: number;
-};
-
 export type TeamEloParameters = {
   teamId: string;
   teamRating: number;

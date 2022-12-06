@@ -8,7 +8,16 @@ import {
   Team,
 } from 'database';
 
-export type GetTeamRankingsResult = {
+export type PlayerRankingResult = {
+  userMemorableId: string;
+  elo: number;
+};
+
+export type GetTeamRankingsResult = GetTeamPlayerRankingsResult & {
+  cumulativeTeamId: string;
+};
+
+export type GetTeamPlayerRankingsResult = {
   players: {
     memorableId: string;
     ranking: {

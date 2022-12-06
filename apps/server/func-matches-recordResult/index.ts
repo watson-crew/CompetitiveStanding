@@ -1,4 +1,4 @@
-import { Matches } from 'schema';
+import { Matches, WinningTeamDetails } from 'schema';
 import {
   ContextForNoContentResponse,
   FunctionName,
@@ -14,6 +14,7 @@ import {
   abandonMatch,
   updateGameResult,
 } from '@src/repository/gameResultRepository';
+import { updateElosForMatch } from '@src/repository/rankingsRepository';
 
 const httpTrigger = async function (
   context: ContextForNoContentResponse,
@@ -31,11 +32,15 @@ const httpTrigger = async function (
   log(`Triggered for matchId ${matchId}, updateType ${updateType}.`);
 
   let updateSuccessful: Promise<boolean>;
+  let updatedElos: Promise<Record<string, number>>;
 
   if (updateType === 'ABANDON_GAME') {
     updateSuccessful = abandonMatch(matchId);
   } else if (updateType === 'SET_WINNER') {
     updateSuccessful = updateGameResult(matchId, updateDetails);
+
+    updatedElos = updateElosForMatch(matchId, updateDetails);
+    log(updatedElos);
   } else {
     set400Response(log, context);
     return;
