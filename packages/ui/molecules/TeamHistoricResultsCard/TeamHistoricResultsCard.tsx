@@ -2,7 +2,6 @@ import { TeamHistoricResult } from 'schema';
 import { twMerge } from 'tailwind-merge';
 import { TeamWithRatings, WithDefaultProps } from '../../types';
 import Card from '../../atoms/Card/Card';
-import PlayerCard from '../../molecules/PlayerCard/PlayerCard';
 import Text from '../../atoms/Text/Text';
 import TextWithIcon from '../TextWithIcon/TextWithIcon';
 import { Button, PlayerWithElo } from '../..';
