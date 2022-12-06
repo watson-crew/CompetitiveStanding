@@ -45,8 +45,6 @@ const getTotalExpectedScore = (
   n: number,
 ): number => {
   const outcomeSum = expectedOutcomes.reduce((prev, curr) => prev + curr, 0);
-  console.log(outcomeSum);
-
   return outcomeSum / (n * (n - 1) * 0.5);
 };
 

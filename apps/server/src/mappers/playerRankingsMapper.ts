@@ -12,13 +12,13 @@ export const TeamRankingsMapper: Mapper<
 
     return {
       elos: Object.fromEntries(
-        players.map(({ memorableId, ranking }) => [
+        players.map(({ memorableId, rankings }) => [
           memorableId,
-          ranking.length ? ranking[0].elo : DEFAULT_ELO,
+          rankings.length ? rankings[0].elo : DEFAULT_ELO,
         ]),
       ),
       playersMissingElos: players
-        .filter(({ ranking }) => !ranking.length)
+        .filter(({ rankings }) => !rankings.length)
         .map(({ memorableId }) => memorableId),
     };
   },
@@ -28,14 +28,14 @@ export const RankedTeamMapper: Mapper<GetTeamRankingsResult, RankedTeam> = {
   map: ({ cumulativeTeamId, players }) => {
     return {
       cumulativeTeamId,
-      players: players.map(({ memorableId, ranking }) => {
-        if (!ranking.length) {
+      players: players.map(({ memorableId, rankings }) => {
+        if (!rankings.length) {
           throw new Error(`No existing Elo for ${memorableId}`);
         }
 
         return {
           id: memorableId,
-          ranking: ranking[0].elo,
+          ranking: rankings[0].elo,
         } as RankedEntity;
       }),
     } as RankedTeam;

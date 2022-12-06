@@ -1,11 +1,11 @@
-import { Matches, WinningTeamDetails } from 'schema';
+import { Matches } from 'schema';
 import {
-  ContextForNoContentResponse,
+  ContextForResponseBody,
   FunctionName,
   ParameterizedHttpRequest,
 } from '@src/types';
 import {
-  set204Response,
+  set200Response,
   set400Response,
   set500Response,
 } from '@src/utils/contextUtils';
@@ -17,7 +17,7 @@ import {
 import { updateElosForMatch } from '@src/repository/rankingsRepository';
 
 const httpTrigger = async function (
-  context: ContextForNoContentResponse,
+  context: ContextForResponseBody<Matches.RecordMatchResults.ResponseBody>,
   req: ParameterizedHttpRequest<
     Matches.RecordMatchResults.RequestParams,
     Matches.RecordMatchResults.RequestBody,
@@ -31,23 +31,27 @@ const httpTrigger = async function (
 
   log(`Triggered for matchId ${matchId}, updateType ${updateType}.`);
 
-  let updateSuccessful: Promise<boolean>;
-  let updatedElos: Promise<Record<string, number>>;
+  let successfulUpdatePromise: Promise<boolean>;
+  let updatedElosPromise: Promise<Record<string, number>>;
 
   if (updateType === 'ABANDON_GAME') {
-    updateSuccessful = abandonMatch(matchId);
+    successfulUpdatePromise = abandonMatch(matchId);
+    updatedElosPromise = Promise.resolve({});
   } else if (updateType === 'SET_WINNER') {
-    updateSuccessful = updateGameResult(matchId, updateDetails);
-
-    updatedElos = updateElosForMatch(matchId, updateDetails);
-    log(updatedElos);
+    successfulUpdatePromise = updateGameResult(matchId, updateDetails);
+    updatedElosPromise = updateElosForMatch(matchId, updateDetails);
   } else {
     set400Response(log, context);
     return;
   }
 
-  if (await updateSuccessful) {
-    set204Response(log, context);
+  const [successfulUpdate, updatedElos] = await Promise.all([
+    successfulUpdatePromise,
+    updatedElosPromise,
+  ]);
+
+  if (successfulUpdate) {
+    set200Response(log, context, updatedElos);
   } else {
     set500Response(
       log,

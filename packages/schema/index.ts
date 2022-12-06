@@ -53,6 +53,7 @@ export interface GameResult {
    * @example ["abcxyz","aaa","bbbyyyzzz"]
    */
   participatingTeams: string[];
+  playerRatingChanges?: RankingChanges;
   /**
    * @format date-time
    * @example "2022-11-25T09:12:28Z"
@@ -139,7 +140,10 @@ export interface RankedPlayer {
   wins?: number;
 }
 
-export type RecordMatchResultsData = any;
+/** @example {"abc":120,"xyz":-84} */
+export type RankingChanges = Record<string, number>;
+
+export type RecordMatchResultsData = RankingChanges;
 
 export interface RecordMatchResultsPayload {
   updateType: 'SET_WINNER' | 'ABANDON_GAME';

@@ -5,10 +5,19 @@ import {
   User,
   Location,
   GameRequirement,
-  Team,
 } from 'database';
 
+export type GetPlayerRatingResult = {
+  playerRanking: {
+    player: {
+      memorableId: string;
+    };
+  };
+  ratingChangeAmount: number;
+};
+
 export type PlayerRankingResult = {
+  id: number;
   userMemorableId: string;
   elo: number;
 };
@@ -20,7 +29,8 @@ export type GetTeamRankingsResult = GetTeamPlayerRankingsResult & {
 export type GetTeamPlayerRankingsResult = {
   players: {
     memorableId: string;
-    ranking: {
+    rankings: {
+      id: number;
       elo: number;
     }[];
   }[];

@@ -3,6 +3,7 @@ import {
   TeamRankingsMapper,
 } from '@src/mappers/playerRankingsMapper';
 import {
+  GetPlayerRatingResult,
   GetTeamPlayerRankingsResult,
   GetTeamRankingsResult,
   PlayerRankingResult,
@@ -25,8 +26,9 @@ const getRankingsForMatch = async (
             players: {
               select: {
                 memorableId: true,
-                ranking: {
+                rankings: {
                   select: {
+                    id: true,
                     elo: true,
                   },
                   where: {
@@ -59,11 +61,11 @@ export async function updateElosForMatch(
     },
   });
 
-  const teamRankings = await getRankingsForMatch(matchId, gameTypeId);
+  const oldTeamRankings = await getRankingsForMatch(matchId, gameTypeId);
 
   const { winningTeamId } = updateDetails;
 
-  const rankedTeams = teamRankings.map(RankedTeamMapper.map);
+  const rankedTeams = oldTeamRankings.map(RankedTeamMapper.map);
 
   const computedUpdatedRankings = getUpdatedRankings(
     rankedTeams,
@@ -75,7 +77,74 @@ export async function updateElosForMatch(
     computedUpdatedRankings,
   );
 
-  return savedUpdatedRankings;
+  const eloChanges = await saveEloChanges(
+    matchId,
+    getRankDifferentials(oldTeamRankings, savedUpdatedRankings),
+  );
+
+  return Object.fromEntries(
+    eloChanges.map(change => [
+      change.playerRanking.player.memorableId,
+      change.ratingChangeAmount,
+    ]),
+  );
+}
+
+function getRankDifferentials(
+  oldRanks: GetTeamRankingsResult[],
+  newRanks: PlayerRankingResult[],
+): Record<number, number> {
+  const oldRanksMap = Object.fromEntries(
+    oldRanks.flatMap(team =>
+      team.players.flatMap(player =>
+        player.rankings.map(({ id, elo }) => [id, elo]),
+      ),
+    ),
+  );
+
+  return Object.fromEntries(
+    newRanks.map(({ id, elo }) => [id, elo - oldRanksMap[id]]),
+  );
+}
+
+async function saveEloChanges(
+  gameId: number,
+  ratingChanges: Record<number, number>,
+): Promise<GetPlayerRatingResult[]> {
+  return await prisma.$transaction(prisma => {
+    const updates = Object.entries(ratingChanges).map(
+      async ([id, ratingChange]) =>
+        saveEloChange(prisma, gameId, parseInt(id), ratingChange),
+    );
+    return Promise.all(updates);
+  });
+}
+
+async function saveEloChange(
+  prismaClient: PrismaClient | Prisma.TransactionClient,
+  gameId: number,
+  playerRankingId: number,
+  playerRatingDifference: number,
+): Promise<GetPlayerRatingResult> {
+  return await prismaClient.ratingChange.create({
+    select: {
+      playerRanking: {
+        select: {
+          player: {
+            select: {
+              memorableId: true,
+            },
+          },
+        },
+      },
+      ratingChangeAmount: true,
+    },
+    data: {
+      ratingChangeAmount: playerRatingDifference,
+      playerRankingId: playerRankingId,
+      gameResultId: gameId,
+    },
+  });
 }
 
 export async function getParticipantElos(
@@ -87,8 +156,9 @@ export async function getParticipantElos(
       players: {
         select: {
           memorableId: true,
-          ranking: {
+          rankings: {
             select: {
+              id: true,
               elo: true,
             },
             where: {
@@ -123,6 +193,7 @@ async function setPlayerElo(
 ): Promise<PlayerRankingResult> {
   return await prismaClient.playerRanking.upsert({
     select: {
+      id: true,
       userMemorableId: true,
       elo: true,
     },
@@ -146,16 +217,12 @@ async function setPlayerElo(
 const updatePlayerRankings = async (
   gameTypeId: number,
   playerRankings: Record<string, number>,
-): Promise<Record<string, number>> => {
-  const updatedResults = await prisma.$transaction(prisma => {
+): Promise<PlayerRankingResult[]> => {
+  return await prisma.$transaction(prisma => {
     const updates = Object.entries(playerRankings).map(
       async ([memorableId, newRanking]) =>
         setPlayerElo(prisma, memorableId, gameTypeId, newRanking),
     );
     return Promise.all(updates);
   });
-
-  return Object.fromEntries(
-    updatedResults.map(({ userMemorableId, elo }) => [userMemorableId, elo]),
-  );
 };
