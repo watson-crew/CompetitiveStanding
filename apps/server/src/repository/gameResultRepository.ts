@@ -204,6 +204,20 @@ export async function getResultsForLocation(
             players: true,
           },
         },
+        ratingChanges: {
+          select: {
+            playerRanking: {
+              select: {
+                player: {
+                  select: {
+                    memorableId: true,
+                  },
+                },
+              },
+            },
+            ratingChangeAmount: true,
+          },
+        },
       },
       orderBy: {
         endTime: 'desc',

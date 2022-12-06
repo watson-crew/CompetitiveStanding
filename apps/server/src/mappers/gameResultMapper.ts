@@ -38,6 +38,12 @@ export const gameResultMapper: Mapper<
         winningTeamId: res.winningTeam.cumulativeTeamId,
         locationPlayed: res.locationPlayed.name,
         gameTypeId: res.gameType.id,
+        playerRatingChanges: Object.fromEntries(
+          res.ratingChanges.map(({ playerRanking, ratingChangeAmount }) => [
+            playerRanking.player.memorableId,
+            ratingChangeAmount,
+          ]),
+        ),
       } as GameResult;
     });
 

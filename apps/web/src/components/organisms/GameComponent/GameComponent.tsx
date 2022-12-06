@@ -1,16 +1,22 @@
 import { useEffect, useState } from 'react';
-import Modal from 'react-modal'
+import Modal from 'react-modal';
 import dayjs, { Dayjs } from 'dayjs';
-import { TeamHistoricResultsCard, Button, TextWithIcon, CommonIcons } from 'ui';
+import {
+  TeamHistoricResultsCard,
+  Button,
+  TextWithIcon,
+  CommonIcons,
+  TeamWithRatings,
+} from 'ui';
 import { Team, TeamHistoricResult, User } from 'schema';
 
 enum GameEndType {
   NewGame = 'NewGame',
-  Finish = 'Finish'
+  Finish = 'Finish',
 }
 
 type GameComponentProps = {
-  teams: Team[];
+  teams: TeamWithRatings[];
   historicData: Record<string, TeamHistoricResult>;
   matchId: number;
   abandonMatch: () => void;
@@ -25,7 +31,7 @@ export default function GameComponent({
   abandonMatch,
   finishMatch,
   setMatchWinner,
-  playAgain
+  playAgain,
 }: GameComponentProps) {
   // TODO: Refactor to work with more than 2 teams
 
@@ -39,7 +45,7 @@ export default function GameComponent({
       1000,
     );
 
-    if (isGameFinished) clearInterval(interval)
+    if (isGameFinished) clearInterval(interval);
 
     return () => {
       clearInterval(interval);
@@ -57,21 +63,19 @@ export default function GameComponent({
 
   const handleGameEnd = async (endState: GameEndType) => {
     if (endState === GameEndType.Finish) {
-      finishMatch()
-    } else if (endState === GameEndType.NewGame) {  
+      finishMatch();
+    } else if (endState === GameEndType.NewGame) {
       const participatingTeams = teams.map(
         (team: Team) => team.players as User[],
       );
       try {
-        await playAgain(participatingTeams)
-        setGameStartTime(dayjs())
-        setTimeElapsed(0)
-      } catch (e) {
-  
-      }
+        await playAgain(participatingTeams);
+        setGameStartTime(dayjs());
+        setTimeElapsed(0);
+      } catch (e) {}
     }
-    setIsGameFinished(false)
-  }
+    setIsGameFinished(false);
+  };
 
   const duration = dayjs
     .duration(timeElapsed, 'milliseconds')
@@ -79,18 +83,28 @@ export default function GameComponent({
 
   return (
     <section className="h-full w-full px-10">
-      <Modal 
+      <Modal
         isOpen={isGameFinished}
-        style={{ content: {
-          top: '50%',
-          left: '50%',
-          right: 'auto',
-          bottom: 'auto',
-          marginRight: '-50%',
-          transform: 'translate(-50%, -50%)',
-        }}}>
-          <Button className='mr-2' text="Play again" onClick={() => handleGameEnd(GameEndType.NewGame)} />
-          <Button text="Finish" onClick={() => handleGameEnd(GameEndType.Finish)} />
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+          },
+        }}
+      >
+        <Button
+          className="mr-2"
+          text="Play again"
+          onClick={() => handleGameEnd(GameEndType.NewGame)}
+        />
+        <Button
+          text="Finish"
+          onClick={() => handleGameEnd(GameEndType.Finish)}
+        />
       </Modal>
       <div id="control-bar" className="flex justify-end">
         <TextWithIcon

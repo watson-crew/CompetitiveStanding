@@ -1,6 +1,6 @@
-import { Team, TeamHistoricResult } from 'schema';
+import { TeamHistoricResult } from 'schema';
 import { twMerge } from 'tailwind-merge';
-import { WithDefaultProps } from '../../types';
+import { TeamWithRatings, WithDefaultProps } from '../../types';
 import Card from '../../atoms/Card/Card';
 import PlayerCard from '../../molecules/PlayerCard/PlayerCard';
 import Text from '../../atoms/Text/Text';
@@ -10,7 +10,7 @@ import { CommonIcons } from '../../types/icons';
 import WithScrollbar from '../../atoms/WithScrollbar/WithScrollbar';
 
 type TeamHistoricResultsProps = WithDefaultProps<{
-  team: Omit<Team, 'id'>;
+  team: Omit<TeamWithRatings, 'id'>;
   historicResults: TeamHistoricResult;
   setAsWinner: () => void;
 }>;

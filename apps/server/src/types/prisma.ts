@@ -48,6 +48,14 @@ export type GetResultsForLocationResult = GameResult & {
     cumulativeTeamId: string;
     players: User[];
   }[];
+  ratingChanges: {
+    ratingChangeAmount: number;
+    playerRanking: {
+      player: {
+        memorableId: string;
+      };
+    };
+  }[];
 };
 
 export type GetRankingsForLocationAndGameTypeResult = User & {

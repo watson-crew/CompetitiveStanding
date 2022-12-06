@@ -4,7 +4,6 @@ import { ApiContext } from '@src/context/ApiContext';
 import GameComponent from '@src/components/organisms/GameComponent/GameComponent';
 import Head from 'next/head';
 import {
-  Team,
   TeamHistoricResult,
   User,
   Location,
@@ -12,6 +11,7 @@ import {
   GameType,
 } from 'schema';
 import { generateTeamId } from '@src/uilts/teamUtils';
+import { PlayerWithRating, TeamWithRatings } from 'ui';
 
 export default function Index() {
   function useSelectedLocation(): Location {
@@ -51,7 +51,7 @@ export default function Index() {
   );
 
   const [matchId, setMatchId] = useState<number>();
-  const [teams, setTeams] = useState<Team[]>([]);
+  const [teams, setTeams] = useState<TeamWithRatings[]>([]);
   const [historicData, setHistoricData] = useState<
     Record<string, TeamHistoricResult>
   >({});
@@ -63,22 +63,28 @@ export default function Index() {
 
   const startMatch = async (teams: User[][]) => {
     try {
-      const response: InitiateMatchResponse =
+      const { matchId, playerElos, historicResults }: InitiateMatchResponse =
         await client.matches.initiateNewMatch({
           gameTypeId: selectedGameType.id,
           locationId: selectedLocation.id,
           participatingTeams: teams.map(team => generateTeamId(team)),
         });
 
-      const teamRecords: Team[] = teams.map(team => {
+      const teamRecords: TeamWithRatings[] = teams.map(team => {
         return {
           cumulativeTeamId: generateTeamId(team),
-          players: team,
+          players: team.map(
+            player =>
+              ({
+                ...player,
+                elo: playerElos[player.memorableId],
+              } as PlayerWithRating),
+          ),
         };
       });
 
-      setMatchId(response.matchId);
-      setHistoricData(response.historicResults);
+      setMatchId(matchId);
+      setHistoricData(historicResults);
       setTeams(teamRecords);
     } catch (err) {
       throw err;

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useReducer, useState } from 'react';
-import { GameType, Location, User } from 'schema';
+import { GameRequirement, GameType, Location, User } from 'schema';
 import { Banner, Button, TeamSelectionCard, Text, TextWithIcon } from 'ui';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -19,7 +19,6 @@ import {
   isPlayerInTeam,
   minimumRequirementsMet,
 } from '@src/uilts/gamesUtils';
-import { GameRequirement } from '@src/types/games';
 
 type PlayerSelectionProps = {
   selectedGameType: GameType;

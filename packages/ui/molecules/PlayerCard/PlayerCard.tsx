@@ -6,8 +6,7 @@ import { WithDefaultProps } from '../../types';
 import { twMerge } from 'tailwind-merge';
 import Text from '../../atoms/Text/Text';
 import PlayerImage from '../../atoms/PlayerImage/PlayerImage';
-
-const getFullName = (player: User) => `${player.firstName} ${player.lastName}`;
+import { getFullName } from '../../utils/playerUtils';
 
 type PlayerVariant = 'xs' | 's' | 'm';
 
@@ -31,7 +30,7 @@ export default function PlayerCard({
 
   if (variant == 's' || variant == 'xs') {
     const textStyle = variant === 'xs' ? 'p' : 'h3';
-    const imageVariant = variant === 'xs' ? 's' : 'm';
+    const imageVariant = variant === 'xs' ? 'xs' : 'm';
 
     return (
       <Card
