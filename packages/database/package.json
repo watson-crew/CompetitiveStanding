@@ -32,6 +32,7 @@
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^9.2.2",
     "config": "*",
+    "dayjs": "^1.11.6",
     "eslint-config-custom": "*",
     "prisma": "^4.7.1",
     "prisma-erd-generator": "^1.2.4",

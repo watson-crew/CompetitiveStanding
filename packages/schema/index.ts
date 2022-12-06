@@ -42,6 +42,8 @@ export interface GameResult {
    */
   endTime: string;
   /** @example 1 */
+  gameTypeId: number;
+  /** @example 1 */
   id: number;
   /** @example "Nottingham" */
   locationPlayed: string;
@@ -149,7 +151,7 @@ export interface Team {
   /** @example "abcxyz" */
   cumulativeTeamId: string;
   /** @example 1 */
-  id: number;
+  id?: number;
   /**
    * @minItems 1
    * @uniqueItems true

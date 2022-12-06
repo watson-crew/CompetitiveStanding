@@ -8,6 +8,7 @@ import {
 } from 'database';
 
 export type GetResultsForLocationResult = GameResult & {
+  gameType: GameType;
   winningTeam: {
     cumulativeTeamId: string;
   };

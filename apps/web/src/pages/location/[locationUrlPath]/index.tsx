@@ -1,4 +1,4 @@
-import { GetRankingsForLocationData, Location, RankedPlayer } from 'schema';
+import { GameType, Location, GetRankingsForLocationData } from 'schema';
 import {
   GetStaticPathsContext,
   GetStaticPathsResult,
@@ -37,6 +37,21 @@ export async function getStaticPaths(
   };
 }
 
+const gameTypes: Record<number, Omit<GameType, 'requirements'>> = {
+  1: {
+    id: 1,
+    name: 'Pool',
+  },
+  2: {
+    id: 2,
+    name: 'Darts',
+  },
+  3: {
+    id: 3,
+    name: 'Table Tennis',
+  },
+};
+
 export async function getStaticProps({
   params,
 }: GetStaticPropsContext<LocationPageDynamicPath>): Promise<
@@ -67,7 +82,7 @@ export default function Index({ location }: LocationPageProps) {
       locationId: location.id,
     });
 
-    setRecentMatches(mapRecentResults(data));
+    setRecentMatches(mapRecentResults(data, gameTypes));
 
     setLoadingRecentMatches(false);
   };
@@ -107,7 +122,7 @@ export default function Index({ location }: LocationPageProps) {
           availableGames={[]}
           className="col-span-2 row-span-2 bg-red-100"
         />
-        
+
         <TopPlayersOverview
           className="col-span-2 row-span-2 h-full w-full"
           loading={loadingRankedPlayers}
