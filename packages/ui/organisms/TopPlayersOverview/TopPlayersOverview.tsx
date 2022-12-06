@@ -39,11 +39,9 @@ export default function TopPlayersOverview({
     }
   })
 
-  let cardDetailsToRender: any[] = [];
-  if (rankedPlayers == undefined) {
-    cardDetailsToRender = [];
-  } else {
-    cardDetailsToRender = [
+  const cardDetailsToRender = () => {
+    if (!rankedPlayers) return [];
+    return [
       {
         rankedPlayer: rankedPlayers[0],
         cardType: topPlayerCardType.FIRST,
@@ -58,8 +56,8 @@ export default function TopPlayersOverview({
       },
     ];
   }
-
-  cardDetailsToRender.forEach((details, i) => {
+  
+  cardDetailsToRender().forEach((details, i) => {
     if (loading || !details.rankedPlayer) {
       cardsToRender.push(
         <TopPlayersCard key={i} loading={true} cardType={details.cardType} />,
