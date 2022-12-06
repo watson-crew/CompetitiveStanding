@@ -69,9 +69,12 @@ export default function ResultCard({
     return renderWithChildren(ResultCardLoadingStateContent());
   }
 
+  const is1v1 = ({ teams }: GameResult): boolean =>
+    teams.length === 2 && teams.every(team => team.players.length === 1);
+
   return renderWithChildren(
-    <div>
-      <section className="mb-2 flex flex-row justify-between">
+    <div className="flex flex-row-reverse">
+      <section className="flex w-fit w-32 min-w-max flex-col justify-between whitespace-nowrap border-l-2 pl-2 ">
         <TextWithIcon
           textProps={{ type: 'p' }}
           icon={getSportIcon(gameResult.gameType.id)}
@@ -88,14 +91,16 @@ export default function ResultCard({
         <Text type="p">{getFormattedDatePlayed(gameResult.endTime)}</Text>
       </section>
 
-      <section className="flex items-center justify-between gap-2">
+      <section className="flex w-full items-center justify-between gap-2 pr-8 md:pr-4">
         {insertBetween(
-          gameResult.teams.map(team => (
+          gameResult.teams.map((team, i) => (
             <TeamCard
               key={`team-${team.cumulativeTeamId}`}
               loading={false}
               team={team}
               isWinningTeam={gameResult.winningTeamId === team.cumulativeTeamId}
+              displayElos={is1v1(gameResult)}
+              flipCard={i == 0}
             />
           )),
           key => (
