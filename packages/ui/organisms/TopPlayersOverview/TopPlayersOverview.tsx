@@ -80,20 +80,22 @@ export default function TopPlayersOverview({
       className={twMerge('flex h-full w-full flex-col pt-2', className)}
       color="blue-100"
     >
-      <Text type="h2">Who&apos;s on top</Text>
-      <Toggle
-        className="flex-none"
-        isToggled={showWinPercentage}
-        onChange={onChange}
-        defaultColor="yellow-500"
-        toggledColor="cyan-800"
-        beforeChild={
-          <Text type="p">#</Text>
-        }
-        afterChild={
-          <Text type="p">%</Text>
-        }
-      />
+      <div className="flex items-center justify-between">
+        <Text type="h2">Who&apos;s on top</Text>
+        <Toggle
+          className=""
+          isToggled={showWinPercentage}
+          onChange={onChange}
+          defaultColor="yellow-500"
+          toggledColor="cyan-800"
+          beforeChild={
+            <Text type="p">#</Text>
+          }
+          afterChild={
+            <Text type="p">%</Text>
+          }
+        />
+      </div>
       <section className="grid h-full w-full grid-flow-col grid-rows-6 gap-1 overflow-auto">
         {cardsToRender}
       </section>
