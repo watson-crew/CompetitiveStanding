@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Modal from 'react-modal';
 import dayjs, { Dayjs } from 'dayjs';
 import {
   TeamHistoricResultsCard,
@@ -8,7 +7,8 @@ import {
   CommonIcons,
   TeamWithRatings,
 } from 'ui';
-import { Team, TeamHistoricResult, User } from 'schema';
+import { RankingChanges, Team, TeamHistoricResult, User } from 'schema';
+import GameWonModal from '../GameWonModal/GameWonModal';
 
 enum GameEndType {
   NewGame = 'NewGame',
@@ -22,7 +22,7 @@ type GameComponentProps = {
   abandonMatch: () => void;
   finishMatch: () => void;
   playAgain: (teams: User[][]) => Promise<void>;
-  setMatchWinner: (cumulativeTeamId: string) => void;
+  setMatchWinner: (cumulativeTeamId: string) => Promise<RankingChanges>;
 };
 
 export default function GameComponent({
@@ -37,7 +37,8 @@ export default function GameComponent({
 
   const [gameStartTime, setGameStartTime] = useState<Dayjs>(dayjs());
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
-  const [isGameFinished, setIsGameFinished] = useState<boolean>(false);
+  const [gameResults, setGameResults] = useState<RankingChanges>();
+  const [winningTeam, setWinningTeam] = useState<TeamWithRatings>();
 
   useEffect(() => {
     const interval = setInterval(
@@ -45,20 +46,21 @@ export default function GameComponent({
       1000,
     );
 
-    if (isGameFinished) clearInterval(interval);
+    if (winningTeam) clearInterval(interval);
 
     return () => {
       clearInterval(interval);
     };
-  }, [gameStartTime, isGameFinished]);
+  }, [gameStartTime, winningTeam]);
 
   const abandonGame = () => {
     abandonMatch();
   };
 
-  const setWinner = (team: Omit<Team, 'id'>) => {
-    setMatchWinner(team.cumulativeTeamId);
-    setIsGameFinished(true);
+  const setWinner = async (team: TeamWithRatings) => {
+    const changes = await setMatchWinner(team.cumulativeTeamId);
+    setGameResults(changes);
+    setWinningTeam(team);
   };
 
   const handleGameEnd = async (endState: GameEndType) => {
@@ -74,7 +76,8 @@ export default function GameComponent({
         setTimeElapsed(0);
       } catch (e) {}
     }
-    setIsGameFinished(false);
+    // setIsGameFinished(false);
+    setWinningTeam(undefined);
   };
 
   const duration = dayjs
@@ -83,29 +86,14 @@ export default function GameComponent({
 
   return (
     <section className="h-full w-full px-10">
-      <Modal
-        isOpen={isGameFinished}
-        style={{
-          content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-          },
-        }}
-      >
-        <Button
-          className="mr-2"
-          text="Play again"
-          onClick={() => handleGameEnd(GameEndType.NewGame)}
-        />
-        <Button
-          text="Finish"
-          onClick={() => handleGameEnd(GameEndType.Finish)}
-        />
-      </Modal>
+      <GameWonModal
+        allTeams={teams}
+        winningTeam={winningTeam}
+        finish={() => handleGameEnd(GameEndType.Finish)}
+        playAgain={() => handleGameEnd(GameEndType.NewGame)}
+        ratingChanges={gameResults}
+      />
+
       <div id="control-bar" className="flex justify-end">
         <TextWithIcon
           textProps={{ type: 'p' }}

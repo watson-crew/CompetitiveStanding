@@ -1,12 +1,16 @@
 import { twMerge } from 'tailwind-merge';
 import { WithDefaultProps } from '../../types';
-import Text from '../Text/Text';
+import Text, { TextType } from '../Text/Text';
+import CountUp from 'react-countup';
 
 export type EloDisplayType = 'total' | 'gain' | 'loss';
 
 type PlayerEloProps = WithDefaultProps<{
-  displayType: EloDisplayType;
-  elo: number;
+  startElo?: number;
+  eloChange?: number;
+  animateDelay?: number;
+  textStyle?: TextType;
+  displayType?: EloDisplayType;
 }>;
 
 const displayTypeStyles: Record<EloDisplayType, string> = {
@@ -15,21 +19,37 @@ const displayTypeStyles: Record<EloDisplayType, string> = {
   total: 'text-orange-600',
 };
 
+const getDisplayType = (change: number): EloDisplayType => {
+  if (change === 0) {
+    return 'total';
+  }
+
+  return change > 0 ? 'gain' : 'loss';
+};
+
 export default function PlayerElo({
-  displayType,
-  elo,
   className,
+  startElo = 0,
+  displayType,
+  eloChange = 0,
+  textStyle = 'p',
 }: PlayerEloProps) {
+  // Handle + / - with styling
+  const absElo = Math.abs(startElo + eloChange);
+
+  const derivedDisplayType = displayType || getDisplayType(eloChange);
+
   return (
     <Text
       type="p"
+      style={textStyle}
       className={twMerge(
         'font-extrabold',
-        displayTypeStyles[displayType],
+        displayTypeStyles[derivedDisplayType],
         className,
       )}
     >
-      {Math.abs(elo)}
+      <CountUp start={startElo} end={absElo} delay={1} duration={2} />
     </Text>
   );
 }

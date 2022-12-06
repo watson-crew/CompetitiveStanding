@@ -1,63 +1,74 @@
 import { twMerge } from 'tailwind-merge';
 import Card from '../../atoms/Card/Card';
-import PlayerElo, { EloDisplayType } from '../../atoms/PlayerElo/PlayerElo';
+import PlayerElo from '../../atoms/PlayerElo/PlayerElo';
 import PlayerImage from '../../atoms/PlayerImage/PlayerImage';
-import Text from '../../atoms/Text/Text';
-import {
-  PlayerWithRating,
-  PlayerWithRatingChanges,
-  WithDefaultProps,
-} from '../../types';
+import Text, { TextType } from '../../atoms/Text/Text';
+import { PlayerWithRating, WithDefaultProps } from '../../types';
 import { getFullName } from '../../utils/playerUtils';
 
+type Variant = 's' | 'm' | 'l';
+
 type PlayerWithEloProps = WithDefaultProps<{
-  player: PlayerWithRating | PlayerWithRatingChanges;
+  variant?: Variant;
+  player: PlayerWithRating;
   imageClassName?: string;
   textClassName?: string;
 }>;
 
-const isRatingChange = (player: PlayerWithRating | PlayerWithRatingChanges) =>
-  !!(player as PlayerWithRatingChanges).eloChange;
+const textStyleForVariant: Record<Variant, TextType> = {
+  s: 'p',
+  m: 'h4',
+  l: 'h2',
+};
 
 export default function PlayerWithElo({
   className,
   imageClassName,
   player,
   textClassName,
+  variant = 's',
 }: PlayerWithEloProps) {
-  let elo: number;
-  let displayType: EloDisplayType;
-
-  if (isRatingChange(player)) {
-    const updatedRatingPlayer: PlayerWithRatingChanges = player;
-    elo = updatedRatingPlayer.eloChange || 0;
-    displayType = elo >= 0 ? 'gain' : 'loss';
-  } else {
-    const updatedRatingPlayer: PlayerWithRating = player;
-    elo = updatedRatingPlayer.elo || 0;
-    displayType = 'total';
-  }
+  const startElo = player.elo;
+  const eloChange = player.eloChange;
 
   const fullName = getFullName(player);
+  const textStyle = textStyleForVariant[variant];
+
+  const nameToDisplay = variant === 's' ? player.firstName : fullName;
 
   return (
     <section>
       <Card
-        className={twMerge('flex items-center gap-5', className)}
+        className={twMerge('flex h-full items-center gap-5', className)}
         color="transparent"
       >
         <PlayerImage
           src={player.profilePicture}
           playerName={fullName}
-          variant="s"
+          variant={variant}
           className={imageClassName}
         />
-        <section className="items-left flex h-full flex-col justify-between">
-          <Text type="p" className={twMerge(textClassName)}>
-            {player.firstName}
+        <section className="items-left flex h-full flex-col justify-around">
+          <Text type="p" className={twMerge(textClassName)} style={textStyle}>
+            {nameToDisplay}
           </Text>
-
-          <PlayerElo elo={elo} displayType={displayType} />
+          <span className="flex gap-2">
+            {variant != 's' && (
+              <PlayerElo
+                displayType="total"
+                startElo={startElo}
+                eloChange={eloChange}
+                textStyle={textStyle}
+              />
+            )}
+            {eloChange && (
+              <PlayerElo
+                startElo={0}
+                eloChange={eloChange}
+                textStyle={textStyle}
+              />
+            )}
+          </span>
         </section>
       </Card>
     </section>

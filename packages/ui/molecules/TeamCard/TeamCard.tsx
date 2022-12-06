@@ -1,7 +1,7 @@
 import { twMerge } from 'tailwind-merge';
 import { PlayerCard } from '../..';
 import {
-  TeamWithRatingChanges,
+  TeamWithRatings,
   WithDefaultProps,
   WithLoadingProps,
 } from '../../types';
@@ -9,7 +9,7 @@ import PlayerWithElo from '../PlayerWithElo/PlayerWithElo';
 
 type TeamCardProps = WithDefaultProps<
   WithLoadingProps<{
-    team?: TeamWithRatingChanges;
+    team?: TeamWithRatings;
     isWinningTeam: boolean;
     displayElos?: boolean;
     flipCard?: boolean;

@@ -98,7 +98,7 @@ export default function Index() {
   };
 
   const setWinner = async (cumulativeTeamId: string) => {
-    await client.matches.recordMatchResults(matchId!, {
+    return await client.matches.recordMatchResults(matchId!, {
       updateType: 'SET_WINNER',
       updateDetails: { winningTeamId: cumulativeTeamId },
     });
