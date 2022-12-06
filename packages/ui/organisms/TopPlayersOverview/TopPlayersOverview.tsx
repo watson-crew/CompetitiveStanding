@@ -24,8 +24,20 @@ export default function TopPlayersOverview({
   // TODO: Refactor this
   const cardsToRender: JSX.Element[] = [];
 
-  // TODO: Move this to parent to handle toggle
-  const [rankedPlayers, setRankedPlayers] = useState<RankedPlayer[]>(rankedPlayersByWins);
+  const [rankedPlayers, setRankedPlayers] = useState<RankedPlayer[]>([]);
+  const [showWinPercentage, setShowWinPercentage] = useState(false);
+
+  const onChange = () => {
+    setShowWinPercentage(prev => !prev);
+  }
+
+  useEffect(() => {
+    if (showWinPercentage) {
+     setRankedPlayers(rankedPlayersByPercentage)
+    } else {
+      setRankedPlayers(rankedPlayersByWins)
+    }
+  })
 
   let cardDetailsToRender: any[] = [];
   if (rankedPlayers == undefined) {
@@ -62,20 +74,6 @@ export default function TopPlayersOverview({
       );
     }
   });
-
-  // Toggle functionality - TODO: maybe move to parent
-  // TODO: Fix bug, it is doing it in reverse?
-  const [showWinPercentage, setShowWinPercentage] = useState(false);
-  const onChange = () => {
-    setShowWinPercentage(!showWinPercentage);
-    if (showWinPercentage) {
-      console.log("Showing percentage")
-     setRankedPlayers(rankedPlayersByPercentage)
-    } else {
-      console.log("Showing wins")
-      setRankedPlayers(rankedPlayersByWins)
-    }
-  }
 
   return (
     <Card
