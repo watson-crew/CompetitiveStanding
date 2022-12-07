@@ -3,12 +3,7 @@ import {
   GetResultsForLocationResult,
 } from '@src/types';
 import { TeamWithPlayers } from 'database';
-import {
-  GameResult,
-  RankedPlayer,
-  GetRecentMatchesData,
-  User,
-} from 'schema';
+import { GameResult, RankedPlayer, GetRecentMatchesData, User } from 'schema';
 import { Mapper } from './generics';
 import { distinct } from '@src/utils/collectionUtils';
 
@@ -75,6 +70,8 @@ export const gameRankingsMapper: Mapper<
         },
         gamesPlayed: res.gamesPlayed,
         wins: res.gamesWon,
+        winPercentage: res.winPercentage,
+        elo: res.elo,
       };
     });
 

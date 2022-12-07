@@ -75,10 +75,7 @@ export type GetAllLocationsData = Location[];
 
 export type GetLocationByUrlData = Location;
 
-export interface GetRankingsForLocationData {
-  byWins?: RankedPlayer[];
-  byPercentage?: RankedPlayer[];
-}
+export type GetRankingsForLocationData = Record<string, RankedPlayer[]>;
 
 export interface GetRecentMatchesData {
   results: GameResult[];
@@ -136,11 +133,15 @@ export interface Location {
 }
 
 export interface RankedPlayer {
+  /** @example "1200" */
+  elo: number;
   /** @example 44 */
-  gamesPlayed?: number;
-  player?: User;
+  gamesPlayed: number;
+  player: User;
+  /** @example "62" */
+  winPercentage: number;
   /** @example 27 */
-  wins?: number;
+  wins: number;
 }
 
 /** @example {"abc":120,"xyz":-84} */
@@ -149,9 +150,11 @@ export type RankingChanges = Record<string, number>;
 export type RecordMatchResultsData = RankingChanges;
 
 export interface RecordMatchResultsPayload {
-  updateType: 'SET_WINNER' | 'ABANDON_GAME';
+  updateType: RecordMatchResultsPayloadUpdateType;
   updateDetails?: WinningTeamDetails;
 }
+
+export type ResultFilterType = 'wins' | 'elo' | 'winPercentage';
 
 export interface Team {
   /** @example "abcxyz" */
@@ -187,6 +190,8 @@ export interface User {
 export interface WinningTeamDetails {
   winningTeamId: string;
 }
+
+export type RecordMatchResultsPayloadUpdateType = 'SET_WINNER' | 'ABANDON_GAME';
 
 export namespace User {
   /**
@@ -317,6 +322,8 @@ export namespace Matches {
     export type RequestQuery = {
       locationId: number;
       gameTypeId: number;
+      /** @minItems 1 */
+      filterTypes: ResultFilterType[];
       offset?: number;
       total?: number;
     };
@@ -642,6 +649,8 @@ export class ApiClient<
       query: {
         locationId: number;
         gameTypeId: number;
+        /** @minItems 1 */
+        filterTypes: ResultFilterType[];
         offset?: number;
         total?: number;
       },

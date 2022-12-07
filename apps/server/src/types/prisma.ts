@@ -61,6 +61,8 @@ export type GetResultsForLocationResult = GameResult & {
 export type GetRankingsForLocationAndGameTypeResult = User & {
   gamesPlayed: number;
   gamesWon: number;
+  winPercentage: number;
+  elo: number;
 };
 
 export type GameTypeWithRequirements = GameType & {

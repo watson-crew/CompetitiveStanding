@@ -2,10 +2,7 @@ import {
   gameResultMapper,
   gameRankingsMapper,
 } from '@src/mappers/gameResultMapper';
-import {
-  GetResultsForLocationResult,
-  GetRankingsForLocationAndGameTypeResult,
-} from '@src/types';
+import { GetResultsForLocationResult } from '@src/types';
 import { prismaClient as prisma, Prisma } from 'database';
 import {
   GetRecentMatchesData,
@@ -13,8 +10,13 @@ import {
   InitiateMatchResponse,
   TeamHistoricResult,
   WinningTeamDetails,
+  ResultFilterType,
+  RankedPlayer,
 } from 'schema';
 import dayjs from 'dayjs';
+import executeRankingQuery, {
+  RankingForSortTypeQueryParams,
+} from './raw/rankingRawQuery';
 
 function extractPlayerIds(teamId: string): string[] {
   if (teamId.length % 3 !== 0) throw new Error();
@@ -229,64 +231,50 @@ export async function getResultsForLocation(
   return gameResultMapper.map(matches);
 }
 
-// TODO: Add type to this function to getByWins or getByPercentage or any future options
-//       Have this return RankedPlayer[] instead of GetRankingsForLocationData?
-//       Add percentage to RankedPlayer model
-// Maybe have type be part of the GetRankings request and in front-end call endpoint twice, once for byWins and once for byRankings
-//       Can store them separately in front-end to be dealt withs
-export const getRankingsForLocation = async (
+const additionalParamsForSortType: Record<
+  ResultFilterType,
+  Partial<RankingForSortTypeQueryParams>
+> = {
+  elo: {
+    minRequiredGames: 1,
+  },
+  winPercentage: {
+    minRequiredGames: 5,
+  },
+  wins: {
+    minRequiredWins: 1,
+  },
+};
+
+export const getTopRankingsForLocation = async (
   locationId: number,
   gameTypeId: number,
   offset = 0,
   total = 3,
+  filterTypes: ResultFilterType[],
 ): Promise<GetRankingsForLocationData> => {
+  const getRankingForTypePromises = filterTypes.map(
+    async (resultSortType: ResultFilterType) => {
+      const queryParams = {
+        locationId,
+        gameTypeId,
+        offset,
+        total,
+        ...additionalParamsForSortType[resultSortType],
+      };
 
-  const rankingsByWins = await prisma.$queryRaw<
-    GetRankingsForLocationAndGameTypeResult[]
-  >`
-        SELECT
-          u.*,
-          COUNT(*) AS gamesPlayed,
-          COUNT(CASE WHEN t.cumulativeTeamId = gr.winningTeamId THEN 1 END) AS gamesWon
-        FROM [dbo].[User] AS u
-        JOIN [dbo].[_TeamToUser] AS t2u ON u.id = t2u.B
-        JOIN [dbo].[Team] AS t ON t2u.A = t.id
-        JOIN [dbo].[_GameResultToTeam] AS gr2t ON gr2t.B = t.id
-        JOIN [dbo].[GameResult] AS gr ON gr.id = gr2t.A AND gr.endTime IS NOT NULL
-        WHERE gr.locationPlayedId = ${locationId}
-        AND gr.gameTypeId = ${gameTypeId}
-        GROUP BY u.id, u.memorableId, u.firstName, u.lastName, u.profilePicture, u.locationId
-        HAVING COUNT(CASE WHEN t.cumulativeTeamId = gr.winningTeamId THEN 1 END) > 0
-        ORDER BY GamesWon DESC, GamesPlayed ASC
-        OFFSET ${offset} ROWS
-        FETCH NEXT ${total} ROWS ONLY
-        ;
-    `;
+      const queryPromise = executeRankingQuery(
+        prisma,
+        resultSortType,
+        queryParams,
+      );
 
-  const rankingsByPercentage = await prisma.$queryRaw<
-    GetRankingsForLocationAndGameTypeResult[]
-  >`
-        SELECT
-          u.*,
-          COUNT(*) AS gamesPlayed,
-          COUNT(CASE WHEN t.cumulativeTeamId = gr.winningTeamId THEN 1 END) AS gamesWon,
-          CONVERT(decimal, COUNT(CASE WHEN t.cumulativeTeamId = gr.winningTeamId THEN 1 END)) / COUNT(*) AS winPercentage
-        FROM [dbo].[User] AS u
-        JOIN [dbo].[_TeamToUser] AS t2u ON u.id = t2u.B
-        JOIN [dbo].[Team] AS t ON t2u.A = t.id
-        JOIN [dbo].[_GameResultToTeam] AS gr2t ON gr2t.B = t.id
-        JOIN [dbo].[GameResult] AS gr ON gr.id = gr2t.A
-        WHERE gr.locationPlayedId = ${locationId}
-        AND gr.gameTypeId = ${gameTypeId}
-        GROUP BY u.id, u.memorableId, u.firstName, u.lastName, u.profilePicture, u.locationId
-        ORDER BY winPercentage DESC
-        OFFSET ${offset} ROWS
-        FETCH NEXT ${total} ROWS ONLY
-        ;
-    `;
+      return [resultSortType, gameRankingsMapper.map(await queryPromise)] as [
+        ResultFilterType,
+        RankedPlayer[],
+      ];
+    },
+  );
 
-  return {
-    byWins: gameRankingsMapper.map(rankingsByWins),
-    byPercentage: gameRankingsMapper.map(rankingsByPercentage)
-  }
+  return Object.fromEntries(await Promise.all(getRankingForTypePromises));
 };
