@@ -2,15 +2,20 @@ import { Matches } from 'schema';
 import {
   ContextForResponseBody,
   FunctionName,
-  HttpRequestForRequestBody,
+  HttpRequestForQueryParams,
 } from '@src/types';
-import { set200Response, set500Response } from '@utils/contextUtils';
+import {
+  set200Response,
+  set400Response,
+  set500Response,
+} from '@utils/contextUtils';
 import { getFunctionLogger } from '@src/utils/logging';
-import { getRankingsForLocation } from '@src/repository/gameResultRepository';
+import { getTopRankingsForLocation as getRankingsForLocation } from '@src/repository/gameResultRepository';
+import { unpackArray } from '@src/utils/requestUtils';
 
 const httpTrigger = async function (
   context: ContextForResponseBody<Matches.GetRankingsForLocation.ResponseBody>,
-  req: HttpRequestForRequestBody<Matches.GetRankingsForLocation.RequestQuery>,
+  req: HttpRequestForQueryParams<Matches.GetRankingsForLocation.RequestQuery>,
 ): Promise<void> {
   const log = getFunctionLogger(FunctionName.GetRankingsForLocation, context);
 
@@ -18,10 +23,18 @@ const httpTrigger = async function (
 
   const { gameTypeId, locationId, offset, total } = req.query;
 
+  const filterTypes = unpackArray(req.query, 'filterTypes');
+
+  if (!filterTypes?.length) {
+    set400Response(log, context);
+    return;
+  }
+
   log(`Got gameTypeId: ${gameTypeId}`);
   log(`Got locationId: ${locationId}`);
   log(`Got offset: ${offset}`);
   log(`Got total: ${total}`);
+  log(`Got filterTypes: ${filterTypes}`);
 
   try {
     const rankings = await getRankingsForLocation(
@@ -29,6 +42,7 @@ const httpTrigger = async function (
       parseInt(gameTypeId),
       parseInt(offset) || undefined,
       parseInt(total) || undefined,
+      filterTypes,
     );
 
     log(`Found rankings`);

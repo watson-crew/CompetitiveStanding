@@ -34,14 +34,10 @@ export default function PlayerCard({
 
     return (
       <Card
-        className={twMerge('flex flex-col items-center', className)}
+        className={twMerge('flex flex-col items-center gap-3', className)}
         color="transparent"
       >
-        <Text
-          type="p"
-          style={textStyle}
-          className={twMerge('mb-3', textClassName)}
-        >
+        <Text type="p" style={textStyle} className={twMerge(textClassName)}>
           {player.firstName}
         </Text>
         <PlayerImage

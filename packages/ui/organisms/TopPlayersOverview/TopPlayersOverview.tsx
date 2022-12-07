@@ -1,62 +1,79 @@
 import { twMerge } from 'tailwind-merge';
 import Card from '../../atoms/Card/Card';
-import Text from '../../atoms/Text/Text';
 import TopPlayersCard from '../../molecules/TopPlayerCard/TopPlayerCard';
 import { topPlayerCardType } from '../../molecules/TopPlayerCard/TopPlayerCard';
-import { WithDefaultProps, WithLoadingProps } from '../../types';
-import { RankedPlayer } from 'schema';
+import { CommonIcons, WithDefaultProps, WithLoadingProps } from '../../types';
+import { RankedPlayer, ResultFilterType } from 'schema';
 import { useEffect, useState } from 'react';
-import Toggle from '../../atoms/Toggle/Toggle';
+import SelectWithIcon, {
+  SelectWithIconOption,
+  SelectWithIconProps,
+} from '../../atoms/SelectWithIcon/SelectWithIcon';
+import TextWithIcon from '../../molecules/TextWithIcon/TextWithIcon';
 
 type TopPlayersOverviewProps = WithDefaultProps<
   WithLoadingProps<{
-    rankedPlayersByWins: RankedPlayer[];
-    rankedPlayersByPercentage: RankedPlayer[];
+    rankedPlayers?: Record<ResultFilterType, RankedPlayer[]>;
   }>
 >;
 
 export default function TopPlayersOverview({
-  rankedPlayersByWins,
-  rankedPlayersByPercentage,
+  rankedPlayers,
   className,
   loading,
 }: TopPlayersOverviewProps) {
-  // TODO: Refactor this
   const cardsToRender: JSX.Element[] = [];
 
-  const [rankedPlayers, setRankedPlayers] = useState<RankedPlayer[]>([]);
-  const [showWinPercentage, setShowWinPercentage] = useState(false);
+  const options: SelectWithIconOption<ResultFilterType>[] = [
+    { value: 'elo', label: 'Elo', icon: CommonIcons.Elo },
+    { value: 'wins', label: 'Wins', icon: CommonIcons.Win },
+    {
+      value: 'winPercentage',
+      label: 'Win Rate',
+      icon: CommonIcons.Percentage,
+    },
+  ];
 
-  const onChange = () => {
-    setShowWinPercentage(prev => !prev);
-  }
+  const [selectedPlayers, setSelectedPlayers] = useState<RankedPlayer[]>([]);
+
+  const [filterType, setFilterType] = useState(options[0]);
+
+  const onChange: SelectWithIconProps<ResultFilterType>['onChange'] = (
+    newVal,
+    { action },
+  ) => {
+    if (action === 'select-option' && newVal) {
+      setFilterType(newVal);
+    }
+  };
 
   useEffect(() => {
-    if (showWinPercentage) {
-     setRankedPlayers(rankedPlayersByPercentage)
-    } else {
-      setRankedPlayers(rankedPlayersByWins)
+    if (rankedPlayers) {
+      setSelectedPlayers(rankedPlayers[filterType.value]);
     }
-  })
+  }, [filterType, rankedPlayers]);
 
   const cardDetailsToRender = () => {
-    if (!rankedPlayers) return [];
+    if (!selectedPlayers) return [];
     return [
       {
-        rankedPlayer: rankedPlayers[0],
+        rankedPlayer: selectedPlayers[0],
         cardType: topPlayerCardType.FIRST,
+        className: 'row-span-6 col-span-2',
       },
       {
-        rankedPlayer: rankedPlayers[1],
+        rankedPlayer: selectedPlayers[1],
         cardType: topPlayerCardType.SECOND,
+        className: 'row-span-3 col-span-3',
       },
       {
-        rankedPlayer: rankedPlayers[2],
+        rankedPlayer: selectedPlayers[2],
         cardType: topPlayerCardType.THIRD,
+        className: 'row-span-3 col-span-3',
       },
     ];
-  }
-  
+  };
+
   cardDetailsToRender().forEach((details, i) => {
     if (loading || !details.rankedPlayer) {
       cardsToRender.push(
@@ -69,6 +86,7 @@ export default function TopPlayersOverview({
           rankedPlayer={details.rankedPlayer}
           loading={false}
           cardType={details.cardType}
+          className={details.className}
         />,
       );
     }
@@ -79,20 +97,15 @@ export default function TopPlayersOverview({
       className={twMerge('flex h-full w-full flex-col pt-2', className)}
       color="blue-100"
     >
-      <div className="flex items-center justify-between">
-        <Text type="h2">Who&apos;s on top</Text>
-        <Toggle
-          className=""
-          isToggled={showWinPercentage}
+      <div className="mb-2 flex items-center justify-between">
+        <TextWithIcon textProps={{ type: 'h2' }} icon={CommonIcons.Podium}>
+          Who&apos;s on top
+        </TextWithIcon>
+        <SelectWithIcon
+          className="w-36 min-w-fit"
+          value={filterType}
+          options={options}
           onChange={onChange}
-          defaultColor="yellow-500"
-          toggledColor="cyan-800"
-          beforeChild={
-            <Text type="p">By Wins</Text>
-          }
-          afterChild={
-            <Text type="p">By Percentage</Text>
-          }
         />
       </div>
       <section className="grid h-full w-full grid-flow-col grid-rows-6 gap-1 overflow-auto">
