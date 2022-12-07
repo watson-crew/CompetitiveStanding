@@ -237,8 +237,15 @@
           }
         },
         "responses": {
-          "204": {
-            "description": "successful update"
+          "200": {
+            "description": "successful update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RankingChanges"
+                }
+              }
+            }
           }
         }
       }
@@ -443,6 +450,9 @@
           "gameTypeId": {
             "type": "number",
             "example": 1
+          },
+          "playerRatingChanges": {
+            "$ref": "#/components/schemas/RankingChanges"
           }
         }
       },
@@ -499,7 +509,7 @@
       },
       "InitiateMatchResponse": {
         "type": "object",
-        "required": ["matchId", "historicResults"],
+        "required": ["matchId", "historicResults", "playerElos"],
         "properties": {
           "matchId": {
             "type": "integer",
@@ -521,6 +531,16 @@
               "bbbyyyzzz": {
                 "wins": 9
               }
+            }
+          },
+          "playerElos": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "example": {
+              "abc": 980,
+              "xyz": 1214
             }
           }
         }
@@ -573,6 +593,16 @@
             "type": "integer",
             "example": 44
           }
+        }
+      },
+      "RankingChanges": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "example": {
+          "abc": 120,
+          "xyz": -84
         }
       },
       "WinningTeamDetails": {

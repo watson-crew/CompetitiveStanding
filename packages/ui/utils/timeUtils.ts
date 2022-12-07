@@ -38,5 +38,5 @@ export function getFormattedDatePlayed(gameEndTime: Dayjs): string {
     return gameEndTime.format('dddd');
   }
 
-  return gameEndTime.format('Do MMMM');
+  return gameEndTime.format('Do MMM');
 }
