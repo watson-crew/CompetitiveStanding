@@ -11,25 +11,20 @@ type AvailableGamesOverviewProps = WithDefaultProps<{
 
 export default function AvailableGamesOverview({
   className,
+  availableGames
 }: AvailableGamesOverviewProps) {
-  const count = 3;
-
-  const cardsToRender = [];
-
-  for (let i = 0; i < count; i++) {
-    cardsToRender.push(<GameSelectCard key={i} className="gap-x-4" />);
-  }
-
   return (
     <Card
       color="slate-200"
       className={twMerge('max-2-lg flex h-full w-full flex-col', className)}
     >
-      <Text type="h2" className="block">
+      <Text type="h2" className="block mb-5">
         Start a game...
       </Text>
-      <div className="flex h-full w-full flex-row overflow-scroll">
-        {cardsToRender}
+      <div className="flex h-full w-full flex-row overflow-scroll gap-5">
+        { availableGames.map(game =>  
+          <GameSelectCard key={game.id} link={`/play?game=${game.id}`} game={game} className="gap-x-4" />
+        )}
       </div>
     </Card>
   );

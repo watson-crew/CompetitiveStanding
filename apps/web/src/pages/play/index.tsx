@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react';
+import { useQueryState } from 'next-usequerystate'
 import PlayerSelection from '@organisms/PlayerSelection/PlayerSelection';
 import { ApiContext } from '@src/context/ApiContext';
 import GameComponent from '@src/components/organisms/GameComponent/GameComponent';
@@ -39,7 +40,10 @@ export default function Index() {
     };
   }
 
+  const [game] = useQueryState('game')
   const client = useContext(ApiContext);
+
+  console.log(game)
 
   // Use a proper react hook to load this from somewhere
   const [selectedLocation] = useState(useSelectedLocation());
