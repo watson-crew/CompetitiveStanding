@@ -22,10 +22,13 @@ const httpTrigger = async function (
   );
 
   try {
-    const [initiatedMatch, playerElos] = await Promise.all([
-      initiateNewMatch(gameTypeId, locationId, participatingTeams),
-      getParticipantElos(gameTypeId, participatingTeams),
-    ]);
+    const initiatedMatch = await initiateNewMatch(
+      gameTypeId,
+      locationId,
+      participatingTeams,
+    );
+
+    const playerElos = await getParticipantElos(gameTypeId, participatingTeams);
 
     set200Response(log, context, { ...initiatedMatch, playerElos });
   } catch (err) {
