@@ -45,6 +45,8 @@ async function fetchHistoricResults(
   gameTypeId: number,
   participatingTeams: string[],
 ): Promise<Record<string, TeamHistoricResult>> {
+  // FIXME: This doesn't seem to work when we have more than 2 teams
+
   const historicResults = await prisma.gameResult.groupBy({
     by: ['winningTeamId'],
     _count: {
@@ -121,7 +123,7 @@ export async function initiateNewMatch(
   gameTypeId: number,
   locationId: number,
   participatingTeams: string[],
-): Promise<InitiateMatchResponse> {
+): Promise<Omit<InitiateMatchResponse, 'playerElos'>> {
   const [historicResults, matchId] = await Promise.all([
     fetchHistoricResults(gameTypeId, participatingTeams),
     createNewMatch(gameTypeId, locationId, participatingTeams),
@@ -200,6 +202,20 @@ export async function getResultsForLocation(
           select: {
             cumulativeTeamId: true,
             players: true,
+          },
+        },
+        ratingChanges: {
+          select: {
+            playerRanking: {
+              select: {
+                player: {
+                  select: {
+                    memorableId: true,
+                  },
+                },
+              },
+            },
+            ratingChangeAmount: true,
           },
         },
       },

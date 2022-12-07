@@ -2,8 +2,17 @@ import { GameType, Team, User } from 'schema';
 import { Dayjs } from 'dayjs';
 import { WithLoadingProps } from './react';
 
+export type PlayerWithRating = User & {
+  elo?: number;
+  eloChange?: number;
+};
+
+export type TeamWithRatings = Omit<Team, 'players'> & {
+  players: PlayerWithRating[];
+};
+
 export type GameResult = {
-  teams: Omit<Team, 'id'>[];
+  teams: TeamWithRatings[];
   gameType: GameType;
   winningTeamId: string;
   startTime: Dayjs;

@@ -1,16 +1,15 @@
-import { Team, TeamHistoricResult } from 'schema';
+import { TeamHistoricResult } from 'schema';
 import { twMerge } from 'tailwind-merge';
-import { WithDefaultProps } from '../../types';
+import { TeamWithRatings, WithDefaultProps } from '../../types';
 import Card from '../../atoms/Card/Card';
-import PlayerCard from '../../molecules/PlayerCard/PlayerCard';
 import Text from '../../atoms/Text/Text';
 import TextWithIcon from '../TextWithIcon/TextWithIcon';
-import { Button } from '../..';
+import { Button, PlayerWithElo } from '../..';
 import { CommonIcons } from '../../types/icons';
 import WithScrollbar from '../../atoms/WithScrollbar/WithScrollbar';
 
 type TeamHistoricResultsProps = WithDefaultProps<{
-  team: Omit<Team, 'id'>;
+  team: Omit<TeamWithRatings, 'id'>;
   historicResults: TeamHistoricResult;
   setAsWinner: () => void;
 }>;
@@ -43,7 +42,8 @@ export default function TeamHistoricResultsCard({
 
       <WithScrollbar className="flex-grow items-center justify-center">
         {team.players.map(player => (
-          <PlayerCard player={player} variant="s" />
+          <PlayerWithElo player={player} variant="m" />
+          // <PlayerCard player={player} variant="s" />
         ))}
       </WithScrollbar>
 

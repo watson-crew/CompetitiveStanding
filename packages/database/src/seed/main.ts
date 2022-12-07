@@ -6,6 +6,7 @@ import seedGameTypes from './gameTypes';
 import seedTeams from './teams';
 import seedGameResults from './gameResults';
 import seedGameRequirements from './gameRequirements';
+import seedPlayerElos from './playerElos';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -18,6 +19,8 @@ async function main() {
   // Everything here is test data for development sake, not data required to run the app.
   if (!isProduction) {
     const users = await seedUsers(prisma, { locations });
+
+    await seedPlayerElos(prisma, { users, gameTypes });
 
     await seedGroups(prisma, { users });
 

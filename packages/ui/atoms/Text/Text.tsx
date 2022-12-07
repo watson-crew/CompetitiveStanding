@@ -2,7 +2,7 @@ import React from 'react';
 import { WithDefaultProps } from '../../types';
 import { twMerge } from 'tailwind-merge';
 
-type TextType = 'h1' | 'h2' | 'h3' | 'h4' | 'p';
+export type TextType = 'h1' | 'h2' | 'h3' | 'h4' | 'p';
 
 export type TextProps = WithDefaultProps<{
   type: TextType;

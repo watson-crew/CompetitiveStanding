@@ -1,6 +1,7 @@
 import { LoadingPlayer } from 'ui';
-import { GameRequirement, GameTeam } from '@src/types/games';
+import { GameTeam } from '@src/types/games';
 import { filterFalsey } from './collectionUtils';
+import { GameRequirement } from 'schema';
 
 export function hasOpenSlot(arr: GameTeam): boolean {
   return arr.some(item => item.playerDetails === undefined);

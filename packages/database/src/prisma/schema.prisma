@@ -18,15 +18,28 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   firstName      String
   lastName       String
-  memorableId    String    @unique
+  memorableId    String          @unique
   profilePicture String?
-  location       Location? @relation(fields: [locationId], references: [id])
+  location       Location?       @relation(fields: [locationId], references: [id])
   locationId     Int?
   groups         Group[]
   teams          Team[]
+  rankings       PlayerRanking[]
+}
+
+model PlayerRanking {
+  id              Int            @id @default(autoincrement())
+  elo             Int
+  player          User?          @relation(fields: [userMemorableId], references: [memorableId])
+  userMemorableId String?
+  gameType        GameType       @relation(fields: [gameTypeId], references: [id])
+  gameTypeId      Int
+  ratingChanges   RatingChange[]
+
+  @@unique([userMemorableId, gameTypeId])
 }
 
 model Group {
@@ -51,6 +64,7 @@ model GameType {
   locations    Location[]
   gameResults  GameResult[]
   requirements GameRequirement?
+  rankings     PlayerRanking[]
 }
 
 model GameRequirement {
@@ -72,14 +86,25 @@ model Team {
 }
 
 model GameResult {
-  id               Int       @id @default(autoincrement())
+  id               Int            @id @default(autoincrement())
   teams            Team[]
-  winningTeam      Team?     @relation(name: "WinningTeamRelation", fields: [winningTeamId], references: [cumulativeTeamId], onDelete: NoAction, onUpdate: NoAction)
+  winningTeam      Team?          @relation(name: "WinningTeamRelation", fields: [winningTeamId], references: [cumulativeTeamId], onDelete: NoAction, onUpdate: NoAction)
   winningTeamId    String?
-  gameType         GameType  @relation(fields: [gameTypeId], references: [id])
+  gameType         GameType       @relation(fields: [gameTypeId], references: [id])
   gameTypeId       Int
-  locationPlayed   Location  @relation(fields: [locationPlayedId], references: [id])
+  locationPlayed   Location       @relation(fields: [locationPlayedId], references: [id])
   locationPlayedId Int
   startTime        DateTime
   endTime          DateTime?
+  ratingChanges    RatingChange[]
+}
+
+model RatingChange {
+  ratingChangeAmount Int
+  playerRanking      PlayerRanking @relation(fields: [playerRankingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  playerRankingId    Int
+  gameResult         GameResult    @relation(fields: [gameResultId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  gameResultId       Int
+
+  @@id([gameResultId, playerRankingId])
 }

@@ -1,10 +1,9 @@
-import { GameRequirement } from '@src/types/games';
 import {
   defaultIfEmpty,
   filterFalsey,
   withIndexReplaced,
 } from '@src/uilts/collectionUtils';
-import { User } from 'schema';
+import { GameRequirement, User } from 'schema';
 import { LoadingPlayer } from 'ui';
 
 export enum TeamActionType {
