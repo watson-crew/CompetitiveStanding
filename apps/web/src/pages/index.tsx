@@ -19,8 +19,6 @@ export async function getStaticProps(
 }
 
 export default function Index({ locations }: RootPageProps) {
-  console.log(locations);
-
   return (
     <main className="flex h-screen flex-col items-center px-10 xl:px-28">
       <Head>
@@ -37,7 +35,7 @@ export default function Index({ locations }: RootPageProps) {
         </Text>
         <section className="flex flex-wrap justify-around gap-10">
           {locations.map(location => (
-            <LocationLinkCard location={location} />
+            <LocationLinkCard key={location.id} location={location} />
           ))}
         </section>
       </Card>

@@ -1,4 +1,5 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useQueryState, queryTypes } from 'next-usequerystate'
 import PlayerSelection from '@organisms/PlayerSelection/PlayerSelection';
 import { ApiContext } from '@src/context/ApiContext';
 import GameComponent from '@src/components/organisms/GameComponent/GameComponent';
@@ -11,9 +12,11 @@ import {
   GameType,
 } from 'schema';
 import { generateTeamId } from '@src/uilts/teamUtils';
-import { PlayerWithRating, TeamWithRatings } from 'ui';
+import { PlayerWithRating, TeamWithRatings, TextWithIcon } from 'ui';
+import { getSportIcon } from '@src/../../../packages/ui/utils/iconUtils';
 
 export default function Index() {
+  // Update to use selected location
   function useSelectedLocation(): Location {
     return {
       id: 1,
@@ -31,7 +34,21 @@ export default function Index() {
             },
             max: {
               playersPerTeam: 4,
-              numberOfTeams: 3, // Just for testing purposes
+              numberOfTeams: 3
+            },
+          },
+        },
+        {
+          id: 2,
+          name: 'Darts',
+          requirements: {
+            min: {
+              playersPerTeam: 1,
+              numberOfTeams: 2,
+            },
+            max: {
+              playersPerTeam: 4,
+              numberOfTeams: 3
             },
           },
         },
@@ -39,17 +56,21 @@ export default function Index() {
     };
   }
 
-  const client = useContext(ApiContext);
-
-  // Use a proper react hook to load this from somewhere
   const [selectedLocation] = useState(useSelectedLocation());
+  const [selectedGameType, setSelectedGameType] = useState<GameType>(
+    selectedLocation.availableGames[0]
+  )
+  const client = useContext(ApiContext);
+  const [gameQuery] = useQueryState('game', queryTypes.integer.withDefault(selectedLocation.availableGames[0].id))
+  const [locationQuery] = useQueryState('location')
+  console.log(locationQuery)
+
+  useEffect(() => {
+    const selectedGame = selectedLocation.availableGames.find(game => game.id === gameQuery) || selectedLocation.availableGames[0]
+    setSelectedGameType(selectedGame)
+  }, [gameQuery, selectedLocation])
 
   // Use a proper react hook to load this from somewhere
-  // TODO: Look at passing game and location in as props
-  const [selectedGameType] = useState<GameType>(
-    selectedLocation.availableGames[0],
-  );
-
   const [matchId, setMatchId] = useState<number>();
   const [teams, setTeams] = useState<TeamWithRatings[]>([]);
   const [historicData, setHistoricData] = useState<
@@ -121,6 +142,13 @@ export default function Index() {
         <title>Competitive Standing | Play</title>
       </Head>
       <h1 className="text-3xl font-bold underline">Competitive standing</h1>
+
+      <TextWithIcon
+          textProps={{ type: 'p' }}
+          icon={getSportIcon(selectedGameType.id)}
+        >
+          {selectedGameType.name}
+        </TextWithIcon>
 
       {shouldDisplayPlayerSelection() && (
         <PlayerSelection

@@ -1,12 +1,12 @@
 import { Location } from 'schema';
 import Card from '../../atoms/Card/Card';
 import Text from '../../atoms/Text/Text';
-import { CommonIcons, SportIcons, WithDefaultProps } from '../../types';
+import { CommonIcons, WithDefaultProps } from '../../types';
 import Link from '../../atoms/Link/Link';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import TextWithIcon from '../TextWithIcon/TextWithIcon';
-import { IconType } from 'react-icons';
+import { getSportIcon } from '../../utils/iconUtils';
 
 type LocationLinkCardProps = WithDefaultProps<{
   location: Location;
@@ -14,18 +14,7 @@ type LocationLinkCardProps = WithDefaultProps<{
 
 export default function LocationLinkCard({ location }: LocationLinkCardProps) {
   const { name, urlPath, availableGames } = location;
-
   const href = `/location/${urlPath}`;
-
-  const getSportIcon = (iconId: number): IconType => {
-    const iconMappings: Record<number, IconType> = {
-      1: SportIcons.Pool,
-      2: SportIcons.Darts,
-      3: SportIcons.TableTennis,
-    };
-
-    return iconMappings[iconId] || SportIcons.Pool;
-  };
 
   return (
     <Link

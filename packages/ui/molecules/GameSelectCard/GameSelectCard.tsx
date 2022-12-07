@@ -1,31 +1,24 @@
 import { WithDefaultProps } from '../../types';
 import { GameType } from 'schema';
-import { twMerge } from 'tailwind-merge';
+import Link from '../../atoms/Link/Link';
+import TextWithIcon from '../TextWithIcon/TextWithIcon';
+import { getSportIcon } from '../../utils/iconUtils';
 
-// Remove partial later on
-type GameSelectCardProps = WithDefaultProps<Partial<GameType>>;
+type GameSelectCardProps = WithDefaultProps<{
+  game: GameType,
+  link: string
+}>;
 
-export default function GameSelectCard({ className }: GameSelectCardProps) {
+export default function GameSelectCard({ game, link }: GameSelectCardProps) {
   return (
-    <div
-      className={twMerge(
-        'mx-auto my-2 w-full max-w-sm rounded-md border border-blue-300 p-4 shadow',
-        className,
-      )}
-    >
-      <div className="flex animate-pulse space-x-4">
-        <div className="h-12 w-12 rounded-full bg-slate-700"></div>
-      </div>
-      <div className="flex-1 space-y-6 py-1">
-        <div className="h-2 rounded bg-slate-700"></div>
-        <div className="space-y-3">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2 h-2 rounded bg-slate-700"></div>
-            <div className="col-span-1 h-2 rounded bg-slate-700"></div>
-          </div>
-          <div className="h-2 rounded bg-slate-700"></div>
-        </div>
-      </div>
-    </div>
+    <Link href={link} className='flex flex-col justify-center pt-5 w-full h-full'>
+      <TextWithIcon
+        key={game.id}
+        icon={getSportIcon(game.id)}
+        textProps={{ type: 'p' }}
+      >
+        {game.name}
+      </TextWithIcon>
+    </Link>
   );
 }
