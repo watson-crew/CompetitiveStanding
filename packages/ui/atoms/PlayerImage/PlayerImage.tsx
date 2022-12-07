@@ -11,9 +11,10 @@ type PlayerImageProps = WithDefaultProps<{
 
 const defaultProfilePicturePath = '/defaultProfilePicture.jpeg';
 
-type ImageVariants = 's' | 'm' | 'l';
+type ImageVariants = 'xs' | 's' | 'm' | 'l';
 const imageSizesClasses: Record<ImageVariants, string> = {
-  s: 'w-12 h-12',
+  xs: 'w-12 h-12',
+  s: 'w-16 h-16',
   m: 'w-24 h-24',
   l: 'w-36 h-36',
 };

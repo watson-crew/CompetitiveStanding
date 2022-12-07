@@ -53,6 +53,7 @@ export interface GameResult {
    * @example ["abcxyz","aaa","bbbyyyzzz"]
    */
   participatingTeams: string[];
+  playerRatingChanges?: RankingChanges;
   /**
    * @format date-time
    * @example "2022-11-25T09:12:28Z"
@@ -74,7 +75,10 @@ export type GetAllLocationsData = Location[];
 
 export type GetLocationByUrlData = Location;
 
-export type GetRankingsForLocationData = RankedPlayer[];
+export interface GetRankingsForLocationData {
+  byWins?: RankedPlayer[];
+  byPercentage?: RankedPlayer[];
+}
 
 export interface GetRecentMatchesData {
   results: GameResult[];
@@ -94,6 +98,8 @@ export interface InitiateMatchResponse {
   historicResults: Record<string, TeamHistoricResult>;
   /** @example 519 */
   matchId: number;
+  /** @example {"abc":980,"xyz":1214} */
+  playerElos: Record<string, number>;
 }
 
 export type InitiateNewMatchData = InitiateMatchResponse;
@@ -137,7 +143,10 @@ export interface RankedPlayer {
   wins?: number;
 }
 
-export type RecordMatchResultsData = any;
+/** @example {"abc":120,"xyz":-84} */
+export type RankingChanges = Record<string, number>;
+
+export type RecordMatchResultsData = RankingChanges;
 
 export interface RecordMatchResultsPayload {
   updateType: 'SET_WINNER' | 'ABANDON_GAME';
