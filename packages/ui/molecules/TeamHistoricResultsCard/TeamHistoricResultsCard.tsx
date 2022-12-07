@@ -42,7 +42,7 @@ export default function TeamHistoricResultsCard({
 
       <WithScrollbar className="flex-grow items-center justify-center">
         {team.players.map(player => (
-          <PlayerWithElo player={player} variant="m" />
+          <PlayerWithElo key={player.id} player={player} variant="m" />
           // <PlayerCard player={player} variant="s" />
         ))}
       </WithScrollbar>

@@ -119,6 +119,7 @@ export default function Index({ location }: LocationPageProps) {
 
       <Card className="grid h-full w-full grid-flow-col grid-rows-4 gap-4">
         <AvailableGamesOverview
+          locationId={location.id}
           availableGames={location.availableGames}
           className="col-span-2 row-span-2 bg-red-100"
         />
