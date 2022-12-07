@@ -36,6 +36,9 @@ export default function PlayerWithElo({
 
   const nameToDisplay = variant === 's' ? player.firstName : fullName;
 
+  const displayTotalElo = variant != 's';
+  const displayEloChange = !!eloChange;
+
   return (
     <section>
       <Card
@@ -52,23 +55,27 @@ export default function PlayerWithElo({
           <Text type="p" className={twMerge(textClassName)} style={textStyle}>
             {nameToDisplay}
           </Text>
-          <span className="flex gap-2">
-            {variant != 's' && (
-              <PlayerElo
-                displayType="total"
-                startElo={startElo}
-                eloChange={eloChange}
-                textStyle={textStyle}
-              />
-            )}
-            {eloChange && (
-              <PlayerElo
-                startElo={0}
-                eloChange={eloChange}
-                textStyle={textStyle}
-              />
-            )}
-          </span>
+          {(displayTotalElo || displayEloChange) && (
+            <span className="flex gap-2">
+              {displayTotalElo && (
+                <PlayerElo
+                  id={`${player.memorableId}-elo-total`}
+                  displayType="total"
+                  startElo={startElo}
+                  eloChange={eloChange}
+                  textStyle={textStyle}
+                />
+              )}
+              {displayEloChange && (
+                <PlayerElo
+                  id={`${player.memorableId}-elo-change`}
+                  startElo={0}
+                  eloChange={eloChange}
+                  textStyle={textStyle}
+                />
+              )}
+            </span>
+          )}
         </section>
       </Card>
     </section>
