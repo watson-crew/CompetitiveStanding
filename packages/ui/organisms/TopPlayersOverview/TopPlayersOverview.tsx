@@ -102,6 +102,7 @@ export default function TopPlayersOverview({
           Who&apos;s on top
         </TextWithIcon>
         <SelectWithIcon
+          className="w-36 min-w-fit"
           value={filterType}
           options={options}
           onChange={onChange}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import Card from '../../atoms/Card/Card';
-import PlaysAndWinsResults from '../PlaysAndWinsResults/PlaysAndWinsResults';
+import TopPlayerStats from '../TopPlayerStats/TopPlayerStats';
 import { WithDefaultProps, WithLoadingProps } from '../../types';
 import { RankedPlayer } from 'schema';
 import PlayerCard from '../PlayerCard/PlayerCard';
@@ -30,10 +30,17 @@ function TopPlayersCardStateContent() {
   );
 }
 
-const classNamesForCards: Record<topPlayerCardType, string> = {
-  [topPlayerCardType.FIRST]: 'bg-yellow-400',
-  [topPlayerCardType.SECOND]: 'bg-gray-500',
-  [topPlayerCardType.THIRD]: 'bg-yellow-700',
+const classNamesForCards: Record<
+  topPlayerCardType,
+  { root?: string; stats?: string }
+> = {
+  [topPlayerCardType.FIRST]: {
+    root: 'bg-yellow-400',
+  },
+  [topPlayerCardType.SECOND]: { root: 'bg-gray-400' },
+  [topPlayerCardType.THIRD]: {
+    root: 'bg-yellow-600',
+  },
 };
 
 function classNames(type: topPlayerCardType) {
@@ -52,7 +59,11 @@ export default function TopPlayersCard({
     React.createElement(
       Card,
       {
-        className: twMerge('flex flex-col w-full', className, classNamesToUse),
+        className: twMerge(
+          'flex flex-col w-full',
+          className,
+          classNamesToUse.root,
+        ),
       },
       children,
     );
@@ -64,20 +75,17 @@ export default function TopPlayersCard({
   const isFullVersion = cardType == topPlayerCardType.FIRST;
 
   return renderWithChildren(
-    <section className="flex h-full items-center">
+    <section className="flex h-full items-center rounded-xl bg-opacity-30 p-2">
       <PlayerCard
-        className="w-1/3 p-0 md:p-0"
+        className="w-2/5 flex-col-reverse p-0 md:p-0"
         player={rankedPlayer.player}
         variant={isFullVersion ? 's' : 'xs'}
       />
 
-      <PlaysAndWinsResults
-        gamesPlayed={rankedPlayer.gamesPlayed}
-        wins={rankedPlayer.wins}
-        elo={rankedPlayer.elo}
-        winPercentage={rankedPlayer.winPercentage}
+      <TopPlayerStats
+        {...rankedPlayer}
         fullVersion={isFullVersion}
-        className="w-1/2"
+        className={twMerge('mx-5 w-3/5')}
       />
     </section>,
   );
