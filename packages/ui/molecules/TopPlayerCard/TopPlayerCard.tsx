@@ -1,11 +1,10 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import Card from '../../atoms/Card/Card';
-import Text from '../../atoms/Text/Text';
 import PlaysAndWinsResults from '../PlaysAndWinsResults/PlaysAndWinsResults';
 import { WithDefaultProps, WithLoadingProps } from '../../types';
-import { RankedPlayer, User } from 'schema';
-import Image from 'next/image';
+import { RankedPlayer } from 'schema';
+import PlayerCard from '../PlayerCard/PlayerCard';
 
 export enum topPlayerCardType {
   FIRST,
@@ -32,9 +31,9 @@ function TopPlayersCardStateContent() {
 }
 
 const classNamesForCards: Record<topPlayerCardType, string> = {
-  [topPlayerCardType.FIRST]: 'row-span-6 col-span-2 bg-yellow-400',
-  [topPlayerCardType.SECOND]: 'row-span-4 col-span-1 bg-gray-500',
-  [topPlayerCardType.THIRD]: 'row-span-2 col-span-1 bg-yellow-700',
+  [topPlayerCardType.FIRST]: 'bg-yellow-400',
+  [topPlayerCardType.SECOND]: 'bg-gray-500',
+  [topPlayerCardType.THIRD]: 'bg-yellow-700',
 };
 
 function classNames(type: topPlayerCardType) {
@@ -58,47 +57,28 @@ export default function TopPlayersCard({
       children,
     );
 
-  if (loading) {
+  if (loading || !rankedPlayer) {
     return renderWithChildren(TopPlayersCardStateContent());
   }
 
-  const player = rankedPlayer?.player;
-  const getFullName = (player: User) =>
-    `${player.firstName} ${player.lastName}`;
-  const fullName = (player && getFullName(player)) ?? '';
-  const imageUrl =
-    player?.profilePicture ??
-    'https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg';
+  const isFullVersion = cardType == topPlayerCardType.FIRST;
 
   return renderWithChildren(
-    <>
-      <div className="flex">
-        <div className="relative h-12 w-12">
-          <Image
-            src={imageUrl}
-            alt={`${fullName}'s picture`}
-            fill={true}
-            sizes=""
-            className="rounded-full"
-          />
-        </div>
-
-        <section className="pl-5">
-          <Text type="h3" className="text-sky-500 dark:text-sky-400">
-            {fullName}
-          </Text>
-          <Text type="p" className="font-bold text-[#ff3e00]">
-            {player?.memorableId}
-          </Text>
-        </section>
-      </div>
+    <section className="flex h-full items-center">
+      <PlayerCard
+        className="w-1/3 p-0 md:p-0"
+        player={rankedPlayer.player}
+        variant={isFullVersion ? 's' : 'xs'}
+      />
 
       <PlaysAndWinsResults
-        gamesPlayed={rankedPlayer!.gamesPlayed!}
-        gamesWon={rankedPlayer!.wins!}
-        fullVersion={cardType == topPlayerCardType.FIRST}
-        className="flex self-end"
+        gamesPlayed={rankedPlayer.gamesPlayed}
+        wins={rankedPlayer.wins}
+        elo={rankedPlayer.elo}
+        winPercentage={rankedPlayer.winPercentage}
+        fullVersion={isFullVersion}
+        className="w-1/2"
       />
-    </>,
+    </section>,
   );
 }
