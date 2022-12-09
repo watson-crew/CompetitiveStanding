@@ -1,79 +1,156 @@
-export enum Actions {
-  firstNameChange = 'firstNameChange',
-  lastNameChange = 'lastNameChange',
-  memorableIdChange = 'memorableIdChange',
-  profilePictureChange = 'profilePictureChange',
-  memorableIdExists = 'memorableIdExists',
-  resetState = 'resetState',
-  setError = 'setError',
+import { CreateUserPayload } from 'schema';
+
+export enum SignUpActionType {
+  FieldUpdated = 'fieldUpdated',
+  AddValidationError = 'validationErrorAdded',
+  AddGlobalError = 'globalErrorAdded',
+  ValidatingField = 'validatingMemorableId',
+  ValidatedField = 'validatedMemorableId',
+  ResetGlobalErrors = 'resetGlobalErrors',
+  ResetState = 'resetState',
 }
 
-export type SignupAction = {
-  action: Actions;
-  inputValue?: string;
-  inputCheck?: boolean;
-  errorMessage?: string | undefined;
+interface SignUpAction<T extends SignUpActionType, P> {
+  readonly type: T;
+  readonly payload?: P;
+}
+
+type FieldUpdateAction = SignUpAction<
+  SignUpActionType.FieldUpdated,
+  { field: keyof CreateUserPayload; value: string | number }
+>;
+
+type AddFieldValidationErrorAction = SignUpAction<
+  SignUpActionType.AddValidationError,
+  { field: keyof CreateUserPayload; errorMessage: string }
+>;
+
+type AddGlobalErrorAction = SignUpAction<
+  SignUpActionType.AddGlobalError,
+  { errorMessage: string }
+>;
+
+type ValidatedFieldAction = SignUpAction<
+  SignUpActionType.ValidatedField,
+  { field: keyof CreateUserPayload }
+>;
+
+type ValidatingFieldAction = SignUpAction<
+  SignUpActionType.ValidatingField,
+  { field: keyof CreateUserPayload }
+>;
+
+type ResetGlobalErrorsAction = SignUpAction<
+  SignUpActionType.ResetGlobalErrors,
+  void
+>;
+
+type ResetStateAction = SignUpAction<SignUpActionType.ResetState, void>;
+
+export type SignupActions =
+  | FieldUpdateAction
+  | AddFieldValidationErrorAction
+  | AddGlobalErrorAction
+  | ResetStateAction
+  | ResetGlobalErrorsAction
+  | ValidatedFieldAction
+  | ValidatingFieldAction;
+
+export type FormFieldState<T> = {
+  value?: T;
+  validating?: boolean;
+  isValid?: boolean;
+  errorMessage?: string;
 };
 
 export type SignupState = {
-  firstName: string;
-  lastName: string;
-  memorableId: string;
-  memorableIdExists: boolean;
-  profilePictureUrl?: string;
-  errorMessages: Array<string | undefined>;
+  fields: {
+    firstName: FormFieldState<string>;
+    lastName: FormFieldState<string>;
+    memorableId: FormFieldState<string>;
+    homeLocationId: FormFieldState<number>;
+    profilePictureUrl: FormFieldState<string>;
+  };
+  globalErrors: string[];
 };
 
-export function signupReducer(
+const getStateWithUpdatedField = <T>(
   state: SignupState,
-  action: SignupAction,
+  fieldName: keyof CreateUserPayload,
+  fieldValue: FormFieldState<T>,
+): SignupState => {
+  const updatedField = {
+    ...state.fields[fieldName],
+    ...fieldValue,
+  };
+
+  return {
+    ...state,
+    fields: {
+      ...state.fields,
+      [fieldName]: updatedField,
+    },
+  };
+};
+
+export function signUpReducer(
+  state: SignupState,
+  { type, payload }: SignupActions,
 ): SignupState {
-  switch (action.action) {
-    case Actions.firstNameChange:
+  switch (type) {
+    case SignUpActionType.FieldUpdated:
+      if (!payload) return state;
+
+      return getStateWithUpdatedField(state, payload.field, {
+        value: payload.value,
+      });
+    case SignUpActionType.AddValidationError:
+      if (!payload) return state;
+
+      return getStateWithUpdatedField(state, payload.field, {
+        errorMessage: payload.errorMessage,
+        isValid: false,
+        validating: false,
+      });
+    case SignUpActionType.AddGlobalError:
+      if (!payload) return state;
+
       return {
         ...state,
-        errorMessages: [],
-        firstName: action.inputValue || '',
+        globalErrors: [...state.globalErrors, payload.errorMessage],
       };
-    case Actions.lastNameChange:
+    case SignUpActionType.ResetGlobalErrors:
       return {
         ...state,
-        errorMessages: [],
-        lastName: action.inputValue || '',
+        globalErrors: [],
       };
-    case Actions.memorableIdChange:
-      return {
-        ...state,
-        errorMessages: [],
-        memorableId: action.inputValue?.toLowerCase() || '',
-      };
-    case Actions.profilePictureChange:
-      return {
-        ...state,
-        profilePictureUrl: action.inputValue,
-      };
-    case Actions.memorableIdExists:
-      return {
-        ...state,
-        memorableIdExists: !!action.inputCheck,
-      };
-    case Actions.setError:
-      return {
-        ...state,
-        errorMessages: [...state.errorMessages, action.errorMessage],
-      };
-    case Actions.resetState:
+    case SignUpActionType.ResetState:
       return initialState;
+    case SignUpActionType.ValidatedField:
+      if (!payload) return state;
+
+      return getStateWithUpdatedField(state, payload.field, {
+        isValid: true,
+        validating: false,
+      });
+    case SignUpActionType.ValidatingField:
+      if (!payload) return state;
+
+      return getStateWithUpdatedField(state, payload.field, {
+        validating: true,
+      });
     default:
       return state;
   }
 }
 
 export const initialState: SignupState = {
-  firstName: '',
-  lastName: '',
-  memorableId: '',
-  memorableIdExists: false,
-  profilePictureUrl: undefined,
-  errorMessages: [],
+  fields: {
+    firstName: {} as FormFieldState<string>,
+    lastName: {},
+    memorableId: {},
+    homeLocationId: {},
+    profilePictureUrl: {},
+  },
+  globalErrors: [],
 };

@@ -1,5 +1,5 @@
 import { CreateUserPayload, User } from 'schema';
-import { ApiContext } from '@src/context/ApiContext';
+import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import {
   ChangeEvent,
   FormEvent,
@@ -8,107 +8,155 @@ import {
   useReducer,
   useState,
 } from 'react';
-import { Banner, Button, Card, PlayerCard, Text, TextInput } from 'ui';
-import { Actions, initialState, signupReducer, SignupState } from './state';
+import {
+  Banner,
+  Button,
+  Card,
+  PlayerCard,
+  SelectInput,
+  Text,
+  TextInput,
+} from 'ui';
+import {
+  SignUpActionType,
+  initialState,
+  signUpReducer,
+  SignupState,
+} from './state';
 import Image from 'next/image';
 import Head from 'next/head';
+import {
+  getLocationStaticPropsFactory,
+  PagePropsWithLocation,
+} from '@src/uilts/staticPropUtils';
+import React from 'react';
 
-export default function Index() {
+export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
+
+export default function Index({ locations }: PagePropsWithLocation) {
   const api = useContext(ApiContext);
-  const [signupState, dispatch] = useReducer(signupReducer, initialState);
+  const [{ fields, globalErrors }, dispatch] = useReducer(
+    signUpReducer,
+    initialState,
+  );
 
   const [signedUpPlayer, setSignedUpPlayer] = useState<
     CreateUserPayload | undefined
   >();
 
   useEffect(() => {
-    if (signupState.memorableId.length === 3) {
-      doesMemorableIdExist(signupState.memorableId);
+    if (fields.memorableId.value?.length === 3) {
+      validateMemorableId(fields.memorableId.value);
     }
-  }, [signupState.memorableId]);
+  }, [fields.memorableId.value]);
 
-  const handleOnChange = (
-    action: Actions,
-    event: ChangeEvent<HTMLInputElement>,
+  const handleFieldUpdated = (
+    fieldName: keyof CreateUserPayload,
+    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    dispatch({ action, inputValue: event.target.value });
+    dispatch({
+      type: SignUpActionType.FieldUpdated,
+      payload: { field: fieldName, value: event.target.value },
+    });
   };
 
-  const handleError = (message: string) => {
+  const createUserPayload = ({
+    firstName,
+    lastName,
+    memorableId,
+    homeLocationId,
+    profilePictureUrl,
+  }: SignupState['fields']): CreateUserPayload | undefined => {
     if (
-      signupState.errorMessages.find(text => text === message) === undefined
+      !firstName.value ||
+      !lastName.value ||
+      !memorableId.value ||
+      !homeLocationId.value ||
+      !profilePictureUrl.value
     ) {
-      dispatch({ action: Actions.setError, errorMessage: message });
-      setSignedUpPlayer(undefined);
+      return undefined;
     }
+
+    return {
+      firstName: firstName.value,
+      lastName: lastName.value,
+      memorableId: memorableId.value,
+      homeLocationId: homeLocationId.value,
+      profilePictureUrl: profilePictureUrl.value,
+    };
   };
 
   const createUser = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let error = false;
-    const {
-      firstName,
-      lastName,
-      memorableId,
-      memorableIdExists,
-      profilePictureUrl,
-    } = signupState;
+    const user = createUserPayload(fields);
 
-    const user: CreateUserPayload = {
-      firstName,
-      lastName,
-      memorableId,
-      homeLocationId: 1,
-      profilePictureUrl,
-    };
-
-    if (
-      firstName.length === 0 ||
-      lastName.length === 0 ||
-      memorableId.length === 0
-    ) {
-      error = true;
-      handleError('Please fill in all the fields');
-    }
-
-    if (memorableIdExists) {
-      error = true;
-      handleError('Please fill in a unique player ID');
+    if (!user) {
+      dispatch({
+        type: SignUpActionType.AddGlobalError,
+        payload: { errorMessage: 'Please fill in all the fields' },
+      });
+      return;
     }
 
     try {
-      if (error) return;
-      await api.user.createUser(user);
-      dispatch({ action: Actions.resetState });
-      setSignedUpPlayer(user);
+      await api.user.createUser(user as CreateUserPayload);
+      dispatch({ type: SignUpActionType.ResetState });
+      setSignedUpPlayer(user as CreateUserPayload);
     } catch (e) {
-      handleError('Error creating player');
+      dispatch({
+        type: SignUpActionType.AddGlobalError,
+        payload: { errorMessage: 'Error creating player' },
+      });
     }
   };
 
-  async function doesMemorableIdExist(memorableId: string) {
+  async function validateMemorableId(memorableId: string) {
     try {
+      dispatch({
+        type: SignUpActionType.ValidatingField,
+        payload: { field: 'memorableId' },
+      });
       await api.user.getUserByMemorableId(memorableId);
-      dispatch({ action: Actions.memorableIdExists, inputCheck: true });
+      dispatch({
+        type: SignUpActionType.AddValidationError,
+        payload: {
+          errorMessage: 'Memorable Id already in use',
+          field: 'memorableId',
+        },
+      });
     } catch (e) {
-      dispatch({ action: Actions.memorableIdExists, inputCheck: false });
+      dispatch({
+        type: SignUpActionType.ValidatedField,
+        payload: { field: 'memorableId' },
+      });
     }
   }
 
-  const placeholders: Omit<SignupState, 'memorableIdExists' | 'errorMessages'> =
+  const locationOptions = [
     {
-      firstName: 'Joe',
-      lastName: 'Bloggs',
-      memorableId: 'a1b',
-    };
+      value: 0,
+      label: 'Guest',
+    },
+    ...Object.values(locations).map(({ id, name }) => ({
+      value: id,
+      label: name,
+    })),
+  ];
+
+  const placeholders: CreateUserPayload = {
+    firstName: 'Joe',
+    lastName: 'Bloggs',
+    memorableId: 'a1b',
+    homeLocationId: locationOptions[0].value,
+  };
 
   const playerPreview: User = {
     id: -1,
-    firstName: signupState.firstName || placeholders.firstName,
-    lastName: signupState.lastName || placeholders.lastName,
-    memorableId: signupState.memorableId || placeholders.memorableId,
-    profilePicture: signupState.profilePictureUrl,
-    location: 'Nottingham',
+    firstName: fields.firstName.value || placeholders.firstName,
+    lastName: fields.lastName.value || placeholders.lastName,
+    memorableId: fields.memorableId.value || placeholders.memorableId,
+    profilePicture: fields.profilePictureUrl.value,
+    location: locations[fields.homeLocationId.value || 1].name,
   };
 
   return (
@@ -118,9 +166,9 @@ export default function Index() {
       </Head>
 
       <h1 className="mb-10 text-3xl font-bold underline">Sign up</h1>
-      {signupState.errorMessages.length > 0 ? (
+      {globalErrors.length > 0 ? (
         <Banner className="mb-6 w-96" type="error">
-          {signupState.errorMessages.map((error, index) => (
+          {globalErrors.map((error, index) => (
             <Text key={index} type="p">
               {error}
             </Text>
@@ -150,22 +198,28 @@ export default function Index() {
               id="firstName"
               title="First Name"
               placeholder={placeholders.firstName}
-              value={signupState.firstName}
-              onChange={event => handleOnChange(Actions.firstNameChange, event)}
+              value={fields.firstName.value || ''}
+              onChange={event => handleFieldUpdated('firstName', event)}
               maxLength={24}
+              required={true}
             />
             <TextInput
               id="lastName"
               title="Last Name"
               placeholder={placeholders.lastName}
-              value={signupState.lastName}
-              onChange={event => handleOnChange(Actions.lastNameChange, event)}
+              value={fields.lastName.value || ''}
+              onChange={event => handleFieldUpdated('lastName', event)}
               maxLength={24}
+              required={true}
             />
             <TextInput
               id="memorableId"
               title="Memorable ID"
               placeholder={placeholders.memorableId}
+              validating={fields.memorableId.validating}
+              isValid={fields.memorableId.isValid}
+              errorMessage={fields.memorableId.errorMessage}
+              value={fields.memorableId.value || ''}
               tooltipContent={
                 <span className="flex w-32 p-2 text-center">
                   <Text type="p" className="whitespace-normal text-xs">
@@ -174,11 +228,9 @@ export default function Index() {
                   </Text>
                 </span>
               }
-              value={signupState.memorableId}
-              onChange={event =>
-                handleOnChange(Actions.memorableIdChange, event)
-              }
+              onChange={event => handleFieldUpdated('memorableId', event)}
               maxLength={3}
+              required={true}
             />
             <TextInput
               id="profilePicture"
@@ -199,11 +251,18 @@ export default function Index() {
                   </div>
                 </div>
               }
-              value={signupState.profilePictureUrl || ''}
-              onChange={event =>
-                handleOnChange(Actions.profilePictureChange, event)
-              }
+              value={fields.profilePictureUrl.value || ''}
+              onChange={event => handleFieldUpdated('profilePictureUrl', event)}
             />
+            <SelectInput
+              title="Home location"
+              required={true}
+              options={locationOptions}
+              id="homeLocation"
+              value={fields.homeLocationId.value || locationOptions[0].value}
+              onChange={event => handleFieldUpdated('homeLocationId', event)}
+            />
+
             <Button
               type="submit"
               text="Create player"

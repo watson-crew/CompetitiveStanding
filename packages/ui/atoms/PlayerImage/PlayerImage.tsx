@@ -36,6 +36,7 @@ export default function PlayerImage({
       className={twMerge(`relative ${imageSizesClasses[variant]}`, className)}
     >
       <Image
+        priority={true}
         src={imgSrc || defaultProfilePicturePath}
         alt={`${playerName}'s picture`}
         onError={_e => setImgSrc(defaultProfilePicturePath)}
