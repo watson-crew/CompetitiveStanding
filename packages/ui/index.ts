@@ -37,6 +37,7 @@ import TextInput from './molecules/TextInput/TextInput';
 import TextWithIcon from './molecules/TextWithIcon/TextWithIcon';
 import TeamHistoricResultsCard from './molecules/TeamHistoricResultsCard/TeamHistoricResultsCard';
 import TeamCard from './molecules/TeamCard/TeamCard';
+import NavBar from './molecules/NavBar/NavBar';
 
 export {
   LocationLinkCard,
@@ -48,6 +49,7 @@ export {
   TeamCard,
   TextInput,
   TextWithIcon,
+  NavBar,
 };
 
 // Organisms
