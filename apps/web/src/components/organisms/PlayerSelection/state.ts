@@ -2,7 +2,7 @@ import {
   defaultIfEmpty,
   filterFalsey,
   withIndexReplaced,
-} from '@src/uilts/collectionUtils';
+} from '@src/utils/collectionUtils';
 import { GameRequirement, User } from 'schema';
 import { LoadingPlayer } from 'ui';
 

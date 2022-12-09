@@ -10,18 +10,18 @@ import {
   InitiateMatchResponse,
   GameType,
 } from 'schema';
-import { generateTeamId } from '@src/uilts/teamUtils';
+import { generateTeamId } from '@src/utils/teamUtils';
 import {
   CommonIcons,
   PlayerWithRating,
   TeamWithRatings,
   TextWithIcon,
 } from 'ui';
-import { getSportIcon } from '@src/../../../packages/ui/utils/iconUtils';
+import { getSportIcon } from 'ui/utils/iconUtils';
 import {
   getLocationStaticPropsFactory,
   PagePropsWithLocation,
-} from '@src/uilts/staticPropUtils';
+} from '@src/utils/staticPropUtils';
 
 export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 

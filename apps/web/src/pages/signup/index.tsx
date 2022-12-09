@@ -28,7 +28,7 @@ import Head from 'next/head';
 import {
   getLocationStaticPropsFactory,
   PagePropsWithLocation,
-} from '@src/uilts/staticPropUtils';
+} from '@src/utils/staticPropUtils';
 import React from 'react';
 
 export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());

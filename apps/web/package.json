@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "next:build": "next build && next export",
+    "analyze": "cross-env ANALYZE=true next build",
+    "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
+    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
+    "next:build": "ANALYZE=true next build && next export",
     "clean": "rimraf .turbo .next node_modules out",
     "start": "next start",
     "lint": "next lint",
@@ -29,9 +32,11 @@
     "ui": "*"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^13.0.6",
     "@types/node": "^18.11.9",
     "@types/react": "^18.0.25",
     "config": "*",
+    "cross-env": "^7.0.3",
     "eslint-config-custom": "*",
     "next-transpile-modules": "^10.0.0",
     "rimraf": "^3.0.2",

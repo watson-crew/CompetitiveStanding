@@ -10,7 +10,7 @@ import { ApiContext } from '@src/context/ApiContext';
 import RecentPlayers from '../RecentPlayers/RecentPlayers';
 import { AiOutlineUsergroupAdd } from 'react-icons/ai';
 import { createInitialState, TeamActionType, teamsReducer } from './state';
-import { filterFalsey, toObj } from '@src/uilts/collectionUtils';
+import { filterFalsey, toObj } from '@src/utils/collectionUtils';
 import TeamToggle from '@src/components/atoms/TeamToggle/TeamToggle';
 import { Error } from '@src/types/common';
 import {
@@ -18,7 +18,7 @@ import {
   getNextTeamWithOpenSlot,
   isPlayerInTeam,
   minimumRequirementsMet,
-} from '@src/uilts/gamesUtils';
+} from '@src/utils/gamesUtils';
 
 type PlayerSelectionProps = {
   selectedGameType: GameType;
@@ -55,7 +55,10 @@ export default function PlayerSelection({
     setGameRequirements(newRequirements);
     teamsDispatch({
       actionType: TeamActionType.ApplyTeamCap,
-      payload: { maxNumberOfTeams: newRequirements.numberOfTeams, maxNumberOfPlayers: newRequirements.playersPerTeam },
+      payload: {
+        maxNumberOfTeams: newRequirements.numberOfTeams,
+        maxNumberOfPlayers: newRequirements.playersPerTeam,
+      },
     });
   }, [teamsEnabled, selectedGameType]);
 
