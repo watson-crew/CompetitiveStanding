@@ -1,24 +1,14 @@
-import { Location } from 'schema';
 import { Text, Link, Card, LocationLinkCard } from 'ui';
 import { getApiInstance } from '@src/context/ApiContext';
-import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
+import {
+  getLocationStaticPropsFactory,
+  PagePropsWithLocation,
+} from '@src/utils/staticPropUtils';
 
-type RootPageProps = {
-  locations: Location[];
-};
+export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
-export async function getStaticProps(
-  _context: GetStaticPropsContext,
-): Promise<GetStaticPropsResult<RootPageProps>> {
-  return {
-    props: {
-      locations: await getApiInstance().location.getAllLocations(),
-    },
-  };
-}
-
-export default function Index({ locations }: RootPageProps) {
+export default function Index({ locations }: PagePropsWithLocation) {
   return (
     <main className="flex h-screen flex-col items-center px-10 xl:px-28">
       <Head>
@@ -34,7 +24,7 @@ export default function Index({ locations }: RootPageProps) {
           Locations
         </Text>
         <section className="flex flex-wrap justify-around gap-10">
-          {locations.map(location => (
+          {Object.values(locations).map(location => (
             <LocationLinkCard key={location.id} location={location} />
           ))}
         </section>

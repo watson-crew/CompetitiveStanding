@@ -78,36 +78,34 @@ export default function Index({ location }: LocationPageProps) {
   const [rankedPlayers, setRankedPlayers] =
     useState<Record<ResultFilterType, RankedPlayer[]>>();
 
-  const fetchRecentGames = async () => {
-    const data = await api.matches.getRecentMatches({
-      locationId: location.id,
-    });
-
-    setRecentMatches(mapRecentResults(data, gameTypes));
-
-    setLoadingRecentMatches(false);
-  };
-
-  const fetchRankings = async () => {
-    // TODO: Look at where game type should come from
-    const data = await api.matches.getRankingsForLocation({
-      locationId: location.id,
-      gameTypeId: 1,
-      total: 3,
-      filterTypes: ['elo', 'winPercentage', 'wins'],
-    });
-
-    console.log(data);
-
-    setRankedPlayers(data as Record<ResultFilterType, RankedPlayer[]>);
-
-    setLoadingRankedPlayers(false);
-  };
-
   useEffect(() => {
+    const fetchRecentGames = async () => {
+      const data = await api.matches.getRecentMatches({
+        locationId: location.id,
+      });
+
+      setRecentMatches(mapRecentResults(data, gameTypes));
+
+      setLoadingRecentMatches(false);
+    };
+
+    const fetchRankings = async () => {
+      // TODO: Look at where game type should come from
+      const data = await api.matches.getRankingsForLocation({
+        locationId: location.id,
+        gameTypeId: 1,
+        total: 3,
+        filterTypes: ['elo', 'winPercentage', 'wins'],
+      });
+
+      setRankedPlayers(data as Record<ResultFilterType, RankedPlayer[]>);
+
+      setLoadingRankedPlayers(false);
+    };
+
     fetchRecentGames();
     fetchRankings();
-  }, []);
+  }, [api, location]);
 
   return (
     <main className="flex h-screen flex-col items-center">

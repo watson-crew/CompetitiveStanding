@@ -1,74 +1,59 @@
 import { useContext, useEffect, useState } from 'react';
-import { useQueryState, queryTypes } from 'next-usequerystate'
+import { useQueryState, queryTypes } from 'next-usequerystate';
 import PlayerSelection from '@organisms/PlayerSelection/PlayerSelection';
-import { ApiContext } from '@src/context/ApiContext';
+import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import GameComponent from '@src/components/organisms/GameComponent/GameComponent';
 import Head from 'next/head';
 import {
   TeamHistoricResult,
   User,
-  Location,
   InitiateMatchResponse,
   GameType,
 } from 'schema';
-import { generateTeamId } from '@src/uilts/teamUtils';
-import { PlayerWithRating, TeamWithRatings, TextWithIcon } from 'ui';
-import { getSportIcon } from '@src/../../../packages/ui/utils/iconUtils';
+import { generateTeamId } from '@src/utils/teamUtils';
+import {
+  CommonIcons,
+  PlayerWithRating,
+  TeamWithRatings,
+  TextWithIcon,
+} from 'ui';
+import { getSportIcon } from 'ui/utils/iconUtils';
+import {
+  getLocationStaticPropsFactory,
+  PagePropsWithLocation,
+} from '@src/utils/staticPropUtils';
 
-export default function Index() {
-  // Update to use selected location
-  function useSelectedLocation(): Location {
-    return {
-      id: 1,
-      name: 'Nottingham',
-      urlPath: 'nottingham',
-      playerCount: 10,
-      availableGames: [
-        {
-          id: 1,
-          name: 'Pool',
-          requirements: {
-            min: {
-              playersPerTeam: 1,
-              numberOfTeams: 2,
-            },
-            max: {
-              playersPerTeam: 4,
-              numberOfTeams: 3
-            },
-          },
-        },
-        {
-          id: 2,
-          name: 'Darts',
-          requirements: {
-            min: {
-              playersPerTeam: 1,
-              numberOfTeams: 2,
-            },
-            max: {
-              playersPerTeam: 4,
-              numberOfTeams: 3
-            },
-          },
-        },
-      ],
-    };
-  }
+export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
-  const [selectedLocation] = useState(useSelectedLocation());
+export default function Index({ locations }: PagePropsWithLocation) {
+  const [selectedLocationId] = useQueryState(
+    'location',
+    queryTypes.integer.withDefault(Object.values(locations)[0].id),
+  );
+  const [selectedLocation, setSelectedLocation] = useState(
+    locations[selectedLocationId],
+  );
+
   const [selectedGameType, setSelectedGameType] = useState<GameType>(
-    selectedLocation.availableGames[0]
-  )
+    selectedLocation.availableGames[0],
+  );
   const client = useContext(ApiContext);
-  const [gameQuery] = useQueryState('game', queryTypes.integer.withDefault(selectedLocation.availableGames[0].id))
-  const [locationQuery] = useQueryState('location')
-  console.log(locationQuery)
+  const [selectedGameTypeId] = useQueryState(
+    'game',
+    queryTypes.integer.withDefault(selectedLocation.availableGames[0].id),
+  );
 
   useEffect(() => {
-    const selectedGame = selectedLocation.availableGames.find(game => game.id === gameQuery) || selectedLocation.availableGames[0]
-    setSelectedGameType(selectedGame)
-  }, [gameQuery, selectedLocation])
+    setSelectedLocation(locations[selectedLocationId]);
+  }, [locations, selectedLocationId]);
+
+  useEffect(() => {
+    const selectedGame =
+      selectedLocation.availableGames.find(
+        game => game.id === selectedGameTypeId,
+      ) || selectedLocation.availableGames[0];
+    setSelectedGameType(selectedGame);
+  }, [selectedGameTypeId, selectedLocation]);
 
   // Use a proper react hook to load this from somewhere
   const [matchId, setMatchId] = useState<number>();
@@ -141,15 +126,20 @@ export default function Index() {
       <Head>
         <title>Competitive Standing | Play</title>
       </Head>
-      <h1 className="text-3xl font-bold underline">Competitive standing</h1>
+      <h1 className="text-3xl font-bold underline">Lobby</h1>
 
-      <TextWithIcon
+      <div className="flex">
+        <TextWithIcon textProps={{ type: 'p' }} icon={CommonIcons.HomeLocation}>
+          {selectedLocation.name}
+        </TextWithIcon>
+
+        <TextWithIcon
           textProps={{ type: 'p' }}
           icon={getSportIcon(selectedGameType.id)}
         >
           {selectedGameType.name}
         </TextWithIcon>
-
+      </div>
       {shouldDisplayPlayerSelection() && (
         <PlayerSelection
           selectedGameType={selectedGameType}
