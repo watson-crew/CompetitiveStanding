@@ -7,6 +7,7 @@ import {
   TextWithIcon,
   CommonIcons,
   TeamWithRatings,
+  Card,
 } from 'ui';
 import { RankingChanges, Team, TeamHistoricResult, User } from 'schema';
 import GameWonModal from '../GameWonModal/GameWonModal';
@@ -40,6 +41,7 @@ export default function GameComponent({
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
   const [gameResults, setGameResults] = useState<RankingChanges>();
   const [winningTeam, setWinningTeam] = useState<TeamWithRatings>();
+  const [breaking, setBreaking] = useState<string | undefined>('');
 
   useEffect(() => {
     const interval = setInterval(
@@ -57,6 +59,35 @@ export default function GameComponent({
   const abandonGame = () => {
     abandonMatch();
   };
+
+  useEffect(() => {
+    const breakingPlayer = () => {
+      const sortedTeams = [...teams].sort(sortByProperty('cumulativeTeamId'));
+      const gamesPlayed = sortedTeams.reduce(
+        (acc, val) => acc + (historicData[val.cumulativeTeamId].wins || 0),
+        0,
+      );
+      const teamIndex = whoStarts(sortedTeams, gamesPlayed);
+      const players = [...sortedTeams[teamIndex].players].sort(
+        sortByProperty('memorableId'),
+      );
+
+      return players[whoStarts(players, Math.floor(gamesPlayed / teams.length))]
+        .firstName;
+    };
+
+    setBreaking(breakingPlayer());
+  }, [teams, historicData]);
+
+  function whoStarts<T>(array: T[], gamesPlayed: number): number {
+    return (gamesPlayed + array.length) % array.length;
+  }
+
+  function sortByProperty(property: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (a: any, b: any) =>
+      a[property] > b[property] ? 1 : a[property] < b[property] ? -1 : 0;
+  }
 
   const setWinner = async (team: TeamWithRatings) => {
     const changes = await setMatchWinner(team.cumulativeTeamId);
@@ -121,6 +152,9 @@ export default function GameComponent({
           />
         ))}
       </section>
+      <Card className="h-min-content text-m mt-2 w-full text-center font-bold">
+        Breaking: {breaking}
+      </Card>
     </section>
   );
 }
