@@ -11,7 +11,12 @@ import {
   GameType,
 } from 'schema';
 import { generateTeamId } from '@src/uilts/teamUtils';
-import { PlayerWithRating, TeamWithRatings, TextWithIcon } from 'ui';
+import {
+  CommonIcons,
+  PlayerWithRating,
+  TeamWithRatings,
+  TextWithIcon,
+} from 'ui';
 import { getSportIcon } from '@src/../../../packages/ui/utils/iconUtils';
 import {
   getLocationStaticPropsFactory,
@@ -23,7 +28,7 @@ export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 export default function Index({ locations }: PagePropsWithLocation) {
   const [selectedLocationId] = useQueryState(
     'location',
-    queryTypes.integer.withDefault(locations[0].id),
+    queryTypes.integer.withDefault(Object.values(locations)[0].id),
   );
   const [selectedLocation, setSelectedLocation] = useState(
     locations[selectedLocationId],
@@ -33,7 +38,7 @@ export default function Index({ locations }: PagePropsWithLocation) {
     selectedLocation.availableGames[0],
   );
   const client = useContext(ApiContext);
-  const [gameQuery] = useQueryState(
+  const [selectedGameTypeId] = useQueryState(
     'game',
     queryTypes.integer.withDefault(selectedLocation.availableGames[0].id),
   );
@@ -44,10 +49,11 @@ export default function Index({ locations }: PagePropsWithLocation) {
 
   useEffect(() => {
     const selectedGame =
-      selectedLocation.availableGames.find(game => game.id === gameQuery) ||
-      selectedLocation.availableGames[0];
+      selectedLocation.availableGames.find(
+        game => game.id === selectedGameTypeId,
+      ) || selectedLocation.availableGames[0];
     setSelectedGameType(selectedGame);
-  }, [gameQuery, selectedLocation]);
+  }, [selectedGameTypeId, selectedLocation]);
 
   // Use a proper react hook to load this from somewhere
   const [matchId, setMatchId] = useState<number>();
@@ -120,15 +126,20 @@ export default function Index({ locations }: PagePropsWithLocation) {
       <Head>
         <title>Competitive Standing | Play</title>
       </Head>
-      <h1 className="text-3xl font-bold underline">Competitive standing</h1>
+      <h1 className="text-3xl font-bold underline">Lobby</h1>
 
-      <TextWithIcon
-        textProps={{ type: 'p' }}
-        icon={getSportIcon(selectedGameType.id)}
-      >
-        {selectedGameType.name}
-      </TextWithIcon>
+      <div className="flex">
+        <TextWithIcon textProps={{ type: 'p' }} icon={CommonIcons.HomeLocation}>
+          {selectedLocation.name}
+        </TextWithIcon>
 
+        <TextWithIcon
+          textProps={{ type: 'p' }}
+          icon={getSportIcon(selectedGameType.id)}
+        >
+          {selectedGameType.name}
+        </TextWithIcon>
+      </div>
       {shouldDisplayPlayerSelection() && (
         <PlayerSelection
           selectedGameType={selectedGameType}

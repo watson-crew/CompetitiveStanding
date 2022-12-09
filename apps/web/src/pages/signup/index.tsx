@@ -45,18 +45,41 @@ export default function Index({ locations }: PagePropsWithLocation) {
   >();
 
   useEffect(() => {
+    async function validateMemorableId(memorableId: string) {
+      try {
+        dispatch({
+          type: SignUpActionType.ValidatingField,
+          payload: { field: 'memorableId' },
+        });
+        await api.user.getUserByMemorableId(memorableId);
+        dispatch({
+          type: SignUpActionType.AddValidationError,
+          payload: {
+            errorMessage: 'Memorable Id already in use',
+            field: 'memorableId',
+          },
+        });
+      } catch (e) {
+        dispatch({
+          type: SignUpActionType.ValidatedField,
+          payload: { field: 'memorableId' },
+        });
+      }
+    }
+
     if (fields.memorableId.value?.length === 3) {
       validateMemorableId(fields.memorableId.value);
     }
-  }, [fields.memorableId.value]);
+  }, [fields.memorableId.value, api]);
 
   const handleFieldUpdated = (
     fieldName: keyof CreateUserPayload,
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    parser: (value: string) => string | number = str => str,
   ) => {
     dispatch({
       type: SignUpActionType.FieldUpdated,
-      payload: { field: fieldName, value: event.target.value },
+      payload: { field: fieldName, value: parser(event.target.value) },
     });
   };
 
@@ -67,13 +90,8 @@ export default function Index({ locations }: PagePropsWithLocation) {
     homeLocationId,
     profilePictureUrl,
   }: SignupState['fields']): CreateUserPayload | undefined => {
-    if (
-      !firstName.value ||
-      !lastName.value ||
-      !memorableId.value ||
-      !homeLocationId.value ||
-      !profilePictureUrl.value
-    ) {
+    // This can be done better
+    if (!firstName.value || !lastName.value || !memorableId.value) {
       return undefined;
     }
 
@@ -81,13 +99,16 @@ export default function Index({ locations }: PagePropsWithLocation) {
       firstName: firstName.value,
       lastName: lastName.value,
       memorableId: memorableId.value,
-      homeLocationId: homeLocationId.value,
+      homeLocationId: parseInt(String(homeLocationId.value)),
       profilePictureUrl: profilePictureUrl.value,
     };
   };
 
   const createUser = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    dispatch({ type: SignUpActionType.ResetGlobalErrors });
+
     const user = createUserPayload(fields);
 
     if (!user) {
@@ -110,38 +131,10 @@ export default function Index({ locations }: PagePropsWithLocation) {
     }
   };
 
-  async function validateMemorableId(memorableId: string) {
-    try {
-      dispatch({
-        type: SignUpActionType.ValidatingField,
-        payload: { field: 'memorableId' },
-      });
-      await api.user.getUserByMemorableId(memorableId);
-      dispatch({
-        type: SignUpActionType.AddValidationError,
-        payload: {
-          errorMessage: 'Memorable Id already in use',
-          field: 'memorableId',
-        },
-      });
-    } catch (e) {
-      dispatch({
-        type: SignUpActionType.ValidatedField,
-        payload: { field: 'memorableId' },
-      });
-    }
-  }
-
-  const locationOptions = [
-    {
-      value: 0,
-      label: 'Guest',
-    },
-    ...Object.values(locations).map(({ id, name }) => ({
-      value: id,
-      label: name,
-    })),
-  ];
+  const locationOptions = Object.values(locations).map(({ id, name }) => ({
+    value: id,
+    label: name,
+  }));
 
   const placeholders: CreateUserPayload = {
     firstName: 'Joe',
@@ -260,7 +253,9 @@ export default function Index({ locations }: PagePropsWithLocation) {
               options={locationOptions}
               id="homeLocation"
               value={fields.homeLocationId.value || locationOptions[0].value}
-              onChange={event => handleFieldUpdated('homeLocationId', event)}
+              onChange={event =>
+                handleFieldUpdated('homeLocationId', event, id => parseInt(id))
+              }
             />
 
             <Button
