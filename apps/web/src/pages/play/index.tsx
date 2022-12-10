@@ -153,6 +153,8 @@ export default function Index({ locations }: PagePropsWithLocation) {
           matchId={matchId!}
           historicData={historicData}
           teams={teams}
+          gameLocation={selectedLocation}
+          gameType={selectedGameType}
           abandonMatch={abandonMatch}
           finishMatch={clearGameDetails}
           setMatchWinner={setWinner}

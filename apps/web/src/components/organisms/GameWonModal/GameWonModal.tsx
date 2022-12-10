@@ -1,21 +1,30 @@
 import {
   Button,
   Card,
+  CommonIcons,
   PlayerWithRating,
   TeamWithRatings,
   Text,
+  TextWithIcon,
   WithDefaultProps,
 } from 'ui';
 import Modal from 'react-modal';
-import { RankingChanges } from 'schema';
+import { GameType, RankingChanges, Location } from 'schema';
 import { PlayerWithElo } from 'ui';
+import dayjs, { Dayjs } from 'dayjs';
+import { formatDuration } from 'ui/utils/timeUtils';
+import { getSportIcon } from 'ui/utils/iconUtils';
 
 type GameWonModalProps = WithDefaultProps<{
-  playAgain: () => void;
+  rematch: () => void;
+  teamSelection: () => void;
   finish: () => void;
   winningTeam?: TeamWithRatings;
   allTeams: TeamWithRatings[];
   ratingChanges?: RankingChanges;
+  gameStartTime: Dayjs;
+  gameLocation: Location;
+  gameType: GameType;
 }>;
 
 const getModalTitle = ({ players }: TeamWithRatings) => {
@@ -50,12 +59,17 @@ const withEloChange = (
 
 export default function GameWonModal({
   winningTeam,
-  playAgain,
+  rematch,
+  teamSelection,
   finish,
   allTeams,
   ratingChanges,
+  gameStartTime,
+  gameLocation,
+  gameType,
 }: GameWonModalProps) {
   const isOpen = !!winningTeam;
+  const gameEndTime = dayjs();
 
   const winningPlayers =
     winningTeam?.players.map(player => withEloChange(player, ratingChanges)) ||
@@ -92,6 +106,26 @@ export default function GameWonModal({
             <Text type="h1">🎉 {getModalTitle(winningTeam)} 🎉</Text>
           </section>
 
+          <section className="mb-4 flex justify-around">
+            <TextWithIcon
+              icon={CommonIcons.HomeLocation}
+              textProps={{ type: 'p' }}
+            >
+              {gameLocation.name}
+            </TextWithIcon>
+
+            <TextWithIcon
+              icon={getSportIcon(gameType.id)}
+              textProps={{ type: 'p' }}
+            >
+              {gameType.name}
+            </TextWithIcon>
+
+            <TextWithIcon icon={CommonIcons.Clock} textProps={{ type: 'p' }}>
+              {formatDuration(gameStartTime, gameEndTime, 'm[m] ss[s]')}
+            </TextWithIcon>
+          </section>
+
           <section className="mb-10">
             <Card className="mb-10 w-full bg-emerald-100">
               <Text type="h2" className="mb-2">
@@ -119,8 +153,13 @@ export default function GameWonModal({
           </section>
 
           <section className="flex justify-center gap-10">
-            <Button className="w-32" text="Play again" onClick={playAgain} />
-            <Button className="w-32" text="Finish" onClick={finish} />
+            <Button className="w-36 p-3" text="Rematch" onClick={rematch} />
+            <Button
+              className="w-36 p-3"
+              text="New teams"
+              onClick={teamSelection}
+            />
+            <Button className="w-36 p-3" text="Finish" onClick={finish} />
           </section>
         </div>
       )}

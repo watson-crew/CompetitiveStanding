@@ -4,17 +4,25 @@ import dayjs, { Dayjs } from 'dayjs';
 import {
   TeamHistoricResultsCard,
   Button,
-  TextWithIcon,
-  CommonIcons,
   TeamWithRatings,
   Card,
+  Timer,
 } from 'ui';
-import { RankingChanges, Team, TeamHistoricResult, User } from 'schema';
+import {
+  GameType,
+  Location,
+  RankingChanges,
+  Team,
+  TeamHistoricResult,
+  User,
+} from 'schema';
 import GameWonModal from '../GameWonModal/GameWonModal';
+import { useRouter } from 'next/router';
 
 enum GameEndType {
-  NewGame = 'NewGame',
-  Finish = 'Finish',
+  REMATCH,
+  NEW_TEAMS,
+  FINISH,
 }
 
 type GameComponentProps = {
@@ -25,6 +33,8 @@ type GameComponentProps = {
   finishMatch: () => void;
   playAgain: (teams: User[][]) => Promise<void>;
   setMatchWinner: (cumulativeTeamId: string) => Promise<RankingChanges>;
+  gameLocation: Location;
+  gameType: GameType;
 };
 
 export default function GameComponent({
@@ -34,27 +44,15 @@ export default function GameComponent({
   finishMatch,
   setMatchWinner,
   playAgain,
+  gameLocation,
+  gameType,
 }: GameComponentProps) {
   // TODO: Refactor to work with more than 2 teams
-
+  const router = useRouter();
   const [gameStartTime, setGameStartTime] = useState<Dayjs>(dayjs());
-  const [timeElapsed, setTimeElapsed] = useState<number>(0);
   const [gameResults, setGameResults] = useState<RankingChanges>();
   const [winningTeam, setWinningTeam] = useState<TeamWithRatings>();
   const [breaking, setBreaking] = useState<string | undefined>('');
-
-  useEffect(() => {
-    const interval = setInterval(
-      () => setTimeElapsed(dayjs().diff(gameStartTime)),
-      1000,
-    );
-
-    if (winningTeam) clearInterval(interval);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [gameStartTime, winningTeam]);
 
   const abandonGame = () => {
     abandonMatch();
@@ -96,25 +94,26 @@ export default function GameComponent({
   };
 
   const handleGameEnd = async (endState: GameEndType) => {
-    if (endState === GameEndType.Finish) {
-      finishMatch();
-    } else if (endState === GameEndType.NewGame) {
-      const participatingTeams = teams.map(
-        (team: Team) => team.players as User[],
-      );
-      try {
-        await playAgain(participatingTeams);
-        setGameStartTime(dayjs());
-        setTimeElapsed(0);
-      } catch (e) {}
+    switch (endState) {
+      case GameEndType.NEW_TEAMS:
+        finishMatch();
+        setWinningTeam(undefined);
+        break;
+      case GameEndType.REMATCH:
+        const participatingTeams = teams.map(
+          (team: Team) => team.players as User[],
+        );
+        try {
+          await playAgain(participatingTeams);
+          setGameStartTime(dayjs());
+          setWinningTeam(undefined);
+        } catch (e) {}
+        break;
+      case GameEndType.FINISH:
+        router.push(`/location/${gameLocation.urlPath}`);
+        break;
     }
-    // setIsGameFinished(false);
-    setWinningTeam(undefined);
   };
-
-  const duration = dayjs
-    .duration(timeElapsed, 'milliseconds')
-    .format('m[m] ss[s]');
 
   return (
     <section className="h-full w-full px-10">
@@ -122,19 +121,17 @@ export default function GameComponent({
       <GameWonModal
         allTeams={teams}
         winningTeam={winningTeam}
-        finish={() => handleGameEnd(GameEndType.Finish)}
-        playAgain={() => handleGameEnd(GameEndType.NewGame)}
+        teamSelection={() => handleGameEnd(GameEndType.NEW_TEAMS)}
+        rematch={() => handleGameEnd(GameEndType.REMATCH)}
+        finish={() => handleGameEnd(GameEndType.FINISH)}
         ratingChanges={gameResults}
+        gameStartTime={gameStartTime}
+        gameType={gameType}
+        gameLocation={gameLocation}
       />
 
       <div id="control-bar" className="flex justify-end">
-        <TextWithIcon
-          textProps={{ type: 'p' }}
-          icon={CommonIcons.Clock}
-          className="pr-10"
-        >
-          {duration}
-        </TextWithIcon>
+        <Timer className="pr-10" startTime={gameStartTime} isCounting={true} />
         <Button
           text="Abandon"
           onClick={abandonGame}

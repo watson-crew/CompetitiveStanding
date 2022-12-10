@@ -38,6 +38,7 @@ import SelectInput from './molecules/SelectInput/SelectInput';
 import TextWithIcon from './molecules/TextWithIcon/TextWithIcon';
 import TeamHistoricResultsCard from './molecules/TeamHistoricResultsCard/TeamHistoricResultsCard';
 import TeamCard from './molecules/TeamCard/TeamCard';
+import Timer from './molecules/Timer/Timer';
 
 export {
   LocationLinkCard,
@@ -50,6 +51,7 @@ export {
   TextInput,
   SelectInput,
   TextWithIcon,
+  Timer,
 };
 
 // Organisms
