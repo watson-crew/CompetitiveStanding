@@ -134,7 +134,7 @@ export default function GameComponent({
         <Timer
           className="pr-10"
           startTime={gameStartTime}
-          isCounting={!!winningTeam}
+          isCounting={winningTeam === undefined}
         />
         <Button
           text="Abandon"
