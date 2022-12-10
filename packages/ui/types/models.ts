@@ -1,4 +1,4 @@
-import { GameType, Team, TeamHistoricResult, User } from 'schema';
+import { GameType, Team, User } from 'schema';
 import { Dayjs } from 'dayjs';
 import { WithLoadingProps } from './react';
 
@@ -9,7 +9,6 @@ export type PlayerWithRating = User & {
 
 export type TeamWithRatings = Omit<Team, 'players'> & {
   players: PlayerWithRating[];
-  historicResults: TeamHistoricResult;
 };
 
 export type GameResult = {

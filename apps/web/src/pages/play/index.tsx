@@ -24,6 +24,7 @@ import {
 } from '@src/utils/staticPropUtils';
 import { useDispatch } from 'react-redux';
 import { setMatchInProgress } from '@src/store/reducers/matchSlice';
+import { ParticipatingTeam } from '@src/types/games';
 
 export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
@@ -80,7 +81,7 @@ export default function Index({ locations }: PagePropsWithLocation) {
           participatingTeams: teams.map(team => generateTeamId(team)),
         });
 
-      const teamRecords: TeamWithRatings[] = teams.map(team => {
+      const teamRecords: ParticipatingTeam[] = teams.map(team => {
         const teamId = generateTeamId(team);
         return {
           cumulativeTeamId: teamId,
