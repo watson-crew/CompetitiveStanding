@@ -95,8 +95,7 @@ export interface InitiateMatchResponse {
   historicResults: Record<string, TeamHistoricResult>;
   /** @example 519 */
   matchId: number;
-  /** @example {"abc":980,"xyz":1214} */
-  playerElos: Record<string, number>;
+  playerElos: any;
 }
 
 export type InitiateNewMatchData = InitiateMatchResponse;
@@ -131,6 +130,9 @@ export interface Location {
   /** @example "nottingham" */
   urlPath: string;
 }
+
+/** @example {"abc":980,"xyz":1214} */
+export type PlayerRankings = Record<string, number>;
 
 export interface RankedPlayer {
   /** @example "1200" */
