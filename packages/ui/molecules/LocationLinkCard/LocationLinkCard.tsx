@@ -27,6 +27,7 @@ export default function LocationLinkCard({ location }: LocationLinkCardProps) {
         <article>
           <div className="relative h-32 w-full rounded-xl">
             <Image
+              priority={true}
               src={`/locations/${urlPath}.jpeg`}
               fill={true}
               alt={'TODO'}

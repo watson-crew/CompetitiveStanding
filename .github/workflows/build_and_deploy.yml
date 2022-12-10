@@ -109,8 +109,9 @@ jobs:
         id: changed-migration-files
         uses: tj-actions/changed-files@v34
         with:
+          since_last_remote_commit: true
           files: "**/migrations/**"
-          base_sha: ${{ github.event.before }}
+          fetch_depth: 40
       - name: Load node_modules
         if: steps.changed-migration-files.outputs.any_changed == 'true'
         uses: actions/cache@v3
@@ -137,7 +138,8 @@ jobs:
         uses: tj-actions/changed-files@v34
         with:
           files: "**/seed/**"
-          base_sha: ${{ github.event.before }}
+          since_last_remote_commit: true
+          fetch_depth: 40
       - name: Load node_modules
         if: steps.changed-seed-files.outputs.any_changed == 'true'
         uses: actions/cache@v3
