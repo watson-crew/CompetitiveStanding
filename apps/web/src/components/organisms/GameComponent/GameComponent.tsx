@@ -131,7 +131,11 @@ export default function GameComponent({
       />
 
       <div id="control-bar" className="flex justify-end">
-        <Timer className="pr-10" startTime={gameStartTime} isCounting={true} />
+        <Timer
+          className="pr-10"
+          startTime={gameStartTime}
+          isCounting={!!winningTeam}
+        />
         <Button
           text="Abandon"
           onClick={abandonGame}
