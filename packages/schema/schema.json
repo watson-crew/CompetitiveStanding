@@ -541,14 +541,7 @@
             }
           },
           "playerElos": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "example": {
-              "abc": 980,
-              "xyz": 1214
-            }
+            "#ref": "#/components/schemas/PlayerRankings"
           }
         }
       },
@@ -584,6 +577,16 @@
             "type": "integer",
             "example": 1
           }
+        }
+      },
+      "PlayerRankings": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "example": {
+          "abc": 980,
+          "xyz": 1214
         }
       },
       "RankedPlayer": {

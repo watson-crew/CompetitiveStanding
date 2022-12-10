@@ -22,10 +22,15 @@ import {
   getLocationStaticPropsFactory,
   PagePropsWithLocation,
 } from '@src/utils/staticPropUtils';
+import { useDispatch } from 'react-redux';
+import { setMatchInProgress } from '@src/store/reducers/matchSlice';
+import { ParticipatingTeam } from '@src/types/games';
 
 export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
 export default function Index({ locations }: PagePropsWithLocation) {
+  const globalStateDispatch = useDispatch();
+
   const [selectedLocationId] = useQueryState(
     'location',
     queryTypes.integer.withDefault(Object.values(locations)[0].id),
@@ -76,9 +81,10 @@ export default function Index({ locations }: PagePropsWithLocation) {
           participatingTeams: teams.map(team => generateTeamId(team)),
         });
 
-      const teamRecords: TeamWithRatings[] = teams.map(team => {
+      const teamRecords: ParticipatingTeam[] = teams.map(team => {
+        const teamId = generateTeamId(team);
         return {
-          cumulativeTeamId: generateTeamId(team),
+          cumulativeTeamId: teamId,
           players: team.map(
             player =>
               ({
@@ -86,8 +92,18 @@ export default function Index({ locations }: PagePropsWithLocation) {
                 elo: playerElos[player.memorableId],
               } as PlayerWithRating),
           ),
+          historicResults: historicResults[teamId],
         };
       });
+
+      globalStateDispatch(
+        setMatchInProgress({
+          gameType: selectedGameType,
+          location: selectedLocation,
+          matchId: matchId,
+          participatingTeams: teamRecords,
+        }),
+      );
 
       setMatchId(matchId);
       setHistoricData(historicResults);
