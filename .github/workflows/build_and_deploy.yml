@@ -117,6 +117,7 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+          fetch_depth: 40
       - name: Run database migration
         if: steps.changed-migration-files.outputs.any_changed == 'true'
         run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run deploy
@@ -138,6 +139,7 @@ jobs:
         with:
           files: "**/seed/**"
           base_sha: ${{ github.event.before }}
+          fetch_depth: 40
       - name: Load node_modules
         if: steps.changed-seed-files.outputs.any_changed == 'true'
         uses: actions/cache@v3
