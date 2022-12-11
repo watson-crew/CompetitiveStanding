@@ -23,5 +23,5 @@
       "outputs": []
     }
   },
-  "globalEnv": ["NODE_ENV"]
+  "globalEnv": ["NODE_ENV", "API_BASE_URL", "ANALYZE"]
 }

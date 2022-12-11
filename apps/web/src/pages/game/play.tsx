@@ -34,7 +34,20 @@ enum GameEndType {
   FINISH,
 }
 
-export default function Current() {
+function NoOngoingGameState() {
+  return (
+    <main className="flex h-screen w-full items-center justify-center">
+      <div className="text-center">
+        <Text type="p" className="mb-5">
+          {"Looks like there's no active game. Hold on while we redirect you."}
+        </Text>
+        <LoadingSpinner />
+      </div>
+    </main>
+  );
+}
+
+export default function Play() {
   const router = useRouter();
   const client = useContext(ApiContext);
   const globalDispatch = useDispatch();
@@ -61,18 +74,7 @@ export default function Current() {
   }, [ongoingGame]);
 
   if (!ongoingGame) {
-    return (
-      <main className="flex h-screen w-full items-center justify-center">
-        <div className="text-center">
-          <Text type="p" className="mb-5">
-            {
-              "Looks like there's no active game. Hold on while we redirect you."
-            }
-          </Text>
-          <LoadingSpinner />
-        </div>
-      </main>
-    );
+    return NoOngoingGameState();
   }
 
   const gameFinished = !!gameResults?.winningTeam;

@@ -5,7 +5,7 @@ import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import Head from 'next/head';
 import { User, InitiateMatchResponse, GameType } from 'schema';
 import { generateTeamId } from '@src/utils/teamUtils';
-import { CommonIcons, TextWithIcon } from 'ui';
+import { CommonIcons, LoadingSpinner, Text, TextWithIcon } from 'ui';
 import { getSportIcon } from 'ui/utils/iconUtils';
 import {
   getLocationStaticPropsFactory,
@@ -24,6 +24,21 @@ import { Routes } from '@src/types/routes';
 
 export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
+function OngoingGameState() {
+  return (
+    <main className="flex h-screen w-full items-center justify-center">
+      <div className="text-center">
+        <Text type="p" className="mb-5">
+          {
+            "Looks like there's already a game in progress. Hold on while we redirect you."
+          }
+        </Text>
+        <LoadingSpinner />
+      </div>
+    </main>
+  );
+}
+
 export default function Index({ locations }: PagePropsWithLocation) {
   const router = useRouter();
   const globalStateDispatch = useDispatch();
@@ -31,7 +46,9 @@ export default function Index({ locations }: PagePropsWithLocation) {
   const ongoingMatch = useSelector(selectMatchInProgress);
 
   useEffect(() => {
-    router.push(Routes.CurrentMatch);
+    if (ongoingMatch) {
+      router.push(Routes.CurrentMatch);
+    }
   }, [ongoingMatch, router]);
 
   const [selectedLocationId] = useQueryState(
@@ -101,6 +118,10 @@ export default function Index({ locations }: PagePropsWithLocation) {
       throw err;
     }
   };
+
+  if (ongoingMatch) {
+    return OngoingGameState;
+  }
 
   return (
     <main className="flex h-screen flex-col items-center px-10 xl:px-28">
