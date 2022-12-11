@@ -1,8 +1,6 @@
-import transpileModules from 'next-transpile-modules'
-import bundleAnalyzer from '@next/bundle-analyzer'
-
-const withTM = transpileModules(['ui', 'schema']);
-const withBundleAnalyzer = bundleAnalyzer({
+/* eslint-disable @typescript-eslint/no-var-requires */
+const withTM = require('next-transpile-modules')(['ui', 'schema']);
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 })
 
