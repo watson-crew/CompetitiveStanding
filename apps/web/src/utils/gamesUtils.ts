@@ -1,7 +1,59 @@
-import { LoadingPlayer } from 'ui';
-import { GameTeam } from '@src/types/games';
-import { filterFalsey } from './collectionUtils';
-import { GameRequirement } from 'schema';
+import { LoadingPlayer, PlayerWithRating } from 'ui';
+import { GameTeam, ParticipatingTeam } from '@src/types/games';
+import { filterFalsey, sortByProperty } from './collectionUtils';
+import {
+  GameRequirement,
+  PlayerRatings,
+  TeamHistoricResult,
+  User,
+} from 'schema';
+
+export function withUpdatedDetails(
+  participatingTeams: ParticipatingTeam[],
+  updatedRatings: PlayerRatings,
+  updatedResults: Record<string, TeamHistoricResult>,
+): ParticipatingTeam[] {
+  return participatingTeams.map(({ cumulativeTeamId, players }) => ({
+    cumulativeTeamId,
+    players: withRatings(players, updatedRatings),
+    historicResults: updatedResults[cumulativeTeamId],
+  }));
+}
+
+export function withRatings(
+  players: User[],
+  playerRatings: PlayerRatings,
+): PlayerWithRating[] {
+  return players.map(player => ({
+    ...player,
+    elo: playerRatings[player.memorableId],
+  }));
+}
+
+export function getStartingPlayer(teams: ParticipatingTeam[]): User {
+  const gamesPlayed = teams.reduce(
+    (prev, { historicResults }) => prev + historicResults.wins,
+    0,
+  );
+
+  const startingTeam = getStarting(teams, 'cumulativeTeamId', gamesPlayed);
+
+  return getStarting(
+    startingTeam.players,
+    'memorableId',
+    Math.floor(gamesPlayed / teams.length),
+  );
+}
+
+export function getStarting<T>(
+  array: T[],
+  sortKey: keyof T,
+  gamesPlayed: number,
+): T {
+  return sortByProperty(array, sortKey)[
+    (gamesPlayed + array.length) % array.length
+  ];
+}
 
 export function hasOpenSlot(arr: GameTeam): boolean {
   return arr.some(item => item.playerDetails === undefined);

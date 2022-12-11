@@ -17,6 +17,7 @@ import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { useContext, useEffect, useState } from 'react';
 import mapRecentResults from '@src/mappers/recentResultsMapper';
 import Head from 'next/head';
+import { buildLobbyUrl } from '@src/utils/routingUtils';
 
 type LocationPageProps = {
   location: Location;
@@ -119,8 +120,8 @@ export default function Index({ location }: LocationPageProps) {
 
       <Card className="grid h-full w-full grid-flow-col grid-rows-4 gap-4">
         <AvailableGamesOverview
-          locationId={location.id}
           availableGames={location.availableGames}
+          buildGameLink={game => buildLobbyUrl(location, game)}
           className="col-span-2 row-span-2 bg-red-100"
         />
 

@@ -242,7 +242,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RankingChanges"
+                  "$ref": "#/components/schemas/RatingChanges"
                 }
               }
             }
@@ -459,7 +459,7 @@
             "example": 1
           },
           "playerRatingChanges": {
-            "$ref": "#/components/schemas/RankingChanges"
+            "$ref": "#/components/schemas/RatingChanges"
           }
         }
       },
@@ -516,7 +516,7 @@
       },
       "InitiateMatchResponse": {
         "type": "object",
-        "required": ["matchId", "historicResults", "playerElos"],
+        "required": ["matchId", "historicResults", "playerRatings"],
         "properties": {
           "matchId": {
             "type": "integer",
@@ -540,8 +540,8 @@
               }
             }
           },
-          "playerElos": {
-            "#ref": "#/components/schemas/PlayerRankings"
+          "playerRatings": {
+            "$ref": "#/components/schemas/PlayerRatings"
           }
         }
       },
@@ -579,7 +579,7 @@
           }
         }
       },
-      "PlayerRankings": {
+      "PlayerRatings": {
         "type": "object",
         "additionalProperties": {
           "type": "integer"
@@ -614,7 +614,7 @@
           }
         }
       },
-      "RankingChanges": {
+      "RatingChanges": {
         "type": "object",
         "additionalProperties": {
           "type": "integer"
@@ -661,7 +661,7 @@
       },
       "TeamHistoricResult": {
         "type": "object",
-        "required": ["win"],
+        "required": ["wins"],
         "properties": {
           "wins": {
             "type": "integer"

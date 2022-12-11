@@ -2,34 +2,37 @@ import { useContext, useEffect, useState } from 'react';
 import { useQueryState, queryTypes } from 'next-usequerystate';
 import PlayerSelection from '@organisms/PlayerSelection/PlayerSelection';
 import { ApiContext, getApiInstance } from '@src/context/ApiContext';
-import GameComponent from '@src/components/organisms/GameComponent/GameComponent';
 import Head from 'next/head';
-import {
-  TeamHistoricResult,
-  User,
-  InitiateMatchResponse,
-  GameType,
-} from 'schema';
+import { User, InitiateMatchResponse, GameType } from 'schema';
 import { generateTeamId } from '@src/utils/teamUtils';
-import {
-  CommonIcons,
-  PlayerWithRating,
-  TeamWithRatings,
-  TextWithIcon,
-} from 'ui';
+import { CommonIcons, TextWithIcon } from 'ui';
 import { getSportIcon } from 'ui/utils/iconUtils';
 import {
   getLocationStaticPropsFactory,
   PagePropsWithLocation,
 } from '@src/utils/staticPropUtils';
-import { useDispatch } from 'react-redux';
-import { setMatchInProgress } from '@src/store/reducers/matchSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectMatchInProgress,
+  setMatchInProgress,
+} from '@src/store/reducers/matchSlice';
 import { ParticipatingTeam } from '@src/types/games';
+import dayjs from 'dayjs';
+import { withRatings } from '@src/utils/gamesUtils';
+import { useRouter } from 'next/router';
+import { Routes } from '@src/types/routes';
 
 export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
 export default function Index({ locations }: PagePropsWithLocation) {
+  const router = useRouter();
   const globalStateDispatch = useDispatch();
+
+  const ongoingMatch = useSelector(selectMatchInProgress);
+
+  useEffect(() => {
+    router.push(Routes.CurrentMatch);
+  }, [ongoingMatch, router]);
 
   const [selectedLocationId] = useQueryState(
     'location',
@@ -60,21 +63,13 @@ export default function Index({ locations }: PagePropsWithLocation) {
     setSelectedGameType(selectedGame);
   }, [selectedGameTypeId, selectedLocation]);
 
-  // Use a proper react hook to load this from somewhere
-  const [matchId, setMatchId] = useState<number>();
-  const [teams, setTeams] = useState<TeamWithRatings[]>([]);
-  const [historicData, setHistoricData] = useState<
-    Record<string, TeamHistoricResult>
-  >({});
-
-  // TODO: Figure out what happens if screen is refreshed.
-  //       If we haven't stored the local state that a game is happening, we can't re-hydrate state
-  //       We should store the current initiateMatch results (i.e matchId, historicResults, teams) in some global persisted state
-  //       Then on refresh, we start it up again.
+  useEffect(() => {
+    router.prefetch(Routes.CurrentMatch);
+  }, [router]);
 
   const startMatch = async (teams: User[][]) => {
     try {
-      const { matchId, playerElos, historicResults }: InitiateMatchResponse =
+      const { matchId, playerRatings, historicResults }: InitiateMatchResponse =
         await client.matches.initiateNewMatch({
           gameTypeId: selectedGameType.id,
           locationId: selectedLocation.id,
@@ -85,13 +80,7 @@ export default function Index({ locations }: PagePropsWithLocation) {
         const teamId = generateTeamId(team);
         return {
           cumulativeTeamId: teamId,
-          players: team.map(
-            player =>
-              ({
-                ...player,
-                elo: playerElos[player.memorableId],
-              } as PlayerWithRating),
-          ),
+          players: withRatings(team, playerRatings),
           historicResults: historicResults[teamId],
         };
       });
@@ -99,43 +88,19 @@ export default function Index({ locations }: PagePropsWithLocation) {
       globalStateDispatch(
         setMatchInProgress({
           gameType: selectedGameType,
+          gameStartTime: dayjs(),
           location: selectedLocation,
           matchId: matchId,
           participatingTeams: teamRecords,
         }),
       );
 
-      setMatchId(matchId);
-      setHistoricData(historicResults);
-      setTeams(teamRecords);
+      router.push(Routes.CurrentMatch);
     } catch (err) {
+      console.error(err);
       throw err;
     }
   };
-
-  const clearGameDetails = () => {
-    setMatchId(undefined);
-    setTeams([]);
-    setHistoricData({});
-  };
-
-  const setWinner = async (cumulativeTeamId: string) => {
-    return await client.matches.recordMatchResults(matchId!, {
-      updateType: 'SET_WINNER',
-      updateDetails: { winningTeamId: cumulativeTeamId },
-    });
-  };
-
-  const abandonMatch = async () => {
-    await client.matches.recordMatchResults(matchId!, {
-      updateType: 'ABANDON_GAME',
-    });
-    clearGameDetails();
-  };
-
-  const shouldDisplayGame = () =>
-    teams.length > 0 && teams.length === Object.keys(historicData).length;
-  const shouldDisplayPlayerSelection = () => !shouldDisplayGame();
 
   return (
     <main className="flex h-screen flex-col items-center px-10 xl:px-28">
@@ -156,27 +121,13 @@ export default function Index({ locations }: PagePropsWithLocation) {
           {selectedGameType.name}
         </TextWithIcon>
       </div>
-      {shouldDisplayPlayerSelection() && (
-        <PlayerSelection
-          selectedGameType={selectedGameType}
-          selectedLocation={selectedLocation}
-          startMatch={startMatch}
-        />
-      )}
 
-      {shouldDisplayGame() && (
-        <GameComponent
-          matchId={matchId!}
-          historicData={historicData}
-          teams={teams}
-          gameLocation={selectedLocation}
-          gameType={selectedGameType}
-          abandonMatch={abandonMatch}
-          finishMatch={clearGameDetails}
-          setMatchWinner={setWinner}
-          playAgain={startMatch}
-        />
-      )}
+      {/* We should probably split this up a bit now */}
+      <PlayerSelection
+        selectedGameType={selectedGameType}
+        selectedLocation={selectedLocation}
+        startMatch={startMatch}
+      />
     </main>
   );
 }

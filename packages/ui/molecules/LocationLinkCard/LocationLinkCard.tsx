@@ -10,18 +10,21 @@ import { getSportIcon } from '../../utils/iconUtils';
 
 type LocationLinkCardProps = WithDefaultProps<{
   location: Location;
+  buildLocationUrl: (location: Location) => string;
 }>;
 
-export default function LocationLinkCard({ location }: LocationLinkCardProps) {
+export default function LocationLinkCard({
+  buildLocationUrl,
+  location,
+}: LocationLinkCardProps) {
   const { name, urlPath, availableGames } = location;
-  const href = `/location/${urlPath}`;
 
   return (
     <Link
       className={twMerge(
         'min-w-content z-1 relative h-fit w-full rounded-xl bg-transparent hover:bg-transparent xl:w-5/12',
       )}
-      href={href}
+      href={buildLocationUrl(location)}
     >
       <Card className="w-full bg-slate-200">
         <article>

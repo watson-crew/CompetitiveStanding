@@ -19,3 +19,10 @@ export function filterFalsey<T, K extends keyof T>(
 ): T[] {
   return arr.filter(item => !!item[filterField]);
 }
+
+export function sortByProperty<T>(arr: T[], property: keyof T): T[] {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return [...arr].sort((a: T, b: T) =>
+    a[property] > b[property] ? 1 : a[property] < b[property] ? -1 : 0,
+  );
+}
