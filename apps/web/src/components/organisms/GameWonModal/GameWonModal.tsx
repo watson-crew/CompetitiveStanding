@@ -9,11 +9,12 @@ import {
   WithDefaultProps,
 } from 'ui';
 import Modal from 'react-modal';
-import { GameType, RankingChanges, Location } from 'schema';
+import { RatingChanges } from 'schema';
 import { PlayerWithElo } from 'ui';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { formatDuration } from 'ui/utils/timeUtils';
 import { getSportIcon } from 'ui/utils/iconUtils';
+import { Match } from '@src/types/games';
 
 type GameWonModalProps = WithDefaultProps<{
   rematch: () => void;
@@ -21,10 +22,8 @@ type GameWonModalProps = WithDefaultProps<{
   finish: () => void;
   winningTeam?: TeamWithRatings;
   allTeams: TeamWithRatings[];
-  ratingChanges?: RankingChanges;
-  gameStartTime: Dayjs;
-  gameLocation: Location;
-  gameType: GameType;
+  finishedGame: Match;
+  ratingChanges?: RatingChanges;
 }>;
 
 const getModalTitle = ({ players }: TeamWithRatings) => {
@@ -45,7 +44,7 @@ const getModalTitle = ({ players }: TeamWithRatings) => {
 
 const withEloChange = (
   player: PlayerWithRating,
-  ratingChanges?: RankingChanges,
+  ratingChanges?: RatingChanges,
 ): PlayerWithRating => {
   if (!ratingChanges) {
     return player;
@@ -64,9 +63,7 @@ export default function GameWonModal({
   finish,
   allTeams,
   ratingChanges,
-  gameStartTime,
-  gameLocation,
-  gameType,
+  finishedGame,
 }: GameWonModalProps) {
   const isOpen = !!winningTeam;
   const gameEndTime = dayjs();
@@ -111,18 +108,22 @@ export default function GameWonModal({
               icon={CommonIcons.HomeLocation}
               textProps={{ type: 'p' }}
             >
-              {gameLocation.name}
+              {finishedGame.location.name}
             </TextWithIcon>
 
             <TextWithIcon
-              icon={getSportIcon(gameType.id)}
+              icon={getSportIcon(finishedGame.gameType.id)}
               textProps={{ type: 'p' }}
             >
-              {gameType.name}
+              {finishedGame.gameType.name}
             </TextWithIcon>
 
             <TextWithIcon icon={CommonIcons.Clock} textProps={{ type: 'p' }}>
-              {formatDuration(gameStartTime, gameEndTime, 'm[m] ss[s]')}
+              {formatDuration(
+                finishedGame.gameStartTime,
+                gameEndTime,
+                'm[m] ss[s]',
+              )}
             </TextWithIcon>
           </section>
 
@@ -134,7 +135,11 @@ export default function GameWonModal({
 
               <section className="flex justify-center">
                 {winningPlayers.map(player => (
-                  <PlayerWithElo player={player} variant="l" />
+                  <PlayerWithElo
+                    key={`modal-winning-player-${player.memorableId}`}
+                    player={player}
+                    variant="l"
+                  />
                 ))}
               </section>
             </Card>
@@ -146,7 +151,11 @@ export default function GameWonModal({
 
               <section className="flex justify-center">
                 {losingPlayers.map(player => (
-                  <PlayerWithElo player={player} variant="m" />
+                  <PlayerWithElo
+                    key={`modal-losing-player-${player.memorableId}`}
+                    player={player}
+                    variant="m"
+                  />
                 ))}
               </section>
             </Card>

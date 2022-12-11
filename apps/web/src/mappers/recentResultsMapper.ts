@@ -1,11 +1,11 @@
 import { GameResult, TeamWithRatings } from 'ui';
-import { GameType, GetRecentMatchesData, RankingChanges, User } from 'schema';
+import { GameType, GetRecentMatchesData, RatingChanges, User } from 'schema';
 import dayjs from 'dayjs';
 import { extractPlayerIds } from '@src/utils/teamUtils';
 
 function mapTeam(
   players: Record<string, User>,
-  playerEloChanges: RankingChanges | undefined,
+  playerEloChanges: RatingChanges | undefined,
   cumulativeTeamId: string,
 ): TeamWithRatings {
   return {

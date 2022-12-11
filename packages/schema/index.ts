@@ -53,7 +53,7 @@ export interface GameResult {
    * @example ["abcxyz","aaa","bbbyyyzzz"]
    */
   participatingTeams: string[];
-  playerRatingChanges?: RankingChanges;
+  playerRatingChanges?: RatingChanges;
   /**
    * @format date-time
    * @example "2022-11-25T09:12:28Z"
@@ -95,7 +95,7 @@ export interface InitiateMatchResponse {
   historicResults: Record<string, TeamHistoricResult>;
   /** @example 519 */
   matchId: number;
-  playerElos: any;
+  playerRatings: PlayerRatings;
 }
 
 export type InitiateNewMatchData = InitiateMatchResponse;
@@ -132,7 +132,7 @@ export interface Location {
 }
 
 /** @example {"abc":980,"xyz":1214} */
-export type PlayerRankings = Record<string, number>;
+export type PlayerRatings = Record<string, number>;
 
 export interface RankedPlayer {
   /** @example "1200" */
@@ -147,9 +147,9 @@ export interface RankedPlayer {
 }
 
 /** @example {"abc":120,"xyz":-84} */
-export type RankingChanges = Record<string, number>;
+export type RatingChanges = Record<string, number>;
 
-export type RecordMatchResultsData = RankingChanges;
+export type RecordMatchResultsData = RatingChanges;
 
 export interface RecordMatchResultsPayload {
   updateType: RecordMatchResultsPayloadUpdateType;
@@ -171,7 +171,7 @@ export interface Team {
 }
 
 export interface TeamHistoricResult {
-  wins?: number;
+  wins: number;
 }
 
 export interface User {

@@ -22,7 +22,7 @@ export function getFormattedDatePlayed(gameEndTime: Dayjs): string {
   }
 
   if (gameEndTime.isAfter(now.subtract(1, 'hour'))) {
-    return formatDuration(gameEndTime, now, 'm [minutes ago]');
+    return formatDuration(gameEndTime, now, 'm [mins ago]');
   }
 
   if (gameEndTime.isAfter(now.startOf('day'))) {

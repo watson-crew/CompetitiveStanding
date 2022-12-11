@@ -5,6 +5,8 @@ import {
   getLocationStaticPropsFactory,
   PagePropsWithLocation,
 } from '@src/utils/staticPropUtils';
+import { Routes } from '@src/types/routes';
+import { buildLocationUrl } from '@src/utils/routingUtils';
 
 export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
@@ -25,16 +27,20 @@ export default function Index({ locations }: PagePropsWithLocation) {
         </Text>
         <section className="flex flex-wrap justify-around gap-10">
           {Object.values(locations).map(location => (
-            <LocationLinkCard key={location.id} location={location} />
+            <LocationLinkCard
+              key={location.id}
+              location={location}
+              buildLocationUrl={buildLocationUrl}
+            />
           ))}
         </section>
       </Card>
 
       <hr />
 
-      <Link href="/play">Play game</Link>
+      <Link href={Routes.Lobby}>Play game</Link>
 
-      <Link href="/signup">Sign up</Link>
+      <Link href={Routes.SignUp}>Sign up</Link>
     </main>
   );
 }
