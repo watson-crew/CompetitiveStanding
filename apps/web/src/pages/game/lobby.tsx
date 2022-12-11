@@ -11,8 +11,11 @@ import {
   getLocationStaticPropsFactory,
   PagePropsWithLocation,
 } from '@src/utils/staticPropUtils';
-import { useDispatch } from 'react-redux';
-import { setMatchInProgress } from '@src/store/reducers/matchSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectMatchInProgress,
+  setMatchInProgress,
+} from '@src/store/reducers/matchSlice';
 import { ParticipatingTeam } from '@src/types/games';
 import dayjs from 'dayjs';
 import { withRatings } from '@src/utils/gamesUtils';
@@ -24,6 +27,12 @@ export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 export default function Index({ locations }: PagePropsWithLocation) {
   const router = useRouter();
   const globalStateDispatch = useDispatch();
+
+  const ongoingMatch = useSelector(selectMatchInProgress);
+
+  useEffect(() => {
+    router.push(Routes.CurrentMatch);
+  }, [ongoingMatch, router]);
 
   const [selectedLocationId] = useQueryState(
     'location',

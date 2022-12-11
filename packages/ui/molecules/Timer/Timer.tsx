@@ -13,12 +13,16 @@ export default function Timer({
   isCounting,
   startTime,
 }: TimerProps) {
+  const getDiff = (time: Dayjs): number => dayjs().diff(time);
+
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
 
   useEffect(() => {
+    setTimeElapsed(getDiff(startTime));
+
     if (isCounting) {
       const interval = setInterval(
-        () => setTimeElapsed(dayjs().diff(startTime)),
+        () => setTimeElapsed(getDiff(startTime)),
         1000,
       );
 

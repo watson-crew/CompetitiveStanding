@@ -8,6 +8,8 @@ import {
   Timer,
   Text,
   LoadingSpinner,
+  TextWithIcon,
+  CommonIcons,
 } from 'ui';
 import { User } from 'schema';
 import { useRouter } from 'next/router';
@@ -24,6 +26,7 @@ import { getStartingPlayer, withUpdatedDetails } from '@src/utils/gamesUtils';
 import GameWonModal from '@src/components/organisms/GameWonModal/GameWonModal';
 import { buildLobbyUrl, buildLocationUrl } from '@src/utils/routingUtils';
 import { generateTeamId } from '@src/utils/teamUtils';
+import { getSportIcon } from 'ui/utils/iconUtils';
 
 enum GameEndType {
   REMATCH,
@@ -156,17 +159,30 @@ export default function Current() {
         finishedGame={ongoingGame}
       />
 
-      <div id="control-bar" className="flex justify-end">
-        <Timer
-          className="pr-10"
-          startTime={gameStartTime}
-          isCounting={!gameFinished}
-        />
-        <Button
-          text="Abandon"
-          onClick={abandonMatch}
-          className="w-fit text-2xl font-bold"
-        />
+      <div id="control-bar" className="flex justify-between">
+        <section className="flex gap-10">
+          <TextWithIcon
+            textProps={{ type: 'p' }}
+            icon={CommonIcons.HomeLocation}
+          >
+            {location.name}
+          </TextWithIcon>
+
+          <TextWithIcon
+            textProps={{ type: 'p' }}
+            icon={getSportIcon(gameType.id)}
+          >
+            {gameType.name}
+          </TextWithIcon>
+        </section>
+        <section className="flex gap-10">
+          <Timer startTime={gameStartTime} isCounting={!gameFinished} />
+          <Button
+            text="Abandon"
+            onClick={abandonMatch}
+            className="w-fit text-2xl font-bold"
+          />
+        </section>
       </div>
       <section className="h-min-content flex w-full items-center space-x-4">
         {participatingTeams.map((team, i) => (
