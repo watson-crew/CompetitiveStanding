@@ -5,12 +5,14 @@ import { Provider as StoreProvider } from 'react-redux';
 
 import { store, persistor } from '@src/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import NavBar from '@src/components/organisms/NavBar/NavBar';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <StoreProvider store={store}>
       <ApiContext.Provider value={getApiInstance()}>
         <PersistGate loading={null} persistor={persistor}>
+          <NavBar {...pageProps} />
           <Component {...pageProps} />
         </PersistGate>
       </ApiContext.Provider>

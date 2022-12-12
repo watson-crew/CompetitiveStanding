@@ -17,10 +17,6 @@ export default function Index({ locations }: PagePropsWithLocation) {
         <title>Competitive Standing</title>
       </Head>
 
-      <Text type="h1" className="text-3xl font-bold underline">
-        Competitive standing
-      </Text>
-
       <Card id="locations" className="my-5 w-full text-center">
         <Text type="h1" className="my-5">
           Locations
