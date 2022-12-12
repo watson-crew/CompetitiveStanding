@@ -1,12 +1,7 @@
 import { ApiClient } from 'schema';
-import React from 'react';
 import { setupCache } from 'axios-cache-adapter';
 
 let globalInstance: ApiClient<unknown>;
-
-export const ApiContext = React.createContext<ApiClient<unknown>>(
-  getApiInstance(),
-);
 
 /**
  * Only to be used in places where useContext is not allowed.
