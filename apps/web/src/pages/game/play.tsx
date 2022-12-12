@@ -20,13 +20,17 @@ import {
   selectMatchInProgress,
   setMatchInProgress,
 } from '@src/store/reducers/matchSlice';
-import { ApiContext } from '@src/context/ApiContext';
+import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { FinishedGameResult, Match, ParticipatingTeam } from '@src/types/games';
 import { getStartingPlayer, withUpdatedDetails } from '@src/utils/gamesUtils';
 import GameWonModal from '@src/components/organisms/GameWonModal/GameWonModal';
 import { buildLobbyUrl, buildLocationUrl } from '@src/utils/routingUtils';
 import { generateTeamId } from '@src/utils/teamUtils';
 import { getSportIcon } from 'ui/utils/iconUtils';
+import {
+  getLocationStaticPropsFactory,
+  PagePropsWithLocation,
+} from '@src/utils/staticPropUtils';
 
 enum GameEndType {
   REMATCH,
@@ -47,7 +51,9 @@ function NoOngoingGameState() {
   );
 }
 
-export default function Play() {
+export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
+
+export default function Play({}: PagePropsWithLocation) {
   const router = useRouter();
   const client = useContext(ApiContext);
   const globalDispatch = useDispatch();
