@@ -1,6 +1,8 @@
+// Import your Client Component
 import { getApiInstance } from '@src/context/foo';
-import LandingPage from './LandingPage';
+import SignUpPage from './SignUpPage';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Page() {
   const locations = await getApiInstance().location.getAllLocations();
 
@@ -8,5 +10,5 @@ export default async function Page() {
     locations.map(location => [location.id, location]),
   );
 
-  return <LandingPage locations={locationRecord} />;
+  return <SignUpPage locations={locationRecord} />;
 }

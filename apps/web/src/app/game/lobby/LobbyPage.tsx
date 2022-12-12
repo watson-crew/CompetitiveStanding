@@ -1,16 +1,14 @@
+'use client';
+
 import { useContext, useEffect, useState } from 'react';
 import { useQueryState, queryTypes } from 'next-usequerystate';
 import PlayerSelection from '@organisms/PlayerSelection/PlayerSelection';
-import { ApiContext, getApiInstance } from '@src/context/ApiContext';
-import Head from 'next/head';
+import { ApiContext } from '@src/context/ApiContext';
 import { User, InitiateMatchResponse, GameType } from 'schema';
 import { generateTeamId } from '@src/utils/teamUtils';
 import { CommonIcons, LoadingSpinner, Text, TextWithIcon } from 'ui';
 import { getSportIcon } from 'ui/utils/iconUtils';
-import {
-  getLocationStaticPropsFactory,
-  PagePropsWithLocation,
-} from '@src/utils/staticPropUtils';
+import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectMatchInProgress,
@@ -21,8 +19,6 @@ import dayjs from 'dayjs';
 import { withRatings } from '@src/utils/gamesUtils';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@src/types/routes';
-
-export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
 function OngoingGameState() {
   return (
@@ -39,7 +35,7 @@ function OngoingGameState() {
   );
 }
 
-export default function Index({ locations }: PagePropsWithLocation) {
+export default function LobbyPage({ locations }: PagePropsWithLocation) {
   const router = useRouter();
   const globalStateDispatch = useDispatch();
 
@@ -120,14 +116,11 @@ export default function Index({ locations }: PagePropsWithLocation) {
   };
 
   if (ongoingMatch) {
-    return OngoingGameState;
+    return <OngoingGameState />;
   }
 
   return (
     <main className="flex h-screen flex-col items-center px-10 xl:px-28">
-      <Head>
-        <title>Competitive Standing | Play</title>
-      </Head>
       <h1 className="text-3xl font-bold underline">Lobby</h1>
 
       <div className="flex">

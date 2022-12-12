@@ -1,5 +1,7 @@
+'use client';
+
 import { CreateUserPayload, User } from 'schema';
-import { ApiContext, getApiInstance } from '@src/context/ApiContext';
+import { ApiContext } from '@src/context/ApiContext';
 import {
   ChangeEvent,
   FormEvent,
@@ -24,14 +26,8 @@ import {
   SignupState,
 } from './state';
 import Image from 'next/image';
-import Head from 'next/head';
-import {
-  getLocationStaticPropsFactory,
-  PagePropsWithLocation,
-} from '@src/utils/staticPropUtils';
+import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import React from 'react';
-
-export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
 export default function Index({ locations }: PagePropsWithLocation) {
   const api = useContext(ApiContext);

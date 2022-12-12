@@ -1,3 +1,5 @@
+'use client';
+
 import { ApiClient } from 'schema';
 import React from 'react';
 import { setupCache } from 'axios-cache-adapter';

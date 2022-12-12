@@ -1,3 +1,5 @@
+'use client';
+
 import { useContext, useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
 import dayjs from 'dayjs';
@@ -27,6 +29,7 @@ import GameWonModal from '@src/components/organisms/GameWonModal/GameWonModal';
 import { buildLobbyUrl, buildLocationUrl } from '@src/utils/routingUtils';
 import { generateTeamId } from '@src/utils/teamUtils';
 import { getSportIcon } from 'ui/utils/iconUtils';
+import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 
 enum GameEndType {
   REMATCH,
@@ -47,7 +50,7 @@ function NoOngoingGameState() {
   );
 }
 
-export default function Play() {
+export default function PlayPage(_props: PagePropsWithLocation) {
   const router = useRouter();
   const client = useContext(ApiContext);
   const globalDispatch = useDispatch();
@@ -107,9 +110,7 @@ export default function Play() {
     globalDispatch(clearMatchInProgress());
 
     if (endState === GameEndType.NEW_TEAMS) {
-      router.push(buildLobbyUrl(location, gameType), undefined, {
-        shallow: true,
-      });
+      router.push(buildLobbyUrl(location, gameType));
       return;
     }
 
@@ -143,7 +144,7 @@ export default function Play() {
       globalDispatch(setMatchInProgress(newMatch));
       setGameResults(undefined);
       setOngoingGame(newMatch);
-      router.push(Routes.CurrentMatch, undefined, { shallow: true });
+      router.push(Routes.CurrentMatch);
       return;
     }
   };
