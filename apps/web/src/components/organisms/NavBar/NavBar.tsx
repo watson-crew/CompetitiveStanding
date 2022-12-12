@@ -1,17 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Location } from 'schema';
 import { HiOutlineChevronDown, HiOutlineChevronUp } from 'react-icons/hi';
-import { WithDefaultProps } from '../../types';
+import { getSportIcon } from 'ui/utils/iconUtils';
+import React from 'react';
+import { Routes } from '@src/types/routes';
+import { buildLocationUrl } from '@src/utils/routingUtils';
+import { useRouter } from 'next/router';
+import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 
-type NavBarProps = WithDefaultProps<{
-  locations: Location[];
-}>;
-
-export default function NavBar({ locations }: NavBarProps) {
+export default function NavBar({ locations }: PagePropsWithLocation) {
   const [showCities, setShowCities] = useState(false);
 
   const onClick = () => setShowCities(!showCities);
+  const router = useRouter();
+
+  useEffect(() => {
+    setShowCities(false);
+  }, [router.asPath]);
 
   return (
     <nav className="border-gray-200 bg-white ">
@@ -28,7 +33,7 @@ export default function NavBar({ locations }: NavBarProps) {
           <ul className="mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4  md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white md:text-sm md:font-medium">
             <li>
               <Link
-                href="/"
+                href={Routes.Home}
                 className="block rounded py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-100  md:p-0 md:hover:bg-transparent md:hover:text-blue-700 "
               >
                 Home
@@ -40,13 +45,13 @@ export default function NavBar({ locations }: NavBarProps) {
                 className="flex w-full items-center justify-between rounded py-2 pl-3 pr-4 font-medium text-gray-700 hover:bg-gray-100  md:w-auto md:border-0 md:p-0 md:hover:bg-transparent md:hover:text-blue-600"
                 onClick={onClick}
               >
-                Locations{' '}
+                Location{' '}
                 {showCities ? <HiOutlineChevronUp /> : <HiOutlineChevronDown />}
               </button>
             </li>
             <li>
               <Link
-                href="/play"
+                href={Routes.CurrentMatch}
                 className="block rounded py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-100  md:p-0 md:hover:bg-transparent md:hover:text-blue-700 "
               >
                 Play Game
@@ -54,7 +59,7 @@ export default function NavBar({ locations }: NavBarProps) {
             </li>
             <li>
               <Link
-                href="/signup"
+                href={Routes.SignUp}
                 className="block rounded py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-100  md:p-0 md:hover:bg-transparent md:hover:text-blue-700 "
               >
                 Sign up
@@ -74,19 +79,25 @@ export default function NavBar({ locations }: NavBarProps) {
         <div className="mx-auto grid max-w-screen-xl  px-4 py-5  text-gray-900 md:px-6">
           <ul className="grid grid-cols-2 gap-4">
             {locations &&
-              locations.map(location => (
-                <li>
+              Object.values(locations).map(location => (
+                <li key={location.id}>
                   <Link
-                    href={`location/${location.name.toLowerCase()}`}
+                    href={buildLocationUrl(location)}
                     className="block rounded-lg p-3 hover:bg-gray-100 "
-                    onClick={onClick}
                   >
                     <div className="font-semibold">{location.name}</div>
-                    {location.availableGames.map(game => (
-                      <span className="mr-2 text-sm font-light text-gray-500">
-                        {game.name}
-                      </span>
-                    ))}
+                    <span className="flex-row	justify-evenly">
+                      {location.availableGames.map(game => (
+                        <span
+                          key={game.id}
+                          className="mr-2 inline-flex w-fit	text-gray-500"
+                        >
+                          {React.createElement(getSportIcon(game.id), {
+                            size: '25px',
+                          })}
+                        </span>
+                      ))}
+                    </span>
                   </Link>
                 </li>
               ))}

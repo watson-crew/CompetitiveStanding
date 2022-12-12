@@ -17,10 +17,11 @@ import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { useContext, useEffect, useState } from 'react';
 import mapRecentResults from '@src/mappers/recentResultsMapper';
 import Head from 'next/head';
+import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import { buildLobbyUrl } from '@src/utils/routingUtils';
 
-type LocationPageProps = {
-  location: Location;
+type LocationPageProps = PagePropsWithLocation & {
+  currentLocation: Location;
 };
 
 type LocationPageDynamicPath = { locationUrlPath: string };
@@ -60,16 +61,23 @@ export async function getStaticProps({
 > {
   if (!params) throw new Error();
 
+  const locations = await getApiInstance().location.getAllLocations();
+
+  const currentLocation = locations.find(
+    location => location.urlPath === params.locationUrlPath,
+  );
+
+  if (!currentLocation) throw new Error();
+
   return {
     props: {
-      location: await getApiInstance().location.getLocationByUrl(
-        params.locationUrlPath,
-      ),
+      currentLocation,
+      locations,
     },
   };
 }
 
-export default function Index({ location }: LocationPageProps) {
+export default function Index({ currentLocation }: LocationPageProps) {
   const api = useContext(ApiContext);
 
   const [loadingRecentMatches, setLoadingRecentMatches] = useState(true);
@@ -79,49 +87,49 @@ export default function Index({ location }: LocationPageProps) {
   const [rankedPlayers, setRankedPlayers] =
     useState<Record<ResultFilterType, RankedPlayer[]>>();
 
+  const fetchRecentGames = async (location: Location) => {
+    const data = await api.matches.getRecentMatches({
+      locationId: location.id,
+    });
+
+    setRecentMatches(mapRecentResults(data, gameTypes));
+
+    setLoadingRecentMatches(false);
+  };
+
+  const fetchRankings = async (location: Location) => {
+    // TODO: Look at where game type should come from
+    const data = await api.matches.getRankingsForLocation({
+      locationId: location.id,
+      gameTypeId: 1,
+      total: 3,
+      filterTypes: ['elo', 'winPercentage', 'wins'],
+    });
+
+    setRankedPlayers(data as Record<ResultFilterType, RankedPlayer[]>);
+
+    setLoadingRankedPlayers(false);
+  };
+
   useEffect(() => {
-    const fetchRecentGames = async () => {
-      const data = await api.matches.getRecentMatches({
-        locationId: location.id,
-      });
-
-      setRecentMatches(mapRecentResults(data, gameTypes));
-
-      setLoadingRecentMatches(false);
-    };
-
-    const fetchRankings = async () => {
-      // TODO: Look at where game type should come from
-      const data = await api.matches.getRankingsForLocation({
-        locationId: location.id,
-        gameTypeId: 1,
-        total: 3,
-        filterTypes: ['elo', 'winPercentage', 'wins'],
-      });
-
-      setRankedPlayers(data as Record<ResultFilterType, RankedPlayer[]>);
-
-      setLoadingRankedPlayers(false);
-    };
-
-    fetchRecentGames();
-    fetchRankings();
-  }, [api, location]);
+    fetchRecentGames(currentLocation);
+    fetchRankings(currentLocation);
+  }, [currentLocation]);
 
   return (
     <main className="flex h-screen flex-col items-center">
       <Head>
-        <title>{`Competitive Standing | ${location.name}`}</title>
+        <title>{`Competitive Standing | ${currentLocation.name}`}</title>
       </Head>
 
       <Text type="h1" className="my-5">
-        {location.name}
+        {currentLocation.name}
       </Text>
 
       <Card className="grid h-full w-full grid-flow-col grid-rows-4 gap-4">
         <AvailableGamesOverview
-          availableGames={location.availableGames}
-          buildGameLink={game => buildLobbyUrl(location, game)}
+          availableGames={currentLocation.availableGames}
+          buildGameLink={game => buildLobbyUrl(currentLocation, game)}
           className="col-span-2 row-span-2 bg-red-100"
         />
 

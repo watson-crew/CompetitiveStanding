@@ -38,7 +38,6 @@ import SelectInput from './molecules/SelectInput/SelectInput';
 import TextWithIcon from './molecules/TextWithIcon/TextWithIcon';
 import TeamHistoricResultsCard from './molecules/TeamHistoricResultsCard/TeamHistoricResultsCard';
 import TeamCard from './molecules/TeamCard/TeamCard';
-import NavBar from './molecules/NavBar/NavBar';
 import Timer from './molecules/Timer/Timer';
 
 export {
@@ -52,7 +51,6 @@ export {
   TextInput,
   SelectInput,
   TextWithIcon,
-  NavBar,
   Timer,
 };
 

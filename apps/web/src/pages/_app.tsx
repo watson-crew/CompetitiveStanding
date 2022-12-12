@@ -2,10 +2,10 @@ import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { AppProps } from 'next/app';
 import '../../styles/globals.css';
 import { Provider as StoreProvider } from 'react-redux';
-import { NavBar } from 'ui';
 
 import { store, persistor } from '@src/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import NavBar from '@src/components/organisms/NavBar/NavBar';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
