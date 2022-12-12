@@ -1,24 +1,16 @@
-import { Location } from 'schema';
 import { Text, Link, Card, LocationLinkCard } from 'ui';
 import { getApiInstance } from '@src/context/ApiContext';
-import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
+import {
+  getLocationStaticPropsFactory,
+  PagePropsWithLocation,
+} from '@src/utils/staticPropUtils';
+import { Routes } from '@src/types/routes';
+import { buildLocationUrl } from '@src/utils/routingUtils';
 
-type RootPageProps = {
-  locations: Location[];
-};
+export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
-export async function getStaticProps(
-  _context: GetStaticPropsContext,
-): Promise<GetStaticPropsResult<RootPageProps>> {
-  return {
-    props: {
-      locations: await getApiInstance().location.getAllLocations(),
-    },
-  };
-}
-
-export default function Index({ locations }: RootPageProps) {
+export default function Index({ locations }: PagePropsWithLocation) {
   return (
     <main className="flex h-screen flex-col items-center px-10 xl:px-28">
       <Head>
@@ -34,17 +26,21 @@ export default function Index({ locations }: RootPageProps) {
           Locations
         </Text>
         <section className="flex flex-wrap justify-around gap-10">
-          {locations.map(location => (
-            <LocationLinkCard key={location.id} location={location} />
+          {Object.values(locations).map(location => (
+            <LocationLinkCard
+              key={location.id}
+              location={location}
+              buildLocationUrl={buildLocationUrl}
+            />
           ))}
         </section>
       </Card>
 
       <hr />
 
-      <Link href="/play">Play game</Link>
+      <Link href={Routes.Lobby}>Play game</Link>
 
-      <Link href="/signup">Sign up</Link>
+      <Link href={Routes.SignUp}>Sign up</Link>
     </main>
   );
 }

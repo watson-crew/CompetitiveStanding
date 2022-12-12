@@ -34,10 +34,12 @@ import PlayerIdInput from './molecules/PlayerIdInput/PlayerIdInput';
 import PlayerSelectionCard from './molecules/PlayerSelectionCard/PlayerSelectionCard';
 import PlayerWithElo from './molecules/PlayerWithElo/PlayerWithElo';
 import TextInput from './molecules/TextInput/TextInput';
+import SelectInput from './molecules/SelectInput/SelectInput';
 import TextWithIcon from './molecules/TextWithIcon/TextWithIcon';
 import TeamHistoricResultsCard from './molecules/TeamHistoricResultsCard/TeamHistoricResultsCard';
 import TeamCard from './molecules/TeamCard/TeamCard';
 import NavBar from './molecules/NavBar/NavBar';
+import Timer from './molecules/Timer/Timer';
 
 export {
   LocationLinkCard,
@@ -48,8 +50,10 @@ export {
   TeamHistoricResultsCard,
   TeamCard,
   TextInput,
+  SelectInput,
   TextWithIcon,
   NavBar,
+  Timer,
 };
 
 // Organisms

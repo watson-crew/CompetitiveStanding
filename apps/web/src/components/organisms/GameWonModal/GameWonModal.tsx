@@ -1,21 +1,29 @@
 import {
   Button,
   Card,
+  CommonIcons,
   PlayerWithRating,
   TeamWithRatings,
   Text,
+  TextWithIcon,
   WithDefaultProps,
 } from 'ui';
 import Modal from 'react-modal';
-import { RankingChanges } from 'schema';
+import { RatingChanges } from 'schema';
 import { PlayerWithElo } from 'ui';
+import dayjs from 'dayjs';
+import { formatDuration } from 'ui/utils/timeUtils';
+import { getSportIcon } from 'ui/utils/iconUtils';
+import { Match } from '@src/types/games';
 
 type GameWonModalProps = WithDefaultProps<{
-  playAgain: () => void;
+  rematch: () => void;
+  teamSelection: () => void;
   finish: () => void;
   winningTeam?: TeamWithRatings;
   allTeams: TeamWithRatings[];
-  ratingChanges?: RankingChanges;
+  finishedGame: Match;
+  ratingChanges?: RatingChanges;
 }>;
 
 const getModalTitle = ({ players }: TeamWithRatings) => {
@@ -36,7 +44,7 @@ const getModalTitle = ({ players }: TeamWithRatings) => {
 
 const withEloChange = (
   player: PlayerWithRating,
-  ratingChanges?: RankingChanges,
+  ratingChanges?: RatingChanges,
 ): PlayerWithRating => {
   if (!ratingChanges) {
     return player;
@@ -50,12 +58,15 @@ const withEloChange = (
 
 export default function GameWonModal({
   winningTeam,
-  playAgain,
+  rematch,
+  teamSelection,
   finish,
   allTeams,
   ratingChanges,
+  finishedGame,
 }: GameWonModalProps) {
   const isOpen = !!winningTeam;
+  const gameEndTime = dayjs();
 
   const winningPlayers =
     winningTeam?.players.map(player => withEloChange(player, ratingChanges)) ||
@@ -92,6 +103,30 @@ export default function GameWonModal({
             <Text type="h1">🎉 {getModalTitle(winningTeam)} 🎉</Text>
           </section>
 
+          <section className="mb-4 flex justify-around">
+            <TextWithIcon
+              icon={CommonIcons.HomeLocation}
+              textProps={{ type: 'p' }}
+            >
+              {finishedGame.location.name}
+            </TextWithIcon>
+
+            <TextWithIcon
+              icon={getSportIcon(finishedGame.gameType.id)}
+              textProps={{ type: 'p' }}
+            >
+              {finishedGame.gameType.name}
+            </TextWithIcon>
+
+            <TextWithIcon icon={CommonIcons.Clock} textProps={{ type: 'p' }}>
+              {formatDuration(
+                finishedGame.gameStartTime,
+                gameEndTime,
+                'm[m] ss[s]',
+              )}
+            </TextWithIcon>
+          </section>
+
           <section className="mb-10">
             <Card className="mb-10 w-full bg-emerald-100">
               <Text type="h2" className="mb-2">
@@ -100,7 +135,11 @@ export default function GameWonModal({
 
               <section className="flex justify-center">
                 {winningPlayers.map(player => (
-                  <PlayerWithElo player={player} variant="l" />
+                  <PlayerWithElo
+                    key={`modal-winning-player-${player.memorableId}`}
+                    player={player}
+                    variant="l"
+                  />
                 ))}
               </section>
             </Card>
@@ -112,15 +151,24 @@ export default function GameWonModal({
 
               <section className="flex justify-center">
                 {losingPlayers.map(player => (
-                  <PlayerWithElo player={player} variant="m" />
+                  <PlayerWithElo
+                    key={`modal-losing-player-${player.memorableId}`}
+                    player={player}
+                    variant="m"
+                  />
                 ))}
               </section>
             </Card>
           </section>
 
           <section className="flex justify-center gap-10">
-            <Button className="w-32" text="Play again" onClick={playAgain} />
-            <Button className="w-32" text="Finish" onClick={finish} />
+            <Button className="w-36 p-3" text="Rematch" onClick={rematch} />
+            <Button
+              className="w-36 p-3"
+              text="New teams"
+              onClick={teamSelection}
+            />
+            <Button className="w-36 p-3" text="Finish" onClick={finish} />
           </section>
         </div>
       )}

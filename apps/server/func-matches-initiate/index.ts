@@ -28,9 +28,12 @@ const httpTrigger = async function (
       participatingTeams,
     );
 
-    const playerElos = await getParticipantElos(gameTypeId, participatingTeams);
+    const playerRatings = await getParticipantElos(
+      gameTypeId,
+      participatingTeams,
+    );
 
-    set200Response(log, context, { ...initiatedMatch, playerElos });
+    set200Response(log, context, { ...initiatedMatch, playerRatings });
   } catch (err) {
     set500Response(log, context, err);
   }

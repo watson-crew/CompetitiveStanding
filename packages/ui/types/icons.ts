@@ -4,6 +4,7 @@ import { MdOutlineLocationCity } from 'react-icons/md';
 import { RiBilliardsFill } from 'react-icons/ri';
 import { SiDart } from 'react-icons/si';
 import { AiOutlinePlus } from 'react-icons/ai';
+import { ImCheckmark, ImCross } from 'react-icons/im';
 import {
   AiOutlineTeam,
   AiOutlineTrophy,
@@ -24,7 +25,9 @@ export type CommonIconTypes =
   | 'Win'
   | 'Elo'
   | 'Percentage'
-  | 'Podium';
+  | 'Podium'
+  | 'Tick'
+  | 'Cross';
 
 export const CommonIcons: Record<CommonIconTypes, IconType> = {
   Person: AiOutlineUser,
@@ -37,6 +40,8 @@ export const CommonIcons: Record<CommonIconTypes, IconType> = {
   Percentage: AiOutlinePercentage,
   Elo: EloIcon,
   Podium: GiPodium,
+  Tick: ImCheckmark,
+  Cross: ImCross,
 };
 
 export const SportIcons: Record<string, IconType> = {

@@ -242,7 +242,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RankingChanges"
+                  "$ref": "#/components/schemas/RatingChanges"
                 }
               }
             }
@@ -459,7 +459,7 @@
             "example": 1
           },
           "playerRatingChanges": {
-            "$ref": "#/components/schemas/RankingChanges"
+            "$ref": "#/components/schemas/RatingChanges"
           }
         }
       },
@@ -516,7 +516,7 @@
       },
       "InitiateMatchResponse": {
         "type": "object",
-        "required": ["matchId", "historicResults", "playerElos"],
+        "required": ["matchId", "historicResults", "playerRatings"],
         "properties": {
           "matchId": {
             "type": "integer",
@@ -540,15 +540,8 @@
               }
             }
           },
-          "playerElos": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "example": {
-              "abc": 980,
-              "xyz": 1214
-            }
+          "playerRatings": {
+            "$ref": "#/components/schemas/PlayerRatings"
           }
         }
       },
@@ -586,6 +579,16 @@
           }
         }
       },
+      "PlayerRatings": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "example": {
+          "abc": 980,
+          "xyz": 1214
+        }
+      },
       "RankedPlayer": {
         "type": "object",
         "required": ["player", "wins", "gamesPlayed", "winPercentage", "elo"],
@@ -611,7 +614,7 @@
           }
         }
       },
-      "RankingChanges": {
+      "RatingChanges": {
         "type": "object",
         "additionalProperties": {
           "type": "integer"
@@ -658,7 +661,7 @@
       },
       "TeamHistoricResult": {
         "type": "object",
-        "required": ["win"],
+        "required": ["wins"],
         "properties": {
           "wins": {
             "type": "integer"
