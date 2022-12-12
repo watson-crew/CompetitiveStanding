@@ -1,57 +1,18 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import React from 'react';
-import { Routes } from '@src/types/routes';
 import { useRouter } from 'next/router';
-import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
-import { UrlObject } from 'url';
-import { Location } from 'schema';
-import NavBarLocationDropdownContent from './NavBarLocationDropdownContent/NavBarLocationDropdownContent';
 import {
   NavBarNavigationButton,
   NavBarNavigationLink,
 } from './NavBarNavigationLinks/NavBarNavigationLinks';
+import { NavBarLinkConfig, NavBarButtonConfig } from '@src/types/navBar';
 
-type NavBarItem = NavBarButtonProps | NavBarLinkProps;
-
-type NavBarLinkProps = {
-  type: 'link';
-  name: string;
-  path: string | UrlObject;
-};
-
-type NavBarButtonProps = {
-  type: 'button';
-  name: string;
-  component: React.ReactElement;
-};
-
-const buildNavBarLinks: (locations: Location[]) => NavBarItem[] = (
-  locations: Location[],
-) => [
-  {
-    type: 'link',
-    name: 'Home',
-    path: Routes.Home,
-  },
-  {
-    type: 'button',
-    name: 'Location',
-    component: NavBarLocationDropdownContent(locations),
-  },
-  {
-    type: 'link',
-    name: 'Play Game',
-    path: Routes.Lobby,
-  },
-  {
-    type: 'link',
-    name: 'Sign up',
-    path: Routes.SignUp,
-  },
-];
-
-export default function NavBar({ locations }: PagePropsWithLocation) {
+export default function NavBar({
+  config,
+}: {
+  config: (NavBarLinkConfig | NavBarButtonConfig)[];
+}) {
   const [menuContent, setMenuContent] = useState<{
     component: React.ReactElement;
     name: string;
@@ -73,7 +34,7 @@ export default function NavBar({ locations }: PagePropsWithLocation) {
     setMenuContent(undefined);
   }, [router.asPath]);
 
-  const navBarLinks = buildNavBarLinks(Object.values(locations)).map(nav => {
+  const navBarLinks = config.map(nav => {
     if (nav.type === 'link') {
       return <NavBarNavigationLink name={nav.name} path={nav.path} />;
     }

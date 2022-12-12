@@ -1,16 +1,16 @@
 import Link from 'next/link';
-import { UrlObject } from 'url';
 import { HiOutlineChevronDown, HiOutlineChevronUp } from 'react-icons/hi';
+import { UrlObject } from 'url';
 
 type NavBarLinkProps = {
   name: string;
   path: string | UrlObject;
 };
 
-type NavBarButtonProps = {
+export type NavBarButtonProps = {
   name: string;
   onClick: () => void;
-  isExpanded: boolean;
+  isExpanded?: boolean;
 };
 
 export function NavBarNavigationLink({ name, path }: NavBarLinkProps) {
