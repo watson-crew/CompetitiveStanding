@@ -29,7 +29,7 @@ import Image from 'next/image';
 import React from 'react';
 import { PagePropsWithLocation } from '@src/types/staticProps';
 
-export default function Index({ locations }: PagePropsWithLocation) {
+export default function SignUpPage({ locations }: PagePropsWithLocation) {
   const api = useContext(ApiContext);
   const [{ fields, globalErrors }, dispatch] = useReducer(
     signUpReducer,

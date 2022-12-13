@@ -5,7 +5,7 @@ import { Routes } from '@src/types/routes';
 import { buildLocationUrl } from '@src/utils/routingUtils';
 import { PagePropsWithLocation } from '@src/types/staticProps';
 
-export default function Index({ locations }: PagePropsWithLocation) {
+export default function LandingPage({ locations }: PagePropsWithLocation) {
   return (
     <main className="flex h-screen flex-col items-center px-10 xl:px-28">
       <Text type="h1" className="text-3xl font-bold underline">

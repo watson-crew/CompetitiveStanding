@@ -1,7 +1,6 @@
 'use client';
 
 import { useContext, useEffect, useState } from 'react';
-import { useQueryState, queryTypes } from 'next-usequerystate';
 import PlayerSelection from '@organisms/PlayerSelection/PlayerSelection';
 import { ApiContext } from '@src/context/ApiContext';
 import { User, InitiateMatchResponse, GameType } from 'schema';
@@ -16,7 +15,7 @@ import {
 import { ParticipatingTeam } from '@src/types/games';
 import dayjs from 'dayjs';
 import { withRatings } from '@src/utils/gamesUtils';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Routes } from '@src/types/routes';
 import { PagePropsWithLocation } from '@src/types/staticProps';
 
@@ -47,22 +46,26 @@ export default function LobbyPage({ locations }: PagePropsWithLocation) {
     }
   }, [ongoingMatch, router]);
 
-  const [selectedLocationId] = useQueryState(
-    'location',
-    queryTypes.integer.withDefault(Object.values(locations)[0].id),
-  );
+  const params = useSearchParams();
+
+  const selectedLocationId = params.has('location')
+    ? parseInt(params.get('location') as string)
+    : Object.values(locations)[0].id;
+
   const [selectedLocation, setSelectedLocation] = useState(
     locations[selectedLocationId],
   );
 
+  const selectedGameTypeId = params.has('game')
+    ? parseInt(params.get('game') as string)
+    : selectedLocation.availableGames[0].id;
   const [selectedGameType, setSelectedGameType] = useState<GameType>(
-    selectedLocation.availableGames[0],
+    selectedLocation.availableGames.find(
+      game => game.id === selectedGameTypeId,
+    ) || selectedLocation.availableGames[0],
   );
+
   const client = useContext(ApiContext);
-  const [selectedGameTypeId] = useQueryState(
-    'game',
-    queryTypes.integer.withDefault(selectedLocation.availableGames[0].id),
-  );
 
   useEffect(() => {
     setSelectedLocation(locations[selectedLocationId]);
