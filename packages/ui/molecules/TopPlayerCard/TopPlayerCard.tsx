@@ -35,11 +35,13 @@ const classNamesForCards: Record<
   { root?: string; stats?: string }
 > = {
   [topPlayerCardType.FIRST]: {
-    root: 'bg-yellow-400',
+    root: 'bg-gradient-to-br from-yellow-500 via-yellow-200 to-yellow-400',
   },
-  [topPlayerCardType.SECOND]: { root: 'bg-gray-400' },
+  [topPlayerCardType.SECOND]: {
+    root: 'bg-gradient-to-tr from-gray-400 via-gray-300 to-gray-400',
+  },
   [topPlayerCardType.THIRD]: {
-    root: 'bg-yellow-600',
+    root: 'bg-gradient-to-tl from-yellow-700 via-yellow-600 to-yellow-900',
   },
 };
 

@@ -42,7 +42,7 @@ export default function TopPlayerStats({
       label: 'Elo',
       content: elo,
       icon: CommonIcons.Elo,
-      className: 'text-orange-600',
+      className: 'text-fuchsia-900',
     },
     {
       label: 'Win rate',
