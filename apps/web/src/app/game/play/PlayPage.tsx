@@ -22,7 +22,7 @@ import {
   selectMatchInProgress,
   setMatchInProgress,
 } from '@src/store/reducers/matchSlice';
-import { ApiContext, getApiInstance } from '@src/context/ApiContext';
+import { ApiContext } from '@src/context/ApiContext';
 import { FinishedGameResult, Match, ParticipatingTeam } from '@src/types/games';
 import { getStartingPlayer, withUpdatedDetails } from '@src/utils/gamesUtils';
 import GameWonModal from '@src/components/organisms/GameWonModal/GameWonModal';

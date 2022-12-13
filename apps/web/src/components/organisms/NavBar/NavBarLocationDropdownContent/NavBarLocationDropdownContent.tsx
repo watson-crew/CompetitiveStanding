@@ -10,7 +10,7 @@ export default function NavBarLocationDropdownContent(locations: Location[]) {
       <ul className="grid grid-cols-2 gap-4">
         {locations &&
           Object.values(locations).map(location => (
-            <li key={location.id}>
+            <li key={`nav-bar-location-${location.id}`}>
               <Link
                 href={buildLocationUrl(location)}
                 className="block rounded-lg p-3 hover:bg-gray-100 "
@@ -18,7 +18,7 @@ export default function NavBarLocationDropdownContent(locations: Location[]) {
                 <div className="font-semibold">{location.name}</div>
                 {location.availableGames.map(game => (
                   <span
-                    key={game.id}
+                    key={`nav-bar-location-${location.id}-game${game.id}`}
                     className="mr-2 inline-flex w-fit	text-gray-500"
                   >
                     {React.createElement(getSportIcon(game.id), {

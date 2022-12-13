@@ -1,9 +1,7 @@
-import { UrlObject } from 'url';
-
 export type NavBarLinkConfig = {
   type: 'link';
   name: string;
-  path: string | UrlObject;
+  path: string;
 };
 
 export type NavBarButtonConfig = {
