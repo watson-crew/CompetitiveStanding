@@ -5,4 +5,5 @@ export enum FunctionName {
   GetUser = 'Get User By MemorableId',
   InitiateMatch = 'Initiate New Match',
   RecordMatchResults = 'Record Match Result',
+  GetRankingsForLocation = 'Get Rankings For Location',
 }

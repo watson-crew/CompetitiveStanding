@@ -24,12 +24,25 @@ export interface CreateUserPayload {
   homeLocationId?: number;
 }
 
+export interface GameRequirement {
+  numberOfTeams: number;
+  playersPerTeam: number;
+}
+
+/** @example {"min":{"playersPerTeam":1,"numberOfTeams":2},"max":{"playersPerTeam":6,"numberOfTeams":2}} */
+export interface GameRequirements {
+  max: GameRequirement;
+  min: GameRequirement;
+}
+
 export interface GameResult {
   /**
    * @format date-time
    * @example "2022-11-25T09:19:43Z"
    */
   endTime: string;
+  /** @example 1 */
+  gameTypeId: number;
   /** @example 1 */
   id: number;
   /** @example "Nottingham" */
@@ -40,6 +53,7 @@ export interface GameResult {
    * @example ["abcxyz","aaa","bbbyyyzzz"]
    */
   participatingTeams: string[];
+  playerRatingChanges?: RatingChanges;
   /**
    * @format date-time
    * @example "2022-11-25T09:12:28Z"
@@ -52,17 +66,16 @@ export interface GameResult {
 export interface GameType {
   /** @example 1 */
   id: number;
-  /** @example "1" */
-  maxNumberOfPlayers: number;
   /** @example "Pool" */
   name: string;
+  requirements: GameRequirements;
 }
 
 export type GetAllLocationsData = Location[];
 
 export type GetLocationByUrlData = Location;
 
-export type GetRankingsForLocationData = RankedPlayer[];
+export type GetRankingsForLocationData = Record<string, RankedPlayer[]>;
 
 export interface GetRecentMatchesData {
   results: GameResult[];
@@ -82,6 +95,7 @@ export interface InitiateMatchResponse {
   historicResults: Record<string, TeamHistoricResult>;
   /** @example 519 */
   matchId: number;
+  playerRatings: PlayerRatings;
 }
 
 export type InitiateNewMatchData = InitiateMatchResponse;
@@ -101,37 +115,54 @@ export interface InitiateNewMatchPayload {
 
 export interface Location {
   /** @uniqueItems true */
-  availableGames?: GameType[];
-  /** @example "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg" */
-  coverPhoto?: string;
+  availableGames: GameType[];
   /** @example 1 */
   id: number;
+  /**
+   * The most played game at the given location
+   * @example 1
+   */
+  mostPopularGame?: number;
   /** @example "Nottingham" */
   name: string;
+  /** @example 65 */
+  playerCount: number;
   /** @example "nottingham" */
   urlPath: string;
 }
 
+/** @example {"abc":980,"xyz":1214} */
+export type PlayerRatings = Record<string, number>;
+
 export interface RankedPlayer {
+  /** @example "1200" */
+  elo: number;
   /** @example 44 */
-  gamesPlayed?: number;
-  player?: User;
+  gamesPlayed: number;
+  player: User;
+  /** @example "62" */
+  winPercentage: number;
   /** @example 27 */
-  wins?: number;
+  wins: number;
 }
 
-export type RecordMatchResultsData = any;
+/** @example {"abc":120,"xyz":-84} */
+export type RatingChanges = Record<string, number>;
+
+export type RecordMatchResultsData = RatingChanges;
 
 export interface RecordMatchResultsPayload {
-  updateType: 'SET_WINNER' | 'ABANDON_GAME';
+  updateType: RecordMatchResultsPayloadUpdateType;
   updateDetails?: WinningTeamDetails;
 }
+
+export type ResultFilterType = 'wins' | 'elo' | 'winPercentage';
 
 export interface Team {
   /** @example "abcxyz" */
   cumulativeTeamId: string;
   /** @example 1 */
-  id: number;
+  id?: number;
   /**
    * @minItems 1
    * @uniqueItems true
@@ -140,7 +171,7 @@ export interface Team {
 }
 
 export interface TeamHistoricResult {
-  wins?: number;
+  wins: number;
 }
 
 export interface User {
@@ -161,6 +192,8 @@ export interface User {
 export interface WinningTeamDetails {
   winningTeamId: string;
 }
+
+export type RecordMatchResultsPayloadUpdateType = 'SET_WINNER' | 'ABANDON_GAME';
 
 export namespace User {
   /**
@@ -249,11 +282,12 @@ export namespace Matches {
    * @tags matches
    * @name RecordMatchResults
    * @summary Record the results of a given match
-   * @request PUT:/matches/${matchId}
+   * @request PUT:/matches/{matchId}
    */
   export namespace RecordMatchResults {
     export type RequestParams = {
-      matchId: string;
+      /** @example 1 */
+      matchId: number;
     };
     export type RequestQuery = {};
     export type RequestBody = RecordMatchResultsPayload;
@@ -286,12 +320,12 @@ export namespace Matches {
    * @request GET:/matches/rankings
    */
   export namespace GetRankingsForLocation {
-    export type RequestParams = {
-      urlPath: string;
-    };
+    export type RequestParams = {};
     export type RequestQuery = {
       locationId: number;
       gameTypeId: number;
+      /** @minItems 1 */
+      filterTypes: ResultFilterType[];
       offset?: number;
       total?: number;
     };
@@ -567,15 +601,15 @@ export class ApiClient<
      * @tags matches
      * @name RecordMatchResults
      * @summary Record the results of a given match
-     * @request PUT:/matches/${matchId}
+     * @request PUT:/matches/{matchId}
      */
     recordMatchResults: (
-      matchId: string,
+      matchId: number,
       data: RecordMatchResultsPayload,
       params: RequestParams = {},
     ) =>
       this.request<RecordMatchResultsData, any>({
-        path: `/matches/$${matchId}`,
+        path: `/matches/${matchId}`,
         method: 'PUT',
         body: data,
         type: ContentType.Json,
@@ -614,10 +648,11 @@ export class ApiClient<
      * @request GET:/matches/rankings
      */
     getRankingsForLocation: (
-      urlPath: string,
       query: {
         locationId: number;
         gameTypeId: number;
+        /** @minItems 1 */
+        filterTypes: ResultFilterType[];
         offset?: number;
         total?: number;
       },

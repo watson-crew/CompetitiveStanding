@@ -1,7 +1,7 @@
 import { HttpRequest } from '@azure/functions';
 
 type Stringified<T> = {
-  [P in keyof T]: string;
+  [P in keyof T]: T[P] extends number ? string : T[P];
 };
 
 export type ParameterizedHttpRequest<PathParams, BodyParams, QueryParams> =

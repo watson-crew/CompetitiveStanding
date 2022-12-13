@@ -1,13 +1,23 @@
-import React from "react"
-import { twMerge } from "tailwind-merge"
-import Card from "../../atoms/Card/Card"
-import Text from "../../atoms/Text/Text"
-import { WithDefaultProps, WithLoadingProps } from "../../types"
+import React from 'react';
+import { twMerge } from 'tailwind-merge';
+import Card from '../../atoms/Card/Card';
+import TopPlayerStats from '../TopPlayerStats/TopPlayerStats';
+import { WithDefaultProps, WithLoadingProps } from '../../types';
+import { RankedPlayer } from 'schema';
+import PlayerCard from '../PlayerCard/PlayerCard';
 
+export enum topPlayerCardType {
+  FIRST,
+  SECOND,
+  THIRD,
+}
 
-type TopPlayersCardProps = WithDefaultProps<WithLoadingProps<{
-  playerName: string
-}>>
+type TopPlayersCardProps = WithDefaultProps<
+  WithLoadingProps<{
+    rankedPlayer?: RankedPlayer;
+    cardType: topPlayerCardType;
+  }>
+>;
 
 function TopPlayersCardStateContent() {
   return (
@@ -17,21 +27,68 @@ function TopPlayersCardStateContent() {
         <div className="h-2 rounded bg-slate-700"></div>
       </div>
     </div>
-  )
+  );
 }
 
+const classNamesForCards: Record<
+  topPlayerCardType,
+  { root?: string; stats?: string }
+> = {
+  [topPlayerCardType.FIRST]: {
+    root: 'bg-gradient-to-br from-yellow-500 via-yellow-200 to-yellow-400',
+  },
+  [topPlayerCardType.SECOND]: {
+    root: 'bg-gradient-to-tr from-gray-400 via-gray-300 to-gray-400',
+  },
+  [topPlayerCardType.THIRD]: {
+    root: 'bg-gradient-to-tl from-yellow-700 via-yellow-600 to-yellow-900',
+  },
+};
 
-export default function TopPlayersCard({ className, loading }: TopPlayersCardProps) {
+function classNames(type: topPlayerCardType) {
+  return classNamesForCards[type];
+}
 
-  const renderWithChildren = (children: React.ReactNode) => React.createElement(Card, { className: twMerge('w-full', className) }, children)
+export default function TopPlayersCard({
+  rankedPlayer,
+  className,
+  loading,
+  cardType,
+}: TopPlayersCardProps) {
+  const classNamesToUse = classNames(cardType);
 
-  if (loading) {
-    return renderWithChildren(TopPlayersCardStateContent())
+  const renderWithChildren = (children: React.ReactNode) =>
+    React.createElement(
+      Card,
+      {
+        className: twMerge(
+          'flex flex-col w-full',
+          className,
+          classNamesToUse.root,
+        ),
+      },
+      children,
+    );
+
+  if (loading || !rankedPlayer) {
+    return renderWithChildren(TopPlayersCardStateContent());
   }
 
+  const isFullVersion = cardType == topPlayerCardType.FIRST;
+
   return renderWithChildren(
-    <>
-      <Text type='p'>Actual card content here</Text>
-    </>
-  )
+    <section className="flex h-full items-center rounded-xl bg-opacity-30 p-2">
+      <PlayerCard
+        className="w-2/5 flex-col-reverse p-0 md:p-0"
+        player={rankedPlayer.player}
+        variant={isFullVersion ? 's' : 'xs'}
+      />
+
+      <TopPlayerStats
+        {...rankedPlayer}
+        fullVersion={isFullVersion}
+        className={twMerge('mx-5 w-3/5')}
+      />
+    </section>,
+  );
 }

@@ -1,28 +1,33 @@
-import { WithDefaultProps } from "../../types";
-import { twMerge } from 'tailwind-merge'
-import { IoMdCloseCircle } from 'react-icons/io'
+import { WithDefaultProps } from '../../types';
+import { twMerge } from 'tailwind-merge';
+import { IoMdCloseCircle } from 'react-icons/io';
+import IconButton from '../IconButton/IconButton';
 
 type CloseButtonProps = WithDefaultProps<{
-  buttonSize?: 's' | 'm' | 'l'
-  onClose: () => void
-}>
-
-function CloseButton({  onClose, className }: CloseButtonProps) {
-  return <button
-      className={twMerge("rounded-full absolute -top-3 -right-3", className)}
-      onClick={onClose} 
-      ><IoMdCloseCircle className="fill-slate-300 hover:fill-slate-500 transition duration-300" size={30} /></button>
-}
+  buttonSize?: 's' | 'm' | 'l';
+  onClose: () => void;
+}>;
 
 type WithCloseButtonProps = CloseButtonProps & {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
-export default function WithCloseButton({ buttonSize = 'm', onClose, children, className} : WithCloseButtonProps) {
-
-  return <section className="relative">
-    <CloseButton buttonSize={buttonSize} onClose={onClose} className={className} />
-    {children}
-  </section>
-
+export default function WithCloseButton({
+  buttonSize = 'm',
+  onClose,
+  children,
+  className,
+}: WithCloseButtonProps) {
+  return (
+    <section className="relative">
+      <IconButton
+        icon={IoMdCloseCircle}
+        buttonSize={buttonSize}
+        onClick={onClose}
+        className={twMerge('absolute -top-3 -right-5 mr-2', className)}
+        iconClassName="fill-slate-300 transition duration-300 hover:fill-slate-500"
+      />
+      {children}
+    </section>
+  );
 }

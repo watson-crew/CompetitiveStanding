@@ -1,40 +1,77 @@
-import TextWithIcon from '../TextWithIcon/TextWithIcon'
-import Image from 'next/image'
-import { User } from 'schema'
-import { CommonIcons } from '../../types/icons'
-import Card from '../../atoms/Card/Card'
-import { WithDefaultProps } from '../../types'
-import { twMerge } from 'tailwind-merge'
-import Text from '../../atoms/Text/Text'
+import TextWithIcon from '../TextWithIcon/TextWithIcon';
+import { User } from 'schema';
+import { CommonIcons } from '../../types/icons';
+import Card from '../../atoms/Card/Card';
+import { WithDefaultProps } from '../../types';
+import { twMerge } from 'tailwind-merge';
+import Text from '../../atoms/Text/Text';
+import PlayerImage from '../../atoms/PlayerImage/PlayerImage';
+import { getFullName } from '../../utils/playerUtils';
 
-const getFullName = (player: User) => `${player.firstName} ${player.lastName}`
+type PlayerVariant = 'xs' | 's' | 'm';
 
 type PlayerCardProps = WithDefaultProps<{
-  player: User,
-  children?: React.ReactNode
-}>
+  player: User;
+  children?: React.ReactNode;
+  variant?: PlayerVariant;
+  textClassName?: string;
+  imageClassName?: string;
+}>;
 
-export default function PlayerCard({ player, className, children }: PlayerCardProps) {
+export default function PlayerCard({
+  player,
+  className,
+  children,
+  variant = 'm',
+  textClassName = '',
+  imageClassName = '',
+}: PlayerCardProps) {
+  const fullName = getFullName(player);
 
-  const fullName = getFullName(player)
-  const imageUrl = player.profilePicture ?? 'https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg'
+  if (variant == 's' || variant == 'xs') {
+    const textStyle = variant === 'xs' ? 'p' : 'h3';
+    const imageVariant = variant === 'xs' ? 'xs' : 'm';
 
+    return (
+      <Card
+        className={twMerge('flex flex-col items-center gap-3', className)}
+        color="transparent"
+      >
+        <Text type="p" style={textStyle} className={twMerge(textClassName)}>
+          {player.firstName}
+        </Text>
+        <PlayerImage
+          src={player.profilePicture}
+          playerName={fullName}
+          variant={imageVariant}
+          className={imageClassName}
+        />
+        {children && <section className="flex">{children}</section>}
+      </Card>
+    );
+  }
+
+  // For 'm' variant - default
   return (
-    <Card className={twMerge('bg-slate-200 flex', className)}>
-      <div className="h-24 w-24 relative">
-        <Image src={imageUrl} alt={`${fullName}'s picture`} fill={true} sizes="" className="rounded-full" />
-      </div>
+    <Card className={twMerge('flex max-h-32 max-w-sm bg-slate-200', className)}>
+      <PlayerImage
+        className="flex-none"
+        src={player.profilePicture}
+        playerName={fullName}
+      />
 
-      <section className='pl-10'>
-        <Text type='h3' className='text-sky-500 dark:text-sky-400'>{fullName}</Text>
-        <Text type='p' className='text-[#ff3e00] font-bold'>{player.memorableId}</Text>
-        <TextWithIcon icon={CommonIcons.HomeLocation} textProps={{ type: 'p' }}>{player.location}</TextWithIcon>
-        {children &&
-        <section>
-          {children}
-        </section>
-        }
+      <section className="pl-10 text-left">
+        <Text type="h3" className="text-sky-500 dark:text-sky-400">
+          {fullName}
+        </Text>
+        <Text type="p" className="font-bold text-[#ff3e00]">
+          {player.memorableId}
+        </Text>
+        <TextWithIcon icon={CommonIcons.HomeLocation} textProps={{ type: 'p' }}>
+          {player.location}
+        </TextWithIcon>
       </section>
+      {children && <section className="ml-5 flex">{children}</section>}
     </Card>
-  )
+  );
 }

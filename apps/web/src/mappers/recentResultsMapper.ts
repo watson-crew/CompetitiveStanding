@@ -1,29 +1,32 @@
-import { GameResult } from 'ui';
-import { GetRecentMatchesData, Team, User } from 'schema';
+import { GameResult, TeamWithRatings } from 'ui';
+import { GameType, GetRecentMatchesData, RatingChanges, User } from 'schema';
 import dayjs from 'dayjs';
-import { extractPlayerIds } from '@src/uilts/teamUtils';
+import { extractPlayerIds } from '@src/utils/teamUtils';
 
 function mapTeam(
   players: Record<string, User>,
+  playerEloChanges: RatingChanges | undefined,
   cumulativeTeamId: string,
-): Omit<Team, 'id'> {
+): TeamWithRatings {
   return {
     cumulativeTeamId,
-    players: extractPlayerIds(cumulativeTeamId).map(
-      playerId => players[playerId],
-    ),
+    players: extractPlayerIds(cumulativeTeamId).map(playerId => ({
+      ...players[playerId],
+      eloChange: playerEloChanges ? playerEloChanges[playerId] : undefined,
+    })),
   };
 }
 
-export default function mapRecentResults({
-  resources,
-  results,
-}: GetRecentMatchesData): GameResult[] {
+export default function mapRecentResults(
+  { resources, results }: GetRecentMatchesData,
+  gameTypes: Record<number, Omit<GameType, 'requirements'>>,
+): GameResult[] {
   return results?.map(result => {
     return {
       teams: result.participatingTeams?.map(team =>
-        mapTeam(resources?.players, team),
+        mapTeam(resources?.players, result.playerRatingChanges, team),
       ),
+      gameType: gameTypes[result.gameTypeId] as GameType,
       winningTeamId: result.winningTeamId,
       startTime: dayjs(result.startTime),
       endTime: dayjs(result.endTime),

@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
     "title": "Competitive Standing Schema",
     "description": "Schema for the CompetitiveStandingAPI to create and track the results of various games",
@@ -200,11 +200,22 @@
         }
       }
     },
-    "/matches/${matchId}": {
+    "/matches/{matchId}": {
       "put": {
         "tags": ["matches"],
         "summary": "Record the results of a given match",
         "operationId": "recordMatchResults",
+        "parameters": [
+          {
+            "name": "matchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "example": 1
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -226,8 +237,15 @@
           }
         },
         "responses": {
-          "204": {
-            "description": "successful update"
+          "200": {
+            "description": "successful update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RatingChanges"
+                }
+              }
+            }
           }
         }
       }
@@ -331,19 +349,23 @@
             }
           },
           {
-            "name": "urlPath",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "gameTypeId",
             "in": "query",
             "required": true,
             "schema": {
               "type": "integer"
+            }
+          },
+          {
+            "name": "filterTypes",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/components/schemas/ResultFilterType"
+              }
             }
           },
           {
@@ -369,9 +391,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RankedPlayer"
+                  "type": "object",
+                  "propertyNames": {
+                    "$ref": "#/components/schemas/ResultFilterType"
+                  },
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/RankedPlayer"
+                    }
                   }
                 }
               }
@@ -391,7 +419,8 @@
           "winningTeamId",
           "startTime",
           "endTime",
-          "locationPlayed"
+          "locationPlayed",
+          "gameTypeId"
         ],
         "properties": {
           "id": {
@@ -424,12 +453,53 @@
           "locationPlayed": {
             "type": "string",
             "example": "Nottingham"
+          },
+          "gameTypeId": {
+            "type": "number",
+            "example": 1
+          },
+          "playerRatingChanges": {
+            "$ref": "#/components/schemas/RatingChanges"
+          }
+        }
+      },
+      "GameRequirement": {
+        "type": "object",
+        "required": ["playersPerTeam", "numberOfTeams"],
+        "properties": {
+          "playersPerTeam": {
+            "type": "integer"
+          },
+          "numberOfTeams": {
+            "type": "integer"
+          }
+        }
+      },
+      "GameRequirements": {
+        "required": ["min", "max"],
+        "type": "object",
+        "properties": {
+          "min": {
+            "$ref": "#/components/schemas/GameRequirement"
+          },
+          "max": {
+            "$ref": "#/components/schemas/GameRequirement"
+          }
+        },
+        "example": {
+          "min": {
+            "playersPerTeam": 1,
+            "numberOfTeams": 2
+          },
+          "max": {
+            "playersPerTeam": 6,
+            "numberOfTeams": 2
           }
         }
       },
       "GameType": {
         "type": "object",
-        "required": ["id", "name", "maxNumberOfPlayers"],
+        "required": ["id", "name", "requirements"],
         "properties": {
           "id": {
             "type": "integer",
@@ -439,15 +509,14 @@
             "type": "string",
             "example": "Pool"
           },
-          "maxNumberOfPlayers": {
-            "type": "integer",
-            "example": "1"
+          "requirements": {
+            "$ref": "#/components/schemas/GameRequirements"
           }
         }
       },
       "InitiateMatchResponse": {
         "type": "object",
-        "required": ["matchId", "historicResults"],
+        "required": ["matchId", "historicResults", "playerRatings"],
         "properties": {
           "matchId": {
             "type": "integer",
@@ -470,12 +539,15 @@
                 "wins": 9
               }
             }
+          },
+          "playerRatings": {
+            "$ref": "#/components/schemas/PlayerRatings"
           }
         }
       },
       "Location": {
         "type": "object",
-        "required": ["id", "name", "urlPath"],
+        "required": ["id", "name", "urlPath", "availableGames", "playerCount"],
         "properties": {
           "id": {
             "type": "integer",
@@ -489,21 +561,37 @@
             "type": "string",
             "example": "Nottingham"
           },
-          "coverPhoto": {
-            "type": "string",
-            "example": "https://www.thetrainline.com/content/vul/hero-images/city/nottingham/1x.jpg"
-          },
           "availableGames": {
             "type": "array",
             "uniqueItems": true,
             "items": {
               "$ref": "#/components/schemas/GameType"
             }
+          },
+          "playerCount": {
+            "type": "integer",
+            "example": 65
+          },
+          "mostPopularGame": {
+            "description": "The most played game at the given location",
+            "type": "integer",
+            "example": 1
           }
+        }
+      },
+      "PlayerRatings": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "example": {
+          "abc": 980,
+          "xyz": 1214
         }
       },
       "RankedPlayer": {
         "type": "object",
+        "required": ["player", "wins", "gamesPlayed", "winPercentage", "elo"],
         "properties": {
           "player": {
             "$ref": "#/components/schemas/User"
@@ -515,8 +603,30 @@
           "gamesPlayed": {
             "type": "integer",
             "example": 44
+          },
+          "winPercentage": {
+            "type": "integer",
+            "example": "62"
+          },
+          "elo": {
+            "type": "integer",
+            "example": "1200"
           }
         }
+      },
+      "RatingChanges": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "integer"
+        },
+        "example": {
+          "abc": 120,
+          "xyz": -84
+        }
+      },
+      "ResultFilterType": {
+        "type": "string",
+        "enum": ["wins", "elo", "winPercentage"]
       },
       "WinningTeamDetails": {
         "type": "object",
@@ -529,7 +639,7 @@
       },
       "Team": {
         "type": "object",
-        "required": ["id", "cumulativeTeamId", "players"],
+        "required": ["cumulativeTeamId", "players"],
         "properties": {
           "id": {
             "type": "integer",
@@ -551,7 +661,7 @@
       },
       "TeamHistoricResult": {
         "type": "object",
-        "required": ["win"],
+        "required": ["wins"],
         "properties": {
           "wins": {
             "type": "integer"

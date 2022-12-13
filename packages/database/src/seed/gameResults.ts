@@ -6,7 +6,7 @@ import {
   Team,
   Location,
 } from '@prisma/client';
-import { toId } from './maps';
+import dayjs from 'dayjs';
 
 // Pass in all games types and all teams
 // This seeder will create games of specific types for teams and output the results
@@ -17,50 +17,62 @@ type SeedDependencies = {
 };
 
 type Game = {
-  teams: number[];
-  winningTeam: number;
+  teams: string[];
+  winningTeam: string;
   start: Date;
   end: Date;
+  gameType?: GameType;
 };
 
-const games: Game[] = [
-  {
-    teams: [1, 2],
-    winningTeam: 1,
-    start: new Date(2022, 11, 21, 10, 30),
-    end: new Date(2022, 11, 10, 45),
-  },
-  {
-    teams: [1, 2],
-    winningTeam: 2,
-    start: new Date(2022, 11, 21, 10, 47),
-    end: new Date(2022, 11, 11, 4),
-  },
-  {
-    teams: [3, 5],
-    winningTeam: 5,
-    start: new Date(2022, 11, 21, 16, 22),
-    end: new Date(2022, 11, 16, 35),
-  },
-  {
-    teams: [1, 3],
-    winningTeam: 3,
-    start: new Date(2022, 11, 21, 16, 22),
-    end: new Date(2022, 11, 16, 35),
-  },
-  {
-    teams: [1, 5],
-    winningTeam: 5,
-    start: new Date(2022, 11, 21, 16, 22),
-    end: new Date(2022, 11, 16, 35),
-  },
-  {
-    teams: [1, 2],
-    winningTeam: 1,
-    start: new Date(2022, 11, 21, 10, 47),
-    end: new Date(2022, 11, 11, 4),
-  },
-];
+const buildGameResults = ({ darts }: Record<string, GameType>): Game[] => {
+  const now = dayjs();
+
+  return [
+    {
+      teams: ['jjp', 'pjm'],
+      winningTeam: 'jjp',
+      start: now.subtract(325, 'seconds').toDate(),
+      end: now.toDate(),
+    },
+    {
+      teams: ['jjppjm', '4e8stctjw'],
+      winningTeam: 'jjppjm',
+      start: now.subtract(325, 'seconds').toDate(),
+      end: now.toDate(),
+    },
+    {
+      teams: ['jjp', 'pjm'],
+      winningTeam: 'pjm',
+      start: now.subtract(20, 'minutes').toDate(),
+      end: now.subtract(15, 'minutes').toDate(),
+    },
+    {
+      teams: ['jjp', 'pjm', 'stc'],
+      winningTeam: 'pjm',
+      start: now.subtract(30, 'minutes').toDate(),
+      end: now.subtract(25, 'minutes').add(315, 'seconds').toDate(),
+      gameType: darts,
+    },
+    {
+      teams: ['stc', '4e8'],
+      winningTeam: '4e8',
+      start: now.subtract(2, 'hours').toDate(),
+      end: now.subtract(2, 'hours').add(472, 'seconds').toDate(),
+    },
+    {
+      teams: ['jjp', 'stc'],
+      winningTeam: 'stc',
+      start: now.subtract(2, 'days').toDate(),
+      end: now.subtract(2, 'days').add(123, 'seconds').toDate(),
+    },
+    {
+      teams: ['jjp', '4e8'],
+      winningTeam: '4e8',
+      start: now.subtract(10, 'days').toDate(),
+      end: now.subtract(10, 'days').add(623, 'seconds').toDate(),
+    },
+  ];
+};
 
 const generateGameResultData = (
   location: Location,
@@ -72,7 +84,10 @@ const generateGameResultData = (
 ): Omit<Prisma.GameResultUncheckedCreateInput, 'id'> => {
   return {
     teams: {
-      connect: teams.map(toId),
+      connect: teams.map(
+        ({ cumulativeTeamId }) =>
+          ({ cumulativeTeamId } as Prisma.TeamWhereUniqueInput),
+      ),
     },
     winningTeamId: winningTeam.cumulativeTeamId,
     gameTypeId: gameType.id,
@@ -87,16 +102,16 @@ const gameResults = (
   gameTypes: Record<string, GameType>,
   teams: Record<string, Team>,
 ): Omit<Prisma.GameResultUncheckedCreateInput, 'id'>[] => {
-  const nottingham = locations['nottingham'];
-  const pool = gameTypes['pool'];
+  const { nottingham } = locations;
+  const { pool } = gameTypes;
 
   const results: Omit<Prisma.GameResultUncheckedCreateInput, 'id'>[] = [];
-  games.forEach(game => {
+  buildGameResults(gameTypes).forEach(game => {
     const teamsInGame: Team[] = game.teams.map(teamId => teams[teamId]);
     results.push(
       generateGameResultData(
         nottingham,
-        pool,
+        game.gameType || pool,
         teamsInGame,
         teams[game.winningTeam],
         game.start,

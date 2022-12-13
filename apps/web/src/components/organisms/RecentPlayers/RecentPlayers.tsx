@@ -1,39 +1,71 @@
-import { WithDefaultProps, PlayerCard, Button, Text } from "@src/../../../packages/ui";
-import { useSelector } from 'react-redux'
-import { selectRecentlyPlayed } from '@src/store/reducers/playerSlice'
-import { User } from "@src/../../../packages/schema";
+import {
+  WithDefaultProps,
+  PlayerCard,
+  Button,
+  Text,
+  Card,
+  CommonIcons,
+} from 'ui';
+import { useSelector } from 'react-redux';
+import { selectRecentlyPlayed } from '@src/store/reducers/playerSlice';
+import { User } from 'schema';
+import { twMerge } from 'tailwind-merge';
+import { useEffect, useState } from 'react';
+import WithScrollbar from '@src/../../../packages/ui/atoms/WithScrollbar/WithScrollbar';
 
 type RecentPlayersProps = WithDefaultProps<{
-    onSelected: (user: User) => void,
-    disabled?: number[]
-}>
+  onSelected: (user: User) => void;
+  disabled?: string[];
+  allSlotsFilled?: boolean;
+}>;
 
-export default function RecentPlayers({ onSelected, disabled }: RecentPlayersProps) {
-    const recentlyPlayedUsers = useSelector(selectRecentlyPlayed)
+export default function RecentPlayers({
+  className,
+  onSelected,
+  disabled = [],
+  allSlotsFilled = false,
+}: RecentPlayersProps) {
+  const recentlyPlayedUsers = useSelector(selectRecentlyPlayed);
 
-    const onClick = (user: User) => {
-        onSelected(user);
-    }
+  const [hasRecentPlayers, setHasRecentPlayers] = useState(false);
 
-    const isDisabled = (id: number) => {
-        if (!disabled) {
-            return false;
-        }
-        return disabled.includes(id)
-    }
+  useEffect(() => {
+    setHasRecentPlayers(recentlyPlayedUsers.length > 0);
+  }, [recentlyPlayedUsers]);
 
-    const recentlyPlayedUserCards = () => {
-        return recentlyPlayedUsers.map(
-            user => <PlayerCard player={user}><Button text="Add" onClick={() => onClick(user)} disabled={isDisabled(user.id)}/></PlayerCard>
-        )
-    }
+  const isDisabled = (memorableId: string) => {
+    return disabled.includes(memorableId);
+  };
 
-    return (
-        <section>
-            <Text type="h2">Recently Played</Text>
-            <div className="h-full w-full flex-row flex overflow-scroll gap-x-4">
-                {recentlyPlayedUserCards()}
-            </div>
-        </section>
-    )
+  const recentlyPlayedUserCards = () => {
+    return [...recentlyPlayedUsers].reverse().map((user, i) => (
+      <PlayerCard player={user} key={`recent-player-${i}`} variant="s">
+        <Button
+          onClick={() => onSelected(user)}
+          disabled={allSlotsFilled || isDisabled(user.memorableId)}
+          className="rounded-full px-2 py-2"
+        >
+          <CommonIcons.Plus></CommonIcons.Plus>
+        </Button>
+      </PlayerCard>
+    ));
+  };
+
+  return (
+    <Card className={twMerge('w-full text-left', className)}>
+      <Text type="h2">Recent players</Text>
+
+      {!hasRecentPlayers && (
+        <div className="text-center">
+          <Text type="p">No recent players</Text>
+        </div>
+      )}
+
+      {hasRecentPlayers && (
+        <WithScrollbar className="flex-grow items-center">
+          {recentlyPlayedUserCards()}
+        </WithScrollbar>
+      )}
+    </Card>
+  );
 }

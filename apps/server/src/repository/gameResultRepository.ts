@@ -1,13 +1,22 @@
-import { gameResultMapper } from '@src/mappers/gameResultMapper';
+import {
+  gameResultMapper,
+  gameRankingsMapper,
+} from '@src/mappers/gameResultMapper';
 import { GetResultsForLocationResult } from '@src/types';
 import { prismaClient as prisma, Prisma } from 'database';
 import {
   GetRecentMatchesData,
+  GetRankingsForLocationData,
   InitiateMatchResponse,
   TeamHistoricResult,
   WinningTeamDetails,
+  ResultFilterType,
+  RankedPlayer,
 } from 'schema';
 import dayjs from 'dayjs';
+import executeRankingQuery, {
+  RankingForSortTypeQueryParams,
+} from './raw/rankingRawQuery';
 
 function extractPlayerIds(teamId: string): string[] {
   if (teamId.length % 3 !== 0) throw new Error();
@@ -38,6 +47,8 @@ async function fetchHistoricResults(
   gameTypeId: number,
   participatingTeams: string[],
 ): Promise<Record<string, TeamHistoricResult>> {
+  // FIXME: This doesn't seem to work when we have more than 2 teams
+
   const historicResults = await prisma.gameResult.groupBy({
     by: ['winningTeamId'],
     _count: {
@@ -114,7 +125,7 @@ export async function initiateNewMatch(
   gameTypeId: number,
   locationId: number,
   participatingTeams: string[],
-): Promise<InitiateMatchResponse> {
+): Promise<Omit<InitiateMatchResponse, 'playerElos'>> {
   const [historicResults, matchId] = await Promise.all([
     fetchHistoricResults(gameTypeId, participatingTeams),
     createNewMatch(gameTypeId, locationId, participatingTeams),
@@ -173,8 +184,12 @@ export async function getResultsForLocation(
     await prisma.gameResult.findMany({
       where: {
         locationPlayedId: locationId,
+        winningTeamId: {
+          not: null,
+        },
       },
       include: {
+        gameType: true,
         winningTeam: {
           select: {
             cumulativeTeamId: true,
@@ -191,6 +206,20 @@ export async function getResultsForLocation(
             players: true,
           },
         },
+        ratingChanges: {
+          select: {
+            playerRanking: {
+              select: {
+                player: {
+                  select: {
+                    memorableId: true,
+                  },
+                },
+              },
+            },
+            ratingChangeAmount: true,
+          },
+        },
       },
       orderBy: {
         endTime: 'desc',
@@ -201,3 +230,51 @@ export async function getResultsForLocation(
 
   return gameResultMapper.map(matches);
 }
+
+const additionalParamsForSortType: Record<
+  ResultFilterType,
+  Partial<RankingForSortTypeQueryParams>
+> = {
+  elo: {
+    minRequiredGames: 1,
+  },
+  winPercentage: {
+    minRequiredGames: 5,
+  },
+  wins: {
+    minRequiredWins: 1,
+  },
+};
+
+export const getTopRankingsForLocation = async (
+  locationId: number,
+  gameTypeId: number,
+  offset = 0,
+  total = 3,
+  filterTypes: ResultFilterType[],
+): Promise<GetRankingsForLocationData> => {
+  const getRankingForTypePromises = filterTypes.map(
+    async (resultSortType: ResultFilterType) => {
+      const queryParams = {
+        locationId,
+        gameTypeId,
+        offset,
+        total,
+        ...additionalParamsForSortType[resultSortType],
+      };
+
+      const queryPromise = executeRankingQuery(
+        prisma,
+        resultSortType,
+        queryParams,
+      );
+
+      return [resultSortType, gameRankingsMapper.map(await queryPromise)] as [
+        ResultFilterType,
+        RankedPlayer[],
+      ];
+    },
+  );
+
+  return Object.fromEntries(await Promise.all(getRankingForTypePromises));
+};

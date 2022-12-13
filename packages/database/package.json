@@ -30,10 +30,11 @@
     "seed": "ts-node src/seed/main.ts"
   },
   "devDependencies": {
-    "config": "*",
-    "eslint-config-custom": "*",
     "@mermaid-js/mermaid-cli": "^9.2.2",
-    "prisma": "^4.6.1",
+    "config": "*",
+    "dayjs": "^1.11.6",
+    "eslint-config-custom": "*",
+    "prisma": "^4.7.1",
     "prisma-erd-generator": "^1.2.4",
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.1",
@@ -42,6 +43,6 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
-    "@prisma/client": "^4.6.1"
+    "@prisma/client": "^4.7.1"
   }
 }

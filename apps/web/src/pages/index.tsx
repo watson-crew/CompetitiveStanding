@@ -1,54 +1,42 @@
-import { Location } from "schema";
-import { PlayerCard, Text, Link } from 'ui'
-import { getApiInstance } from "@src/context/ApiContext";
-import { GetStaticPropsContext, GetStaticPropsResult } from "next";
+import { Text, Link, Card, LocationLinkCard } from 'ui';
+import { getApiInstance } from '@src/context/ApiContext';
+import Head from 'next/head';
+import {
+  getLocationStaticPropsFactory,
+  PagePropsWithLocation,
+} from '@src/utils/staticPropUtils';
+import { Routes } from '@src/types/routes';
+import { buildLocationUrl } from '@src/utils/routingUtils';
 
-import { useSelector, useDispatch } from 'react-redux'
-import { selectRecentlyPlayed, clearRecentlyPlayed } from '@src/store/reducers/playerSlice'
+export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
 
-type RootPageProps = {
-  locations: Location[]
-}
-
-export async function getStaticProps(_context: GetStaticPropsContext): Promise<GetStaticPropsResult<RootPageProps>> {
-  return {
-    props: {
-      locations: await getApiInstance().location.getAllLocations()
-    }
-  }
-}
-
-export default function Index({ locations }: RootPageProps) {
-  const dispatch = useDispatch()
-  const recentlyPlayedUsers = useSelector(selectRecentlyPlayed)
-
-  const clearRecentlyPlayedUsers = () => dispatch(clearRecentlyPlayed())
-
+export default function Index({ locations }: PagePropsWithLocation) {
   return (
-    <div className="flex h-screen flex-col items-center">
-      <Text type='h1' className="text-3xl font-bold underline">Competitive standing</Text>
+    <main className="flex h-screen flex-col items-center px-10 xl:px-28">
+      <Head>
+        <title>Competitive Standing</title>
+      </Head>
 
-      <h1>Locations</h1>
-      {locations.map(location => <Text type='h2'>{JSON.stringify(location)}</Text>)}
+      <Card id="locations" className="my-5 w-full text-center">
+        <Text type="h1" className="my-5">
+          Locations
+        </Text>
+        <section className="flex flex-wrap justify-around gap-10">
+          {Object.values(locations).map(location => (
+            <LocationLinkCard
+              key={location.id}
+              location={location}
+              buildLocationUrl={buildLocationUrl}
+            />
+          ))}
+        </section>
+      </Card>
+
       <hr />
 
-      <Link href="/play">
-        Play game
-      </Link>
+      <Link href={Routes.Lobby}>Play game</Link>
 
-      <Link href="/signup">
-        Sign up
-      </Link>
-
-      <hr />
-
-      <h1>Recently Played</h1>
-      {recentlyPlayedUsers && recentlyPlayedUsers.map(user => <PlayerCard player={user}/>)}
-
-      <button onClick={clearRecentlyPlayedUsers}>
-        Clear Recently Selected
-      </button>
-
-    </div>
+      <Link href={Routes.SignUp}>Sign up</Link>
+    </main>
   );
 }
