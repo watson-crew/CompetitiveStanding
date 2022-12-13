@@ -5,6 +5,15 @@ export function toObj<V, K extends keyof V>(
   return Object.fromEntries(arr.map(item => [item[keyField], item]));
 }
 
+export function uniqueItemsToRecord<
+  K extends string | number,
+  V extends { id: K },
+>(arr?: V[]): Record<K, V> {
+  return (
+    arr ? Object.fromEntries(arr.map(item => [item.id, item])) : {}
+  ) as Record<K, V>;
+}
+
 export function withIndexReplaced<T>(arr: T[], newValue: T, index: number) {
   return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
 }

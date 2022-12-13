@@ -29,7 +29,7 @@ import GameWonModal from '@src/components/organisms/GameWonModal/GameWonModal';
 import { buildLobbyUrl, buildLocationUrl } from '@src/utils/routingUtils';
 import { generateTeamId } from '@src/utils/teamUtils';
 import { getSportIcon } from 'ui/utils/iconUtils';
-import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
+import { PagePropsWithLocation } from '@src/types/staticProps';
 
 enum GameEndType {
   REMATCH,

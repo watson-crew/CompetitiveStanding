@@ -1,12 +1,13 @@
-import { getApiInstance } from '@src/context/foo';
+import { getApiInstance } from '@src/factory/apiFactory';
+import { uniqueItemsToRecord } from '@src/utils/collectionUtils';
 import LandingPage from './LandingPage';
 
 export default async function Page() {
   const locations = await getApiInstance().location.getAllLocations();
+  console.log(locations);
+  console.log(locations);
+  console.log(locations);
+  console.log(locations);
 
-  const locationRecord = Object.fromEntries(
-    locations.map(location => [location.id, location]),
-  );
-
-  return <LandingPage locations={locationRecord} />;
+  return <LandingPage locations={uniqueItemsToRecord(locations)} />;
 }

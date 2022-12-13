@@ -1,14 +1,10 @@
-import { getApiInstance } from '@src/context/foo';
+import { getApiInstance } from '@src/factory/apiFactory';
 import { PageStaticParamProps } from './types';
 
 export default async function Head({ params }: PageStaticParamProps) {
-  const location = await (
-    await fetch(`http://localhost:7071/api/locations/${params.locationUrlPath}`)
-  ).json();
-
-  // const location = await getApiInstance().location.getLocationByUrl(
-  //   params.locationUrlPath,
-  // );
+  const location = await getApiInstance().location.getLocationByUrl(
+    params.locationUrlPath,
+  );
 
   return (
     <>

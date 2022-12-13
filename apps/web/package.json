@@ -14,9 +14,8 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
+    "@next/font": "^13.0.6",
     "@reduxjs/toolkit": "^1.9.0",
-    "axios": "^0.21.4",
-    "axios-cache-adapter": "^2.7.3",
     "dayjs": "^1.11.6",
     "eslint-config-next": "^13.0.3",
     "next": "^13.0.3",

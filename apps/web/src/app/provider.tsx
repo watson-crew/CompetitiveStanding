@@ -1,10 +1,11 @@
 'use client';
 
-import { ApiContext, getApiInstance } from '@src/context/ApiContext';
+import { ApiContext } from '@src/context/ApiContext';
 import { Provider as StoreProvider } from 'react-redux';
 
 import { store, persistor } from '@src/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import { getApiInstance } from '@src/factory/apiFactory';
 
 function RootProvider({ children }: { children: React.ReactNode }) {
   return (

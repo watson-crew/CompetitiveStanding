@@ -8,7 +8,6 @@ import { User, InitiateMatchResponse, GameType } from 'schema';
 import { generateTeamId } from '@src/utils/teamUtils';
 import { CommonIcons, LoadingSpinner, Text, TextWithIcon } from 'ui';
 import { getSportIcon } from 'ui/utils/iconUtils';
-import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectMatchInProgress,
@@ -19,6 +18,7 @@ import dayjs from 'dayjs';
 import { withRatings } from '@src/utils/gamesUtils';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@src/types/routes';
+import { PagePropsWithLocation } from '@src/types/staticProps';
 
 function OngoingGameState() {
   return (

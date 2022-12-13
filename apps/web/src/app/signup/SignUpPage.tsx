@@ -26,8 +26,8 @@ import {
   SignupState,
 } from './state';
 import Image from 'next/image';
-import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import React from 'react';
+import { PagePropsWithLocation } from '@src/types/staticProps';
 
 export default function Index({ locations }: PagePropsWithLocation) {
   const api = useContext(ApiContext);

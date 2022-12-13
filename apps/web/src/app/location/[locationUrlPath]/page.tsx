@@ -1,4 +1,5 @@
-import { getApiInstance } from '@src/context/foo';
+import { getApiInstance } from '@src/factory/apiFactory';
+import { uniqueItemsToRecord } from '@src/utils/collectionUtils';
 import LocationPage from './LocationPage';
 import { LocationPageStaticParam, PageStaticParamProps } from './types';
 
@@ -13,19 +14,15 @@ export async function generateStaticParams(): Promise<
 }
 
 export default async function Page({ params }: PageStaticParamProps) {
-  // const locations = await getApiInstance().location.getAllLocations();
+  const location = await getApiInstance().location.getLocationByUrl(
+    params.locationUrlPath,
+  );
+  const locations = await getApiInstance().location.getAllLocations();
 
-  // const locationRecord = Object.fromEntries(
-  //   locations.map(location => [location.id, location]),
-  // );
-
-  // const location = await getApiInstance().location.getLocationByUrl(
-  //   params.locationUrlPath,
-  // );
-
-  const location = await (
-    await fetch(`http://localhost:7071/api/locations/${params.locationUrlPath}`)
-  ).json();
-
-  return <LocationPage location={location} />;
+  return (
+    <LocationPage
+      location={location}
+      locations={uniqueItemsToRecord(locations)}
+    />
+  );
 }

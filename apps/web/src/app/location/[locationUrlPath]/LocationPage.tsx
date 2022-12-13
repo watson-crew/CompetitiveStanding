@@ -16,6 +16,7 @@ import { buildLobbyUrl } from '@src/utils/routingUtils';
 
 type LocationPageProps = {
   location: Location;
+  locations: Record<number, Location>;
 };
 
 const gameTypes: Record<number, Omit<GameType, 'requirements'>> = {

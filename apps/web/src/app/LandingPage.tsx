@@ -1,15 +1,9 @@
 'use client';
 
 import { Text, Link, Card, LocationLinkCard } from 'ui';
-import { getApiInstance } from '@src/context/ApiContext';
-import {
-  getLocationStaticPropsFactory,
-  PagePropsWithLocation,
-} from '@src/utils/staticPropUtils';
 import { Routes } from '@src/types/routes';
 import { buildLocationUrl } from '@src/utils/routingUtils';
-
-export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
+import { PagePropsWithLocation } from '@src/types/staticProps';
 
 export default function Index({ locations }: PagePropsWithLocation) {
   return (

@@ -1,5 +1,7 @@
-/** @type {import('tailwindcss').Config} */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { fontFamily } = require('tailwindcss/defaultTheme')
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx}",
@@ -11,6 +13,9 @@ module.exports = {
       colors: {
         primary: '#5c6ac4',
         secondary: '#ecc94b',
+      },
+      fontFamily: {
+        sans: ['var(--font-orbitron)', ...fontFamily.sans],
       }
     },
   },
