@@ -161,17 +161,20 @@ jobs:
         if: env.BACKEND_SLOT == 'Production'
         run: az functionapp config appsettings set --name ${{ env.FUNCTION_APP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot-settings DATABASE_URL="${{ env.DATABASE_URL }}"
     
-  backend-smoke:
-    name: 'Smoke tests'
+  automated-api-tests:
     runs-on: ubuntu-latest
-    needs: 
-      - deploy-backend
-      - migrate-database
-    env:
-      API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
     steps:
-      - name: Backend smoke test
-        run: curl '${{ env.API_BASE_URL }}/users/jjp' -w "%{http_code}" -f -s -S -o /dev/null
+      - uses: actions/checkout@v3
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+      - name: Login to Postman CLI
+        run: postman login --with-api-key PMAK-6398e9ca257e6f473a6f483f-1b06fdee0e31edcf40b1b20bce986d7399
+      - name: Run API tests
+        run: |
+          postman collection run "12661895-843755b9-0267-4a6b-842d-8908422bfe06" --integration-id "128483-${{ github.run_id }}"
+          # Lint your API using Postman CLI
+          postman api lint --integration-id 128483
     
   build-frontend:
     needs:
@@ -223,20 +226,5 @@ jobs:
           action: 'upload'
           skip_app_build: true
           app_location: ${{ env.FRONTEND_OUTPUT_LOCATION }}
-
-  automated-api-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install Postman CLI
-        run: |
-          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
-      - name: Login to Postman CLI
-        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
-      - name: Run API tests
-        run: |
-          postman collection run "12661895-843755b9-0267-4a6b-842d-8908422bfe06" --integration-id "128483-${{ github.run_id }}"
-          # Lint your API using Postman CLI
-          postman api lint --integration-id 128483
         
     
