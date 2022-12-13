@@ -2,11 +2,11 @@ import { Location } from 'schema';
 import Card from '../../atoms/Card/Card';
 import Text from '../../atoms/Text/Text';
 import { CommonIcons, WithDefaultProps } from '../../types';
-import Link from '../../atoms/Link/Link';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import TextWithIcon from '../TextWithIcon/TextWithIcon';
 import { getSportIcon } from '../../utils/iconUtils';
+import Link from 'next/link';
 
 type LocationLinkCardProps = WithDefaultProps<{
   location: Location;
