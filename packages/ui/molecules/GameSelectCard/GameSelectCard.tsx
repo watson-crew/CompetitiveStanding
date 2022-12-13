@@ -14,6 +14,7 @@ export default function GameSelectCard({ game, link }: GameSelectCardProps) {
   return (
     <Link
       href={link}
+      style="button"
       className="flex h-full w-full flex-col justify-center pt-5"
     >
       <TextWithIcon

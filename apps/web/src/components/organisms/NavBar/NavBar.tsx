@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import React from 'react';
 import {
   NavBarNavigationButton,
   NavBarNavigationLink,
-} from './NavBarNavigationLinks/NavBarNavigationLinks';
+} from '../../atoms/NavBarNavigationLinks/NavBarNavigationLinks';
 import { NavBarLinkConfig, NavBarButtonConfig } from '@src/types/navBar';
+import { Link } from 'ui';
 
 export default function NavBar({
   config,

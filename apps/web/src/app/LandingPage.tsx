@@ -1,7 +1,6 @@
 'use client';
 
-import { Text, Link, Card, LocationLinkCard } from 'ui';
-import { Routes } from '@src/types/routes';
+import { Text, Card, LocationLinkCard } from 'ui';
 import { buildLocationUrl } from '@src/utils/routingUtils';
 import { PagePropsWithLocation } from '@src/types/staticProps';
 
@@ -26,12 +25,6 @@ export default function LandingPage({ locations }: PagePropsWithLocation) {
           ))}
         </section>
       </Card>
-
-      <hr />
-
-      <Link href={Routes.Lobby}>Play game</Link>
-
-      <Link href={Routes.SignUp}>Sign up</Link>
     </main>
   );
 }

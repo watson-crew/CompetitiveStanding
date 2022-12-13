@@ -1,7 +1,7 @@
 import { NavBarButtonConfig, NavBarLinkConfig } from '@src/types/navBar';
 import { Routes } from '@src/types/routes';
 import { Location } from 'schema';
-import NavBarLocationDropdownContent from './NavBarLocationDropdownContent/NavBarLocationDropdownContent';
+import NavBarLocationDropdownContent from '../components/molecules/NavBarLocationDropdownContent/NavBarLocationDropdownContent';
 
 export const buildNavBarLinks: (
   locations: Location[],

@@ -1,15 +1,15 @@
 import { twMerge } from 'tailwind-merge';
-import Card from '../../atoms/Card/Card';
-import TopPlayersCard from '../../molecules/TopPlayerCard/TopPlayerCard';
-import { topPlayerCardType } from '../../molecules/TopPlayerCard/TopPlayerCard';
-import { CommonIcons, WithDefaultProps, WithLoadingProps } from '../../types';
+import Card from 'ui/atoms/Card/Card';
+import TopPlayersCard from 'ui/molecules/TopPlayerCard/TopPlayerCard';
+import { topPlayerCardType } from 'ui/molecules/TopPlayerCard/TopPlayerCard';
+import { CommonIcons, WithDefaultProps, WithLoadingProps } from 'ui/types';
 import { RankedPlayer, ResultFilterType } from 'schema';
 import { useEffect, useState } from 'react';
 import SelectWithIcon, {
   SelectWithIconOption,
   SelectWithIconProps,
-} from '../../atoms/SelectWithIcon/SelectWithIcon';
-import TextWithIcon from '../../molecules/TextWithIcon/TextWithIcon';
+} from 'ui/atoms/SelectWithIcon/SelectWithIcon';
+import TextWithIcon from 'ui/molecules/TextWithIcon/TextWithIcon';
 
 type TopPlayersOverviewProps = WithDefaultProps<
   WithLoadingProps<{

@@ -1,9 +1,6 @@
+import { Card, GameSelectCard, Text, WithDefaultProps } from 'ui';
 import { GameType } from 'schema';
 import { twMerge } from 'tailwind-merge';
-import Card from '../../atoms/Card/Card';
-import Text from '../../atoms/Text/Text';
-import GameSelectCard from '../../molecules/GameSelectCard/GameSelectCard';
-import { WithDefaultProps } from '../../types';
 import { UrlObject } from 'url';
 
 type AvailableGamesOverviewProps = WithDefaultProps<{

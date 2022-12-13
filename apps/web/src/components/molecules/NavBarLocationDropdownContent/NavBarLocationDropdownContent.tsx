@@ -1,6 +1,5 @@
-import { getSportIcon } from '@src/../../../packages/ui/utils/iconUtils';
+import { Link, getSportIcon } from 'ui';
 import { buildLocationUrl } from '@src/utils/routingUtils';
-import Link from 'next/link';
 import React from 'react';
 import { Location } from 'schema';
 

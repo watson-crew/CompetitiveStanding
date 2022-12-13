@@ -1,7 +1,7 @@
 import RootProvider from './provider';
 import '../../styles/globals.css';
 import NavBar from '@src/components/organisms/NavBar/NavBar';
-import { buildNavBarLinks } from '@src/components/organisms/NavBar/navBarConfig';
+import { buildNavBarLinks } from '@src/config/navBar.config';
 import { getApiInstance } from '@src/factory/apiFactory';
 
 export default async function RootLayout({

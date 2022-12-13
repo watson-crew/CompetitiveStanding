@@ -1,9 +1,13 @@
-import { GameResult, WithDefaultProps, WithLoadingProps } from '../../types';
-import Card from '../../atoms/Card/Card';
-import ResultCard from '../../molecules/ResultCard.tsx/ResultCard';
 import { twMerge } from 'tailwind-merge';
-import Text from '../../atoms/Text/Text';
 import { useEffect, useState } from 'react';
+import {
+  Card,
+  GameResult,
+  ResultCard,
+  WithDefaultProps,
+  WithLoadingProps,
+  Text,
+} from 'ui';
 
 type RecentMatchesOverviewProps = WithDefaultProps<
   WithLoadingProps<{

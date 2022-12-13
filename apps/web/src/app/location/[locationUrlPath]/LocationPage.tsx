@@ -1,18 +1,14 @@
 'use client';
 
 import { GameType, Location, RankedPlayer, ResultFilterType } from 'schema';
-import {
-  AvailableGamesOverview,
-  Card,
-  GameResult,
-  RecentMatchesOverview,
-  Text,
-  TopPlayersOverview,
-} from 'ui';
+import { Card, GameResult, Text } from 'ui';
 import { ApiContext } from '@src/context/ApiContext';
 import { useContext, useEffect, useState } from 'react';
 import mapRecentResults from '@src/mappers/recentResultsMapper';
 import { buildLobbyUrl } from '@src/utils/routingUtils';
+import AvailableGamesOverview from '@src/components/organisms/AvailableGamesOverview/AvailableGamesOverview';
+import RecentMatchesOverview from '@src/components/organisms/RecentMatchesOverview/RecentMatchesOverview';
+import TopPlayersOverview from '@src/components/organisms/TopPlayersOverview/TopPlayersOverview';
 
 type LocationPageProps = {
   location: Location;
