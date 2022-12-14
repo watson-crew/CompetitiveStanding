@@ -239,6 +239,8 @@ jobs:
       API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
       NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
       ENABLE_PREVIEW_FEATURES: true
+      FUNCTION_LANGUAGE: node
+      FUNCTION_LANGUAGE_VERSION: 16
     outputs:
       frontend_url: ${{ steps.deploy.outputs.static_web_app_url }}
     steps:
@@ -252,14 +254,16 @@ jobs:
       #     key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
       - name: Deploy frontend
         id: deploy
-        uses: Azure/static-web-apps-deploy@v1
+        uses: Azure/static-web-apps-deploy@latest
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BAY_0CAAA7303 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
-          app_build_command: 'npm run next:build -w web'
+          app_location: "./apps/web"
+          api_location: "" # Api source code path - optional
+          # app_build_command: 'npm run next:build -w web'
           is_static_export: false
-          output_location: ${{ env.FRONTEND_OUTPUT_LOCATION }}
+          output_location: ""
 
   smoke:
     name: Frontend smoke tests
