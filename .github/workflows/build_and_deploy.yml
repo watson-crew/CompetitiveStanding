@@ -12,6 +12,7 @@ on:
 env:
   NODE_VERSION: '16.x'
   FRONTEND_LOCATION: './apps/web'
+  FRONTEND_OUTPUT_LOCATION: './apps/web/.next'
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
   DISABLE_ERD: true
 
@@ -192,7 +193,7 @@ jobs:
         run: az functionapp config appsettings set --name ${{ env.FUNCTION_APP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot-settings DATABASE_URL="${{ env.DATABASE_URL }}"
     
   backend-smoke:
-    name: 'Smoke tests'
+    name: Backend smoke tests
     runs-on: ubuntu-latest
     needs: 
       - deploy-backend
@@ -253,10 +254,10 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           app_build_command: 'npm run next:build'
-          app_location: ${{ env.FRONTEND_LOCATION }}
+          output_location: ${{ FRONTEND_OUTPUT_LOCATION }}
 
   smoke:
-    name: Frontend Smoke tests
+    name: Frontend smoke tests
     runs-on: ubuntu-latest
     needs: 
       - deploy-frontend
