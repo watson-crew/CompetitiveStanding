@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: true
       - name: lol
@@ -34,7 +34,7 @@ jobs:
           api_build_command: "rm -rf $SOURCE_DIR/node_modules/@next/swc-* && rm -rf $SOURCE_DIR/.next/cache"
         env: 
           ENABLE_PREVIEW_FEATURES: true
-          API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
+          API_BASE_URL: 'https://bjsscompetitivestandingbackend-qa.azurewebsites.net/api'
     
 
   close_pull_request_job:
