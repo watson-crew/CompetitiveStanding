@@ -13,7 +13,9 @@ export async function generateStaticParams(): Promise<
   }));
 }
 
-export default async function Page({ params }: PageStaticParamProps) {
+export default async function Location({
+  params,
+}: PageStaticParamProps) {
   let location: Location | undefined;
 
   try {
