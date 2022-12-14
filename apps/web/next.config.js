@@ -7,7 +7,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 /** @type {import('next').NextConfig} */
 module.exports = withBundleAnalyzer({
   reactStrictMode: false,
-  output: "standalone",
   images: {
     domains: ['i.pinimg.com', 'ca.slack-edge.com'],
     unoptimized: true,
