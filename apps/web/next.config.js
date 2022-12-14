@@ -1,15 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // const withTM = require('next-transpile-modules')(['ui', 'schema']);
-let withBundleAnalyzer
-
-if (process.env.ANALYZE === 'true') {
-  withBundleAnalyzer = require('@next/bundle-analyzer')({
-    enabled: process.env.ANALYZE === 'true'
-  })
-} else {
-  withBundleAnalyzer = (obj) => obj
-}
-
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true'
+})
 
 /** @type {import('next').NextConfig} */
 module.exports = withBundleAnalyzer({
