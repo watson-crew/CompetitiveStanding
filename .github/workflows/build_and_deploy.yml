@@ -237,6 +237,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
+      NODE_ENV: production
     outputs:
       frontend_url: ${{ steps.deploy.outputs.static_web_app_url }}
     steps:
