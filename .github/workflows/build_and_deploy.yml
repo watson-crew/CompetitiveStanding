@@ -11,7 +11,7 @@ on:
 
 env:
   NODE_VERSION: '16.x'
-  FRONTEND_OUTPUT_LOCATION: './apps/web/.next'
+  FRONTEND_LOCATION: './apps/web'
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
   DISABLE_ERD: true
 
@@ -222,11 +222,11 @@ jobs:
   #       run: |
   #         npm run next:build -w web
   #         echo "Built frontend"
-  #         find ${{ env.FRONTEND_OUTPUT_LOCATION }} -type f  
+  #         find ${{ env.FRONTEND_LOCATION }} -type f  
   #     - name: Cache Frontend
   #       uses: actions/cache@v3
   #       with:
-  #         path: ${{ env.FRONTEND_OUTPUT_LOCATION }}
+  #         path: ${{ env.FRONTEND_LOCATION }}
   #         key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
 
   deploy-frontend:
@@ -240,11 +240,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      - name: Load frontend
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.FRONTEND_OUTPUT_LOCATION }}
-          key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
+      # - name: Load frontend
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{ env.FRONTEND_LOCATION }}
+      #     key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
       - name: Deploy frontend
         id: deploy
         uses: Azure/static-web-apps-deploy@v1
@@ -253,7 +253,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           app_build_command: 'npm run next:build'
-          app_location: ${{ env.FRONTEND_OUTPUT_LOCATION }}
+          app_location: ${{ env.FRONTEND_LOCATION }}
 
   smoke:
     name: Frontend Smoke tests
