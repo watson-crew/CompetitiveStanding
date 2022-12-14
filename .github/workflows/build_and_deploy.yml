@@ -260,14 +260,10 @@ jobs:
           app_location: "./apps/web"
           api_location: "" # Api source code path - optional
           output_location: ".next"
-          app_build_command: 'npm run next:build'
+          app_build_command: 'npm run build:azure'
           api_build_command: "rm -rf $SOURCE_DIR/node_modules/@next/swc-* && rm -rf $SOURCE_DIR/.next/cache"
         env: 
-          PRUNE_DEV_DEPENDENCIES: true
-          COMPRESS_DESTINATION_DIR: true
           ENABLE_PREVIEW_FEATURES: true
-          FUNCTION_LANGUAGE: node
-          FUNCTION_LANGUAGE_VERSION: 16
       - name: Output
         id: output
         run: find "./apps/web/.next"
