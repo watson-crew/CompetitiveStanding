@@ -34,6 +34,8 @@ jobs:
           api_build_command: "rm -rf $SOURCE_DIR/node_modules/@next/swc-* && rm -rf $SOURCE_DIR/.next/cache"
         env: 
           ENABLE_PREVIEW_FEATURES: true
+          API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
+    
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
