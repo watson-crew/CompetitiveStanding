@@ -1,7 +1,7 @@
 import { getApiInstance } from '@src/factory/apiFactory';
 import PlayPage from './PlayPage';
 
-export default async function Play() {
+export default async function ServerPlayPage() {
   const locations = await getApiInstance().location.getAllLocations();
 
   const locationRecord = Object.fromEntries(

@@ -2,7 +2,7 @@ import { getApiInstance } from '@src/factory/apiFactory';
 import LocationPage from './LocationPage';
 import { LocationPageStaticParam, PageStaticParamProps } from './types';
 import { notFound } from 'next/navigation';
-import { Location } from '@src/../../../packages/schema';
+import { Location } from 'schema';
 export async function generateStaticParams(): Promise<
   LocationPageStaticParam[]
 > {
@@ -13,7 +13,7 @@ export async function generateStaticParams(): Promise<
   }));
 }
 
-export default async function Location({
+export default async function ServerLocationPage({
   params,
 }: PageStaticParamProps) {
   let location: Location | undefined;
