@@ -2,7 +2,7 @@
 
 import { Link, Text } from 'ui';
 
-export default function NotFoundPage() {
+export default function NotFound() {
   return (
     <section className="flex h-full items-center p-16 ">
       <div className="container mx-auto my-8 flex flex-col items-center justify-center px-5">
