@@ -262,6 +262,9 @@ jobs:
           output_location: ".next"
           app_build_command: 'npm run next:build'
         env: 
+          PRUNE_DEV_DEPENDENCIES: true
+          COMPRESS_DESTINATION_DIR: true
+          POST_BUILD_COMMAND: 'find /bin/staticsites'
           ENABLE_PREVIEW_FEATURES: true
           FUNCTION_LANGUAGE: node
           FUNCTION_LANGUAGE_VERSION: 16
