@@ -238,6 +238,7 @@ jobs:
     env:
       API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
       NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
+      ENABLE_PREVIEW_FEATURES: true
     outputs:
       frontend_url: ${{ steps.deploy.outputs.static_web_app_url }}
     steps:
