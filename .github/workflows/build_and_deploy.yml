@@ -17,192 +17,192 @@ env:
   DISABLE_ERD: true
 
 jobs:
-  cancel-existing:
-    runs-on: ubuntu-latest
-    name: Cancel Previous Pipeline Runs
-    steps:
-      - uses: styfle/cancel-workflow-action@0.11.0
-        with:
-          access_token: ${{ github.token }}
+  # cancel-existing:
+  #   runs-on: ubuntu-latest
+  #   name: Cancel Previous Pipeline Runs
+  #   steps:
+  #     - uses: styfle/cancel-workflow-action@0.11.0
+  #       with:
+  #         access_token: ${{ github.token }}
 
-  install:
-    needs: cancel-existing
-    runs-on: ubuntu-latest
-    name: 'NPM Install'
-    steps:
-      - uses: actions/checkout@v3
-      - name: Cache Node modules
-        id: cache-node-modules
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Node Clean Install
-        run: npm ci
+  # install:
+  #   needs: cancel-existing
+  #   runs-on: ubuntu-latest
+  #   name: 'NPM Install'
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Cache Node modules
+  #       id: cache-node-modules
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: '**/node_modules'
+  #         key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Node Clean Install
+  #       run: npm ci
 
-  lint:
-    needs: install
-    name: 'Lint source code'
-    runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: 'sqlserver://' # prisma format needs a value
-    steps:
-      - uses: actions/checkout@v3
-      - name: Load node_modules
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Lint
-        run: npm run lint
+  # lint:
+  #   needs: install
+  #   name: 'Lint source code'
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     DATABASE_URL: 'sqlserver://' # prisma format needs a value
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Load node_modules
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: '**/node_modules'
+  #         key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Lint
+  #       run: npm run lint
 
-  test:
-    needs: install
-    name: 'Run tests'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Load node_modules
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Unit Test
-        run: npm test
+  # test:
+  #   needs: install
+  #   name: 'Run tests'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Load node_modules
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: '**/node_modules'
+  #         key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Unit Test
+  #       run: npm test
 
-  build-backend:
-    needs:
-      - lint
-      - test
-    runs-on: ubuntu-latest
-    name: Build backend
-    env: 
-      NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Load node_modules
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Build
-        run: |
-          npm run build
-          echo "Built backend"
-          find ${{ env.BACKEND_OUTPUT_LOCATION }} -type f  
-      - name: Cache Backend
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.BACKEND_OUTPUT_LOCATION }}
-          key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
+  # build-backend:
+  #   needs:
+  #     - lint
+  #     - test
+  #   runs-on: ubuntu-latest
+  #   name: Build backend
+  #   env: 
+  #     NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }}
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Load node_modules
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: '**/node_modules'
+  #         key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Build
+  #       run: |
+  #         npm run build
+  #         echo "Built backend"
+  #         find ${{ env.BACKEND_OUTPUT_LOCATION }} -type f  
+  #     - name: Cache Backend
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: ${{ env.BACKEND_OUTPUT_LOCATION }}
+  #         key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
 
-  migrate-database:
-    name: Database Migration
-    runs-on: ubuntu-latest
-    needs:
-      - build-backend
-    env:
-      DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
-      DATABASE_PACKAGE_PATH: './packages/database'
-    steps:
-      - uses: actions/checkout@v3
-      - name: Get changed files in the migrations folder
-        id: changed-migration-files
-        uses: tj-actions/changed-files@v34
-        with:
-          since_last_remote_commit: true
-          files: "**/migrations/**"
-          fetch_depth: 40
-      - name: Load node_modules
-        if: steps.changed-migration-files.outputs.any_changed == 'true'
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Run database migration
-        if: steps.changed-migration-files.outputs.any_changed == 'true'
-        run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run deploy
+  # migrate-database:
+  #   name: Database Migration
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - build-backend
+  #   env:
+  #     DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
+  #     DATABASE_PACKAGE_PATH: './packages/database'
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Get changed files in the migrations folder
+  #       id: changed-migration-files
+  #       uses: tj-actions/changed-files@v34
+  #       with:
+  #         since_last_remote_commit: true
+  #         files: "**/migrations/**"
+  #         fetch_depth: 40
+  #     - name: Load node_modules
+  #       if: steps.changed-migration-files.outputs.any_changed == 'true'
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: '**/node_modules'
+  #         key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Run database migration
+  #       if: steps.changed-migration-files.outputs.any_changed == 'true'
+  #       run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run deploy
 
-  seed-database:
-    name: Database Seeding
-    runs-on: ubuntu-latest
-    needs:
-      - migrate-database
-    env:
-      DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
-      DATABASE_PACKAGE_PATH: './packages/database'
-      NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }} # Needed for seeding
-    steps:
-      - uses: actions/checkout@v3
-      - name: Get changed files in the seed folder
-        id: changed-seed-files
-        uses: tj-actions/changed-files@v34
-        with:
-          files: "**/seed/**"
-          since_last_remote_commit: true
-          fetch_depth: 40
-      - name: Load node_modules
-        if: steps.changed-seed-files.outputs.any_changed == 'true'
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Generate Prisma Client
-        if: steps.changed-seed-files.outputs.any_changed == 'true'
-        run: npm run generate -w database
-      - name: Run database migration
-        if: steps.changed-seed-files.outputs.any_changed == 'true'
-        run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run seed
+  # seed-database:
+  #   name: Database Seeding
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - migrate-database
+  #   env:
+  #     DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
+  #     DATABASE_PACKAGE_PATH: './packages/database'
+  #     NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'qa' }} # Needed for seeding
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Get changed files in the seed folder
+  #       id: changed-seed-files
+  #       uses: tj-actions/changed-files@v34
+  #       with:
+  #         files: "**/seed/**"
+  #         since_last_remote_commit: true
+  #         fetch_depth: 40
+  #     - name: Load node_modules
+  #       if: steps.changed-seed-files.outputs.any_changed == 'true'
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: '**/node_modules'
+  #         key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+  #     - name: Generate Prisma Client
+  #       if: steps.changed-seed-files.outputs.any_changed == 'true'
+  #       run: npm run generate -w database
+  #     - name: Run database migration
+  #       if: steps.changed-seed-files.outputs.any_changed == 'true'
+  #       run: cd ${{ env.DATABASE_PACKAGE_PATH }} && npm run seed
 
-  deploy-backend:
-    name: Backend Deploy
-    runs-on: ubuntu-latest
-    needs:
-      - build-backend
-    env:
-      AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server'
-      BACKEND_SLOT: ${{ github.ref == 'refs/heads/main' && 'Production' || 'qa' }}
-      BACKEND_PUBLISH_PROFILE: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_BACKEND_PUBLISH_PROFILE || secrets.QA_BACKEND_PUBLISH_PROFILE }}
-      DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
-      RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
-      FUNCTION_APP_NAME: 'BjssCompetitiveStandingBackend'
-    steps:
-      - uses: actions/checkout@v3
-      - name: Load backend
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.BACKEND_OUTPUT_LOCATION }}
-          key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
-      - name: Deploy azure functions
-        uses: Azure/functions-action@v1
-        id: function-app-deploy
-        with:
-          app-name: ${{ env.FUNCTION_APP_NAME }}
-          slot-name: ${{ env.BACKEND_SLOT }}
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ env.BACKEND_PUBLISH_PROFILE }}
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Add Function appsettings for non-production slot
-        if: env.BACKEND_SLOT != 'Production'
-        run: az functionapp config appsettings set --name ${{ env.FUNCTION_APP_NAME }} --slot ${{ env.BACKEND_SLOT }} --resource-group ${{ env.RESOURCE_GROUP }} --slot-settings DATABASE_URL="${{ env.DATABASE_URL }}"
-      - name: Add Function appsettings for Production
-        if: env.BACKEND_SLOT == 'Production'
-        run: az functionapp config appsettings set --name ${{ env.FUNCTION_APP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot-settings DATABASE_URL="${{ env.DATABASE_URL }}"
+  # deploy-backend:
+  #   name: Backend Deploy
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - build-backend
+  #   env:
+  #     AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/server'
+  #     BACKEND_SLOT: ${{ github.ref == 'refs/heads/main' && 'Production' || 'qa' }}
+  #     BACKEND_PUBLISH_PROFILE: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_BACKEND_PUBLISH_PROFILE || secrets.QA_BACKEND_PUBLISH_PROFILE }}
+  #     DATABASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.DATABASE_URL_PROD || secrets.DATABASE_URL_QA }}
+  #     RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+  #     FUNCTION_APP_NAME: 'BjssCompetitiveStandingBackend'
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Load backend
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: ${{ env.BACKEND_OUTPUT_LOCATION }}
+  #         key: ${{ runner.os }}-build-cache-backend-${{ github.sha }}
+  #     - name: Deploy azure functions
+  #       uses: Azure/functions-action@v1
+  #       id: function-app-deploy
+  #       with:
+  #         app-name: ${{ env.FUNCTION_APP_NAME }}
+  #         slot-name: ${{ env.BACKEND_SLOT }}
+  #         package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+  #         publish-profile: ${{ env.BACKEND_PUBLISH_PROFILE }}
+  #     - name: Azure Login
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
+  #     - name: Add Function appsettings for non-production slot
+  #       if: env.BACKEND_SLOT != 'Production'
+  #       run: az functionapp config appsettings set --name ${{ env.FUNCTION_APP_NAME }} --slot ${{ env.BACKEND_SLOT }} --resource-group ${{ env.RESOURCE_GROUP }} --slot-settings DATABASE_URL="${{ env.DATABASE_URL }}"
+  #     - name: Add Function appsettings for Production
+  #       if: env.BACKEND_SLOT == 'Production'
+  #       run: az functionapp config appsettings set --name ${{ env.FUNCTION_APP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot-settings DATABASE_URL="${{ env.DATABASE_URL }}"
     
-  backend-smoke:
-    name: Backend smoke tests
-    runs-on: ubuntu-latest
-    needs: 
-      - deploy-backend
-      - seed-database
-    env:
-      API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
-    steps:
-      - name: Backend smoke test
-        run: curl '${{ env.API_BASE_URL }}/users/jjp' -w "%{http_code}" -f -s -S -o /dev/null
+  # backend-smoke:
+  #   name: Backend smoke tests
+  #   runs-on: ubuntu-latest
+  #   needs: 
+  #     - deploy-backend
+  #     - seed-database
+  #   env:
+  #     API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
+  #   steps:
+  #     - name: Backend smoke test
+  #       run: curl '${{ env.API_BASE_URL }}/users/jjp' -w "%{http_code}" -f -s -S -o /dev/null
     
   # build-frontend:
   #   needs:
@@ -231,8 +231,8 @@ jobs:
   #         key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
 
   deploy-frontend:
-    needs:
-      - backend-smoke
+    # needs:
+    #   - backend-smoke
     name: Frontend Deploy
     runs-on: ubuntu-latest
     env:
@@ -261,9 +261,8 @@ jobs:
           action: 'upload'
           app_location: "./apps/web"
           api_location: "" # Api source code path - optional
-          # app_build_command: 'npm run next:build -w web'
-          is_static_export: false
           output_location: ""
+          # app_build_command: 'npm run next:build -w web'
 
   smoke:
     name: Frontend smoke tests
