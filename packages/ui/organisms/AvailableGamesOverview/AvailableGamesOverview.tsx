@@ -24,7 +24,7 @@ export default function AvailableGamesOverview({
       <Text type="h2" className="mb-5 block">
         Start a game...
       </Text>
-      <div className="flex h-full w-full flex-row gap-5 overflow-scroll">
+      <div className="flex h-full w-full flex-row gap-5">
         {availableGames.map(game => (
           <GameSelectCard
             key={game.id}
