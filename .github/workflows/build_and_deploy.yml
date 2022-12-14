@@ -259,7 +259,7 @@ jobs:
           action: 'upload'
           app_location: "./apps/web"
           api_location: "" # Api source code path - optional
-          output_location: ".next"
+          output_location: ".next/standalone"
           app_build_command: 'npm run next:build'
         env: 
           PRUNE_DEV_DEPENDENCIES: true
