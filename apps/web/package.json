@@ -7,7 +7,7 @@
     "analyze": "cross-env ANALYZE=true next build",
     "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
     "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
-    "next:build": "next build && next export",
+    "next:build": "next build",
     "clean": "rimraf .turbo .next node_modules out",
     "start": "next start",
     "lint": "next lint",

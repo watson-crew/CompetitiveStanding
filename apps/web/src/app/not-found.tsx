@@ -1,5 +1,3 @@
-'use client';
-
 import { Link, Text } from 'ui';
 
 export default function NotFound() {
