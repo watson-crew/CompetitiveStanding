@@ -12,7 +12,7 @@ on:
 env:
   NODE_VERSION: '16.x'
   FRONTEND_LOCATION: './apps/web'
-  FRONTEND_OUTPUT_LOCATION: './apps/web/.next'
+  FRONTEND_OUTPUT_LOCATION: './apps/web/.next/server/app'
   BACKEND_OUTPUT_LOCATION: './apps/server/dist'
   DISABLE_ERD: true
 
@@ -258,6 +258,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           app_build_command: 'npm run next:build -w web'
+          is_static_export: false
           output_location: ${{ env.FRONTEND_OUTPUT_LOCATION }}
 
   smoke:
