@@ -77,11 +77,11 @@ const executeEloRankingQuery: RankingQuery = async (
     CONVERT(int, (CONVERT(decimal, COUNT(CASE WHEN t.cumulativeTeamId = gr.winningTeamId THEN 1 END)) / COUNT(*)) * 100) AS winPercentage,
     pr.elo
     FROM [dbo].[User] AS u
-    JOIN [dbo].PlayerRanking AS pr ON pr.userMemorableId = u.memorableId
+    JOIN [dbo].PlayerRanking AS pr ON pr.userMemorableId = u.memorableId AND pr.gameTypeId = ${gameTypeId}
     JOIN [dbo].[_TeamToUser] AS t2u ON u.id = t2u.B
     JOIN [dbo].[Team] AS t ON t2u.A = t.id
     JOIN [dbo].[_GameResultToTeam] AS gr2t ON gr2t.B = t.id
-    JOIN [dbo].[GameResult] AS gr ON gr.id = gr2t.A AND gr.endTime IS NOT NULL
+    JOIN [dbo].[GameResult] AS gr ON gr.id = gr2t.A AND gr.endTime IS NOT NULL AND gr.winningTeamId IS NOT NULL AND gr.gameTypeId = ${gameTypeId}
     WHERE gr.locationPlayedId = ${locationId}
     AND gr.gameTypeId = ${gameTypeId}
     GROUP BY u.id, u.memorableId, u.firstName, u.lastName, u.profilePicture, u.locationId, pr.elo

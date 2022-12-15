@@ -125,7 +125,7 @@ export async function initiateNewMatch(
   gameTypeId: number,
   locationId: number,
   participatingTeams: string[],
-): Promise<Omit<InitiateMatchResponse, 'playerElos'>> {
+): Promise<Omit<InitiateMatchResponse, 'playerRatings'>> {
   const [historicResults, matchId] = await Promise.all([
     fetchHistoricResults(gameTypeId, participatingTeams),
     createNewMatch(gameTypeId, locationId, participatingTeams),
