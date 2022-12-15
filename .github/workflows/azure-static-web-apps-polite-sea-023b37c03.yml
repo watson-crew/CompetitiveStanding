@@ -9,19 +9,27 @@ on:
     branches:
       - next13Tmp
 
+env:
+  NODE_VERSION: '16.x'
+  FRONTEND_LOCATION: './apps/web'
+  FRONTEND_OUTPUT_LOCATION: './apps/web/.next/server/app'
+  BACKEND_OUTPUT_LOCATION: './apps/server/dist'
+  DISABLE_ERD: true
+
 jobs:
   build_and_deploy_job:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
+    name: Frontend Deploy
+    env:
+      API_BASE_URL: 'https://bjsscompetitivestandingbackend-qa.azurewebsites.net/api'
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      - name: lol
+      - name: NPM I
         run: npm install
-      - name: Build And Deploy
-        id: builddeploy
+      - name: Deploy frontend
+        id: deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_SEA_023B37C03 }}
@@ -34,7 +42,9 @@ jobs:
           api_build_command: "rm -rf $SOURCE_DIR/node_modules/@next/swc-* && rm -rf $SOURCE_DIR/.next/cache"
         env: 
           ENABLE_PREVIEW_FEATURES: true
-          API_BASE_URL: 'https://bjsscompetitivestandingbackend-qa.azurewebsites.net/api'
+      - name: Output
+        id: output
+        run: find "./apps/web/.next"
     
 
   close_pull_request_job:
