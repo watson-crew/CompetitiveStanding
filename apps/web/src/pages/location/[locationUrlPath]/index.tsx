@@ -19,7 +19,6 @@ import mapRecentResults from '@src/mappers/recentResultsMapper';
 import Head from 'next/head';
 import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import { buildLobbyUrl } from '@src/utils/routingUtils';
-import Link from 'next/link';
 
 type LocationPageProps = PagePropsWithLocation & {
   currentLocation: Location;
@@ -127,10 +126,6 @@ export default function Index({ currentLocation }: LocationPageProps) {
       <Text type="h1" className="my-5">
         {currentLocation.name}
       </Text>
-
-      <Link href={`${currentLocation.name.toLowerCase()}/results`}>
-        Results
-      </Link>
 
       <Card className="grid h-full w-full grid-flow-col grid-rows-4 gap-4">
         <AvailableGamesOverview

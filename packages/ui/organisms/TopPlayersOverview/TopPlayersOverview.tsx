@@ -10,6 +10,8 @@ import SelectWithIcon, {
   SelectWithIconProps,
 } from '../../atoms/SelectWithIcon/SelectWithIcon';
 import TextWithIcon from '../../molecules/TextWithIcon/TextWithIcon';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 type TopPlayersOverviewProps = WithDefaultProps<
   WithLoadingProps<{
@@ -33,6 +35,8 @@ export default function TopPlayersOverview({
       icon: CommonIcons.Percentage,
     },
   ];
+
+  const router = useRouter();
 
   const [selectedPlayers, setSelectedPlayers] = useState<RankedPlayer[]>([]);
 
@@ -101,6 +105,12 @@ export default function TopPlayersOverview({
         <TextWithIcon textProps={{ type: 'h2' }} icon={CommonIcons.Podium}>
           Who&apos;s on top
         </TextWithIcon>
+        <Link
+          href={`${router.asPath}/results`}
+          className="text-l font-bold underline"
+        >
+          Go to Leaderboard
+        </Link>
         <SelectWithIcon
           className="w-36 min-w-fit"
           value={filterType}
