@@ -114,6 +114,7 @@ export default function Index({ currentLocation }: LocationPageProps) {
   useEffect(() => {
     fetchRecentGames(currentLocation);
     fetchRankings(currentLocation);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLocation]);
 
   return (

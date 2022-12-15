@@ -11,6 +11,7 @@ import Tooltip from './atoms/Tooltip/Tooltip';
 import Link from './atoms/Link/Link';
 import PlayerImage from './atoms/PlayerImage/PlayerImage';
 import EloIcon from './atoms/EloIcon/EloIcon';
+import RankedPlayerTableCard from './atoms/RankedPlayerTableCard/RankedPlayerTableCard';
 
 export {
   Banner,
@@ -25,6 +26,7 @@ export {
   Toggle,
   Tooltip,
   Link,
+  RankedPlayerTableCard,
 };
 
 // Molecules
