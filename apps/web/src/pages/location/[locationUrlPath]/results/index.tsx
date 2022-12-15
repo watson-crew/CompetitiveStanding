@@ -1,3 +1,4 @@
+import { RankedPlayerTableCard } from '@src/../../../packages/ui';
 import RankedPlayerTable from '@src/components/molecules/Table/RankedPlayerTable';
 import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
@@ -8,6 +9,7 @@ import {
   GetStaticPropsResult,
 } from 'next';
 import { useContext, useEffect, useMemo, useState } from 'react';
+import { Row } from 'react-table';
 import { Location, RankedPlayer } from 'schema';
 
 type LocationPageDynamicPath = { locationUrlPath: string };
@@ -76,21 +78,26 @@ export default function Results({ currentLocation }: LocationPageProps) {
 
   const data = useMemo(() => rankedPlayers, [rankedPlayers]);
 
-  const columns = useMemo(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const columns: any = useMemo(
     () => [
+      {
+        Header: '#',
+        disableSortBy: true,
+        Cell: ({ row }: { row: Row<object> }) => <>{Number(row.id) + 1}</>,
+      },
       {
         Header: 'Rating',
         accessor: 'elo',
       },
       {
-        Header: 'First Name',
+        Header: 'Player',
         accessor: 'player.firstName',
         disableSortBy: true,
-      },
-      {
-        Header: 'Last Name',
-        accessor: 'player.lastName',
-        disableSortBy: true,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        Cell: ({ row }: { row: any }) => (
+          <RankedPlayerTableCard user={row.original.player} />
+        ),
       },
       {
         Header: 'Games Played',
@@ -103,6 +110,7 @@ export default function Results({ currentLocation }: LocationPageProps) {
       {
         Header: 'Win Percentage',
         accessor: 'winPercentage',
+        Cell: ({ value }: { value: string }) => `${value}%`,
       },
     ],
     [],

@@ -36,7 +36,9 @@ export default function NavBar({
 
   const navBarLinks = config.map(nav => {
     if (nav.type === 'link') {
-      return <NavBarNavigationLink name={nav.name} path={nav.path} />;
+      return (
+        <NavBarNavigationLink name={nav.name} path={nav.path} key={nav.name} />
+      );
     }
     if (nav.type === 'button') {
       return (
@@ -44,6 +46,7 @@ export default function NavBar({
           name={nav.name}
           isExpanded={menuContent?.name === nav.name}
           onClick={() => setNavBarContent(nav.name, nav.component)}
+          key={nav.name}
         />
       );
     }
