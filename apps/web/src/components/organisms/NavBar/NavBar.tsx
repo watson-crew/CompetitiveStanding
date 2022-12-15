@@ -1,12 +1,13 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import React from 'react';
-import { useRouter } from 'next/router';
 import {
   NavBarNavigationButton,
   NavBarNavigationLink,
-} from './NavBarNavigationLinks/NavBarNavigationLinks';
+} from '../../atoms/NavBarNavigationLinks/NavBarNavigationLinks';
 import { NavBarLinkConfig, NavBarButtonConfig } from '@src/types/navBar';
+import { Link } from 'ui';
 
 export default function NavBar({
   config,
@@ -28,19 +29,24 @@ export default function NavBar({
     });
   };
 
-  const router = useRouter();
-
   useEffect(() => {
     setMenuContent(undefined);
-  }, [router.asPath]);
+  }, []);
 
   const navBarLinks = config.map(nav => {
     if (nav.type === 'link') {
-      return <NavBarNavigationLink name={nav.name} path={nav.path} />;
+      return (
+        <NavBarNavigationLink
+          key={`nav-bar-link-${nav.name}`}
+          name={nav.name}
+          path={nav.path}
+        />
+      );
     }
     if (nav.type === 'button') {
       return (
         <NavBarNavigationButton
+          key={`nav-bar-button-${nav.name}`}
           name={nav.name}
           isExpanded={menuContent?.name === nav.name}
           onClick={() => setNavBarContent(nav.name, nav.component)}

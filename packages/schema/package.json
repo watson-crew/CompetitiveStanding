@@ -4,12 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate": "swagger-typescript-api -p ./schema.json --axios --name index --route-types --extract-request-body --extract-response-body --sort-types --module-name-first-tag --unwrap-response-data --api-class-name ApiClient --union-enums --extract-enums"
+    "generate": "swagger-typescript-api -p ./schema.json --name index --route-types --extract-request-body --extract-response-body --sort-types --module-name-first-tag --unwrap-response-data --api-class-name ApiClient --union-enums --extract-enums"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "axios": "^0.21.4",
     "swagger-typescript-api": "^12.0.2"
   }
 }

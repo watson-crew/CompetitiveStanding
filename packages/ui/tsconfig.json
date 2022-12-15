@@ -1,5 +1,8 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": ["."],
+  "include": [
+    ".",
+    "../../apps/web/src/components/organisms/TopPlayersOverview"
+  ],
   "exclude": ["dist", "build", "node_modules"]
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import { DefaultProps } from '../../types';
 import { MdInfoOutline } from 'react-icons/md';
 

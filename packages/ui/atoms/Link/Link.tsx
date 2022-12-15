@@ -1,29 +1,37 @@
-import { useRouter } from 'next/router';
-import { MouseEvent } from 'react';
 import { WithDefaultProps } from '../../types';
 import { UrlObject } from 'url';
+import NextLink from 'next/link';
+import { twMerge } from 'tailwind-merge';
+
+type LinkStyleType = 'none' | 'button';
 
 type LinkProps = WithDefaultProps<{
   href: string | UrlObject;
+  style?: LinkStyleType;
+  rel?: string;
 }>;
 
-export default function Link({ href, className = '', children }: LinkProps) {
-  const router = useRouter();
+const additionalStyles: Record<LinkStyleType, string> = {
+  none: '',
+  button: 'h-16 rounded-xl bg-slate-400 px-8 hover:bg-slate-200 ',
+};
 
-  const handleClick = (e: MouseEvent) => {
-    e.preventDefault();
-    router.push(href);
-  };
-
+export default function Link({
+  href,
+  className = '',
+  children,
+  rel,
+  style = 'none',
+}: LinkProps) {
   const linkHref = (href as UrlObject).href || (href as string);
 
   return (
-    <a
+    <NextLink
       href={linkHref}
-      onClick={handleClick}
-      className={`h-16 rounded-xl bg-slate-400 px-8 hover:bg-slate-200 ${className}`}
+      rel={rel}
+      className={twMerge(additionalStyles[style], className)}
     >
       {children}
-    </a>
+    </NextLink>
   );
 }

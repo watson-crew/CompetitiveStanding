@@ -1,3 +1,5 @@
+'use client';
+
 import { twMerge } from 'tailwind-merge';
 import { WithDefaultProps } from '../../types';
 import Text, { TextType } from '../Text/Text';
