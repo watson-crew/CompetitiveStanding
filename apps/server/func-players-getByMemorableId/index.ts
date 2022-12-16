@@ -35,7 +35,7 @@ const httpTrigger = async function (
       log(`Found player matches: ${results}`);
 
       const res: GetRecentMatchesByMemorableIdData = {
-        recentMatches: results,
+        results,
         resources,
       };
 

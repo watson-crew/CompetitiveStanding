@@ -1,8 +1,10 @@
-import { GetRecentMatchesByMemorableIdData, User } from 'schema';
-import { getApiInstance } from '@src/context/ApiContext';
+import { GameType, GetRecentMatchesByMemorableIdData, User } from 'schema';
+import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
-import { RankedPlayerTableCard } from '@src/../../../packages/ui';
+import { RankedPlayerTableCard, GameResult } from 'ui';
+import { useContext, useEffect, useState } from 'react';
+import mapRecentResults from '@src/mappers/recentResultsMapper';
 
 type UserPageProps = PagePropsWithLocation & {
   matches: GetRecentMatchesByMemorableIdData;
@@ -10,6 +12,21 @@ type UserPageProps = PagePropsWithLocation & {
 };
 
 type UserPageDynamicPath = { memorableId: string };
+
+const gameTypes: Record<number, Omit<GameType, 'requirements'>> = {
+  1: {
+    id: 1,
+    name: 'Pool',
+  },
+  2: {
+    id: 2,
+    name: 'Darts',
+  },
+  3: {
+    id: 3,
+    name: 'Table Tennis',
+  },
+};
 
 export async function getServerSideProps({
   params,
@@ -33,7 +50,24 @@ export async function getServerSideProps({
   return { props: { matches, locations, user } };
 }
 
-export default function index({ matches, user }: UserPageProps) {
-  console.log(matches);
+export default function Index({ user }: UserPageProps) {
+  const api = useContext(ApiContext);
+
+  const [recentMatches, setRecentMatches] = useState<GameResult[]>([]);
+
+  const fetchRecentGames = async (user: User) => {
+    const data = await api.player.getRecentMatchesByMemorableId(
+      user.memorableId,
+    );
+
+    setRecentMatches(mapRecentResults(data, gameTypes));
+  };
+
+  useEffect(() => {
+    fetchRecentGames(user);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  console.log(recentMatches);
   return <RankedPlayerTableCard user={user} />;
 }

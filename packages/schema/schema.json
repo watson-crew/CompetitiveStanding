@@ -431,9 +431,9 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["recentMatches", "resources"],
+                  "required": ["results", "resources"],
                   "properties": {
-                    "recentMatches": {
+                    "results": {
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/GameResult"

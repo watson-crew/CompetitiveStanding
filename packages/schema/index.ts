@@ -78,7 +78,7 @@ export type GetLocationByUrlData = Location;
 export type GetRankingsForLocationData = Record<string, RankedPlayer[]>;
 
 export interface GetRecentMatchesByMemorableIdData {
-  recentMatches: GameResult[];
+  results: GameResult[];
   resources: {
     /** @example {"abc":{"id":1,"memorableId":"abc","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"},"xyz":{"id":2,"memorableId":"xyz","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"}} */
     players: Record<string, User>;
