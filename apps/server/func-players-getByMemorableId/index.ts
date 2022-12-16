@@ -1,4 +1,4 @@
-import { GetPlayerProfileByMemorableIdData, Player } from 'schema';
+import { GetRecentMatchesByMemorableIdData, Player } from 'schema';
 import {
   set200Response,
   set404Response,
@@ -10,37 +10,32 @@ import {
   HttpRequestForRequestParams,
 } from '@src/types';
 import { getFunctionLogger } from '@utils/logging';
-import { getUserByMemorableId } from '@src/repository/userRepository';
 import { getResultsForPlayer } from '@src/repository/gameResultRepository';
 
 const httpTrigger = async function (
-  context: ContextForResponseBody<Player.GetPlayerProfileByMemorableId.ResponseBody>,
-  req: HttpRequestForRequestParams<Player.GetPlayerProfileByMemorableId.RequestParams>,
+  context: ContextForResponseBody<Player.GetRecentMatchesByMemorableId.ResponseBody>,
+  req: HttpRequestForRequestParams<Player.GetRecentMatchesByMemorableId.RequestParams>,
 ): Promise<void> {
   const log = getFunctionLogger(FunctionName.GetPlayer, context);
 
   const { memorableId } = req.params;
 
-  log(`[func-get-player] Got memorableId: ${memorableId}`);
+  log(`[func-get-player-matches] Got memorableId: ${memorableId}`);
 
   try {
-    log(`Finding user by id ${memorableId}`);
+    log(`Finding player matches by id ${memorableId}`);
 
-    const user = await getUserByMemorableId(memorableId);
     const { resources, results } = await getResultsForPlayer(memorableId);
 
-    if (!user) {
-      log(`No matching user with id: ${memorableId}`);
+    if (!results) {
+      log(`No player matches with id: ${memorableId}`);
 
       set404Response(log, context);
     } else {
-      log(`Found user: ${user}`);
+      log(`Found player matches: ${results}`);
 
-      const res: GetPlayerProfileByMemorableIdData = {
-        player: {
-          recentMatches: results,
-          user,
-        },
+      const res: GetRecentMatchesByMemorableIdData = {
+        recentMatches: results,
         resources,
       };
 

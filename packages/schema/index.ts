@@ -75,18 +75,15 @@ export type GetAllLocationsData = Location[];
 
 export type GetLocationByUrlData = Location;
 
-export interface GetPlayerProfileByMemorableIdData {
-  player: {
-    user: User;
-    recentMatches: GameResult[];
-  };
+export type GetRankingsForLocationData = Record<string, RankedPlayer[]>;
+
+export interface GetRecentMatchesByMemorableIdData {
+  recentMatches: GameResult[];
   resources: {
     /** @example {"abc":{"id":1,"memorableId":"abc","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"},"xyz":{"id":2,"memorableId":"xyz","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"}} */
     players: Record<string, User>;
   };
 }
-
-export type GetRankingsForLocationData = Record<string, RankedPlayer[]>;
 
 export interface GetRecentMatchesData {
   results: GameResult[];
@@ -349,12 +346,12 @@ export namespace Matches {
 export namespace Player {
   /**
    * No description
-   * @tags player, matches, user
-   * @name GetPlayerProfileByMemorableId
-   * @summary Get all information about a given player given their memorable id
-   * @request GET:/players/{memorableId}
+   * @tags player, matches
+   * @name GetRecentMatchesByMemorableId
+   * @summary Get recent matches of a given player given their memorable id
+   * @request GET:/players/{memorableId}/matches
    */
-  export namespace GetPlayerProfileByMemorableId {
+  export namespace GetRecentMatchesByMemorableId {
     export type RequestParams = {
       /** @example "4e8" */
       memorableId: string;
@@ -362,7 +359,7 @@ export namespace Player {
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = GetPlayerProfileByMemorableIdData;
+    export type ResponseBody = GetRecentMatchesByMemorableIdData;
   }
 }
 
@@ -700,17 +697,17 @@ export class ApiClient<
     /**
      * No description
      *
-     * @tags player, matches, user
-     * @name GetPlayerProfileByMemorableId
-     * @summary Get all information about a given player given their memorable id
-     * @request GET:/players/{memorableId}
+     * @tags player, matches
+     * @name GetRecentMatchesByMemorableId
+     * @summary Get recent matches of a given player given their memorable id
+     * @request GET:/players/{memorableId}/matches
      */
-    getPlayerProfileByMemorableId: (
+    getRecentMatchesByMemorableId: (
       memorableId: string,
       params: RequestParams = {},
     ) =>
-      this.request<GetPlayerProfileByMemorableIdData, void>({
-        path: `/players/${memorableId}`,
+      this.request<GetRecentMatchesByMemorableIdData, void>({
+        path: `/players/${memorableId}/matches`,
         method: 'GET',
         ...params,
       }),

@@ -1,10 +1,12 @@
-import { GetPlayerProfileByMemorableIdData } from 'schema';
+import { GetRecentMatchesByMemorableIdData, User } from 'schema';
 import { getApiInstance } from '@src/context/ApiContext';
 import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
+import { RankedPlayerTableCard } from '@src/../../../packages/ui';
 
 type UserPageProps = PagePropsWithLocation & {
-  player: GetPlayerProfileByMemorableIdData;
+  matches: GetRecentMatchesByMemorableIdData;
+  user: User;
 };
 
 type UserPageDynamicPath = { memorableId: string };
@@ -16,22 +18,22 @@ export async function getServerSideProps({
 > {
   if (!params) throw new Error();
 
-  const currentUser = await getApiInstance().user.getUserByMemorableId(
+  const matches = await getApiInstance().player.getRecentMatchesByMemorableId(
     params.memorableId,
   );
 
-  const player = await getApiInstance().player.getPlayerProfileByMemorableId(
+  const user = await getApiInstance().user.getUserByMemorableId(
     params.memorableId,
   );
 
   const locations = await getApiInstance().location.getAllLocations();
 
-  if (!currentUser || !locations) throw new Error();
+  if (!matches || !locations) throw new Error();
 
-  return { props: { player, locations } };
+  return { props: { matches, locations, user } };
 }
 
-export default function index({ player }: UserPageProps) {
-  console.log(player);
-  return <></>;
+export default function index({ matches, user }: UserPageProps) {
+  console.log(matches);
+  return <RankedPlayerTableCard user={user} />;
 }

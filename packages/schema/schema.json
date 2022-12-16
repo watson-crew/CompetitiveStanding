@@ -408,11 +408,11 @@
         }
       }
     },
-    "/players/{memorableId}": {
+    "/players/{memorableId}/matches": {
       "get": {
-        "tags": ["player", "matches", "user"],
-        "summary": "Get all information about a given player given their memorable id",
-        "operationId": "getPlayerProfileByMemorableId",
+        "tags": ["player", "matches"],
+        "summary": "Get recent matches of a given player given their memorable id",
+        "operationId": "getRecentMatchesByMemorableId",
         "parameters": [
           {
             "name": "memorableId",
@@ -431,21 +431,12 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["player", "resources"],
+                  "required": ["recentMatches", "resources"],
                   "properties": {
-                    "player": {
-                      "required": ["user", "recentMatches"],
-                      "type": "object",
-                      "properties": {
-                        "user": {
-                          "$ref": "#/components/schemas/User"
-                        },
-                        "recentMatches": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/GameResult"
-                          }
-                        }
+                    "recentMatches": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GameResult"
                       }
                     },
                     "resources": {
@@ -484,7 +475,7 @@
             }
           },
           "404": {
-            "description": "user not found"
+            "description": "player not found"
           }
         }
       }

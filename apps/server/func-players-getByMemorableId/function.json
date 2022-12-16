@@ -6,7 +6,7 @@
       "direction": "in",
       "name": "req",
       "methods": ["get"],
-      "route": "players/{memorableId:regex(^[a-z0-9]+$)}"
+      "route": "players/{memorableId:regex(^[a-z0-9]+$)}/matches"
     },
     {
       "type": "http",
