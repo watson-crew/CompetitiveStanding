@@ -240,13 +240,16 @@ export async function getResultsForPlayer(
     await prisma.gameResult.findMany({
       where: {
         teams: {
-          every: {
+          some: {
             players: {
               some: {
-                memorableId,
+                memorableId: memorableId,
               },
             },
           },
+        },
+        endTime: {
+          not: null,
         },
         winningTeamId: {
           not: null,
