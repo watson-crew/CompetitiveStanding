@@ -407,6 +407,87 @@
           }
         }
       }
+    },
+    "/players/{memorableId}": {
+      "get": {
+        "tags": ["player", "matches", "user"],
+        "summary": "Get all information about a given player given their memorable id",
+        "operationId": "getPlayerProfileByMemorableId",
+        "parameters": [
+          {
+            "name": "memorableId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "4e8"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["player", "resources"],
+                  "properties": {
+                    "player": {
+                      "required": ["user", "recentMatches"],
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        },
+                        "recentMatches": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/GameResult"
+                          }
+                        }
+                      }
+                    },
+                    "resources": {
+                      "type": "object",
+                      "required": ["players"],
+                      "properties": {
+                        "players": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "$ref": "#/components/schemas/User"
+                          },
+                          "example": {
+                            "abc": {
+                              "id": 1,
+                              "memorableId": "abc",
+                              "firstName": "John",
+                              "lastName": "James",
+                              "location": "London",
+                              "profilePicture": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+                            },
+                            "xyz": {
+                              "id": 2,
+                              "memorableId": "xyz",
+                              "firstName": "John",
+                              "lastName": "James",
+                              "location": "London",
+                              "profilePicture": "https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "user not found"
+          }
+        }
+      }
     }
   },
   "components": {

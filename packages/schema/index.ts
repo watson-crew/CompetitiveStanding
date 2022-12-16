@@ -75,6 +75,17 @@ export type GetAllLocationsData = Location[];
 
 export type GetLocationByUrlData = Location;
 
+export interface GetPlayerProfileByMemorableIdData {
+  player: {
+    user: User;
+    recentMatches: GameResult[];
+  };
+  resources: {
+    /** @example {"abc":{"id":1,"memorableId":"abc","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"},"xyz":{"id":2,"memorableId":"xyz","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"}} */
+    players: Record<string, User>;
+  };
+}
+
 export type GetRankingsForLocationData = Record<string, RankedPlayer[]>;
 
 export interface GetRecentMatchesData {
@@ -332,6 +343,26 @@ export namespace Matches {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetRankingsForLocationData;
+  }
+}
+
+export namespace Player {
+  /**
+   * No description
+   * @tags player, matches, user
+   * @name GetPlayerProfileByMemorableId
+   * @summary Get all information about a given player given their memorable id
+   * @request GET:/players/{memorableId}
+   */
+  export namespace GetPlayerProfileByMemorableId {
+    export type RequestParams = {
+      /** @example "4e8" */
+      memorableId: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetPlayerProfileByMemorableIdData;
   }
 }
 
@@ -662,6 +693,25 @@ export class ApiClient<
         path: `/matches/rankings`,
         method: 'GET',
         query: query,
+        ...params,
+      }),
+  };
+  player = {
+    /**
+     * No description
+     *
+     * @tags player, matches, user
+     * @name GetPlayerProfileByMemorableId
+     * @summary Get all information about a given player given their memorable id
+     * @request GET:/players/{memorableId}
+     */
+    getPlayerProfileByMemorableId: (
+      memorableId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<GetPlayerProfileByMemorableIdData, void>({
+        path: `/players/${memorableId}`,
+        method: 'GET',
         ...params,
       }),
   };

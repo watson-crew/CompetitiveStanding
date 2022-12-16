@@ -231,6 +231,70 @@ export async function getResultsForLocation(
   return gameResultMapper.map(matches);
 }
 
+export async function getResultsForPlayer(
+  memorableId: string,
+  offset = 0,
+  total = 10,
+): Promise<GetRecentMatchesData> {
+  const matches: GetResultsForLocationResult[] =
+    await prisma.gameResult.findMany({
+      where: {
+        teams: {
+          every: {
+            players: {
+              some: {
+                memorableId,
+              },
+            },
+          },
+        },
+        winningTeamId: {
+          not: null,
+        },
+      },
+      include: {
+        gameType: true,
+        winningTeam: {
+          select: {
+            cumulativeTeamId: true,
+          },
+        },
+        locationPlayed: {
+          select: {
+            name: true,
+          },
+        },
+        teams: {
+          select: {
+            cumulativeTeamId: true,
+            players: true,
+          },
+        },
+        ratingChanges: {
+          select: {
+            playerRanking: {
+              select: {
+                player: {
+                  select: {
+                    memorableId: true,
+                  },
+                },
+              },
+            },
+            ratingChangeAmount: true,
+          },
+        },
+      },
+      orderBy: {
+        endTime: 'desc',
+      },
+      skip: offset,
+      take: total,
+    });
+
+  return gameResultMapper.map(matches);
+}
+
 const additionalParamsForSortType: Record<
   ResultFilterType,
   Partial<RankingForSortTypeQueryParams>
