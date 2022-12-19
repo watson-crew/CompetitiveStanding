@@ -2,7 +2,7 @@ import { GameType, GetRecentMatchesByMemorableIdData, User } from 'schema';
 import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
-import { RankedPlayerTableCard, GameResult } from 'ui';
+import { GameResult, RecentMatchesOverview, PlayerCard } from 'ui';
 import { useContext, useEffect, useState } from 'react';
 import mapRecentResults from '@src/mappers/recentResultsMapper';
 
@@ -54,6 +54,7 @@ export default function Index({ user }: UserPageProps) {
   const api = useContext(ApiContext);
 
   const [recentMatches, setRecentMatches] = useState<GameResult[]>([]);
+  const [loadingRecentMatches, setLoadingRecentMatches] = useState(true);
 
   const fetchRecentGames = async (user: User) => {
     const data = await api.player.getRecentMatchesByMemorableId(
@@ -61,6 +62,7 @@ export default function Index({ user }: UserPageProps) {
     );
 
     setRecentMatches(mapRecentResults(data, gameTypes));
+    setLoadingRecentMatches(false);
   };
 
   useEffect(() => {
@@ -69,5 +71,18 @@ export default function Index({ user }: UserPageProps) {
   }, [user]);
 
   console.log(recentMatches);
-  return <RankedPlayerTableCard user={user} />;
+  return (
+    <>
+      <PlayerCard
+        player={user}
+        key={`recent-player-${user.id}`}
+        variant="m"
+      ></PlayerCard>
+      <RecentMatchesOverview
+        className="row-span-4 h-full w-full"
+        recentMatches={recentMatches}
+        loading={loadingRecentMatches}
+      />
+    </>
+  );
 }

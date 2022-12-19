@@ -4,7 +4,7 @@ import PlayerImage from '../PlayerImage/PlayerImage';
 export default function RankedPlayerTableCard({ user }: { user: User }) {
   const userName = `${user.firstName} ${user.lastName}`;
   return (
-    <Link href="#">
+    <Link href={`/user/${user.memorableId}`}>
       <PlayerImage
         src={user.profilePicture}
         playerName={userName}
