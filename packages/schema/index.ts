@@ -73,6 +73,8 @@ export interface GameType {
 
 export type GetAllLocationsData = Location[];
 
+export type GetAllUsersData = User[];
+
 export type GetLocationByUrlData = Location;
 
 export type GetRankingsForLocationData = Record<string, RankedPlayer[]>;
@@ -234,6 +236,23 @@ export namespace User {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetUserByMemorableIdData;
+  }
+}
+
+export namespace Users {
+  /**
+   * No description
+   * @tags users
+   * @name GetAllUsers
+   * @summary Get all users
+   * @request GET:/users/all
+   */
+  export namespace GetAllUsers {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetAllUsersData;
   }
 }
 
@@ -567,6 +586,22 @@ export class ApiClient<
     getUserByMemorableId: (memorableId: string, params: RequestParams = {}) =>
       this.request<GetUserByMemorableIdData, void>({
         path: `/users/${memorableId}`,
+        method: 'GET',
+        ...params,
+      }),
+  };
+  users = {
+    /**
+     * No description
+     *
+     * @tags users
+     * @name GetAllUsers
+     * @summary Get all users
+     * @request GET:/users/all
+     */
+    getAllUsers: (params: RequestParams = {}) =>
+      this.request<GetAllUsersData, any>({
+        path: `/users/all`,
         method: 'GET',
         ...params,
       }),

@@ -1,7 +1,12 @@
 import { GameType, User } from 'schema';
 import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
-import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
+import {
+  GetStaticPathsContext,
+  GetStaticPathsResult,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+} from 'next';
 import { GameResult, RecentMatchesOverview, PlayerCard } from 'ui';
 import { useContext, useEffect, useState } from 'react';
 import mapRecentResults from '@src/mappers/recentResultsMapper';
@@ -27,7 +32,20 @@ const gameTypes: Record<number, Omit<GameType, 'requirements'>> = {
   },
 };
 
-export async function getServerSideProps({
+export async function getStaticPaths(
+  _context: GetStaticPathsContext,
+): Promise<GetStaticPathsResult<UserPageDynamicPath>> {
+  const users = await getApiInstance().users.getAllUsers();
+
+  return {
+    paths: users.map(user => ({
+      params: { memorableId: user.memorableId },
+    })),
+    fallback: false,
+  };
+}
+
+export async function getStaticProps({
   params,
 }: GetStaticPropsContext<UserPageDynamicPath>): Promise<
   GetStaticPropsResult<UserPageProps>

@@ -61,6 +61,28 @@
         }
       }
     },
+    "/users/all": {
+      "get": {
+        "tags": ["users"],
+        "operationId": "getAllUsers",
+        "summary": "Get all users",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/{memorableId}": {
       "get": {
         "tags": ["user"],
