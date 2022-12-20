@@ -74,9 +74,9 @@ export default function Index({ user }: UserPageProps) {
       user.memorableId,
     );
 
-    const stats = await api.player.getRecentMatchesByMemorableId(
-      user.memorableId,
-    );
+    // const stats = await api.player.getRecentMatchesByMemorableId(
+    //   user.memorableId,
+    // );
 
     setRecentMatches(mapRecentResults(data, gameTypes));
     setLoadingRecentMatches(false);
