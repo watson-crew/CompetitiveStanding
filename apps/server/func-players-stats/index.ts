@@ -10,10 +10,7 @@ import {
   HttpRequestForRequestParams,
 } from '@src/types';
 import { getFunctionLogger } from '@utils/logging';
-import {
-  getMostLostAgainst,
-  getMostWinsAgainst,
-} from '@src/repository/playerRepository';
+import { getMostLostAgainst } from '@src/repository/playerRepository';
 
 const httpTrigger = async function (
   context: ContextForResponseBody<any>,
