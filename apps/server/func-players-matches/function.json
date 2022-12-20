@@ -14,5 +14,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/func-players-getByMemorableId/index.js"
+  "scriptFile": "../dist/func-players-matches/index.js"
 }

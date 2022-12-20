@@ -12,6 +12,7 @@ import {
   WinningTeamDetails,
   ResultFilterType,
   RankedPlayer,
+  GetRecentMatchesByMemorableIdData,
 } from 'schema';
 import dayjs from 'dayjs';
 import executeRankingQuery, {
@@ -235,7 +236,7 @@ export async function getResultsForPlayer(
   memorableId: string,
   offset = 0,
   total = 10,
-): Promise<GetRecentMatchesData> {
+): Promise<GetRecentMatchesByMemorableIdData> {
   const matches: GetResultsForLocationResult[] =
     await prisma.gameResult.findMany({
       where: {

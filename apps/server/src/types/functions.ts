@@ -6,5 +6,6 @@ export enum FunctionName {
   InitiateMatch = 'Initiate New Match',
   RecordMatchResults = 'Record Match Result',
   GetRankingsForLocation = 'Get Rankings For Location',
-  GetPlayer = 'Get Player By MemorableId',
+  GetPlayerMatches = 'Get Player Matches By MemorableId',
+  GetPlayerStats = 'Get Player Stats By MemorableId',
 }

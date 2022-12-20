@@ -1,4 +1,4 @@
-import { GameType, GetRecentMatchesByMemorableIdData, User } from 'schema';
+import { GameType, User } from 'schema';
 import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
@@ -7,7 +7,6 @@ import { useContext, useEffect, useState } from 'react';
 import mapRecentResults from '@src/mappers/recentResultsMapper';
 
 type UserPageProps = PagePropsWithLocation & {
-  matches: GetRecentMatchesByMemorableIdData;
   user: User;
 };
 
@@ -35,19 +34,15 @@ export async function getServerSideProps({
 > {
   if (!params) throw new Error();
 
-  const matches = await getApiInstance().player.getRecentMatchesByMemorableId(
-    params.memorableId,
-  );
-
   const user = await getApiInstance().user.getUserByMemorableId(
     params.memorableId,
   );
 
   const locations = await getApiInstance().location.getAllLocations();
 
-  if (!matches || !locations) throw new Error();
+  if (!locations) throw new Error();
 
-  return { props: { matches, locations, user } };
+  return { props: { locations, user } };
 }
 
 export default function Index({ user }: UserPageProps) {
@@ -61,6 +56,10 @@ export default function Index({ user }: UserPageProps) {
       user.memorableId,
     );
 
+    const stats = await api.player.getRecentMatchesByMemorableId(
+      user.memorableId,
+    );
+
     setRecentMatches(mapRecentResults(data, gameTypes));
     setLoadingRecentMatches(false);
   };
@@ -70,7 +69,6 @@ export default function Index({ user }: UserPageProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  console.log(recentMatches);
   return (
     <>
       <PlayerCard

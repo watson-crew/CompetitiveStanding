@@ -16,7 +16,7 @@ const httpTrigger = async function (
   context: ContextForResponseBody<Player.GetRecentMatchesByMemorableId.ResponseBody>,
   req: HttpRequestForRequestParams<Player.GetRecentMatchesByMemorableId.RequestParams>,
 ): Promise<void> {
-  const log = getFunctionLogger(FunctionName.GetPlayer, context);
+  const log = getFunctionLogger(FunctionName.GetPlayerMatches, context);
 
   const { memorableId } = req.params;
 
