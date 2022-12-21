@@ -501,6 +501,70 @@
           }
         }
       }
+    },
+    "/players/{memorableId}/stats": {
+      "get": {
+        "tags": ["player", "stats"],
+        "summary": "Get stats of a given player given their memorable id",
+        "operationId": "getStatsByMemorableId",
+        "parameters": [
+          {
+            "name": "memorableId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "4e8"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "gamesPlayed",
+                    "gamesWon",
+                    "winPercentage",
+                    "bestFriend",
+                    "easyPickings",
+                    "nemesis"
+                  ],
+                  "properties": {
+                    "gamesPlayed": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "gamesWon": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "winPercentage": {
+                      "type": "integer",
+                      "example": 50
+                    },
+                    "bestFriend": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "easyPickings": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "nemesis": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
     }
   },
   "components": {

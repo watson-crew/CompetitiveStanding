@@ -95,6 +95,18 @@ export interface GetRecentMatchesData {
   };
 }
 
+export interface GetStatsByMemorableIdData {
+  /** @example 10 */
+  gamesPlayed: number;
+  /** @example 5 */
+  gamesWon: number;
+  /** @example 50 */
+  winPercentage: number;
+  bestFriend: User;
+  easyPickings: User;
+  nemesis: User;
+}
+
 export type GetUserByMemorableIdData = User;
 
 export interface InitiateMatchResponse {
@@ -379,6 +391,23 @@ export namespace Player {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetRecentMatchesByMemorableIdData;
+  }
+  /**
+   * No description
+   * @tags player, stats
+   * @name GetStatsByMemorableId
+   * @summary Get stats of a given player given their memorable id
+   * @request GET:/players/{memorableId}/stats
+   */
+  export namespace GetStatsByMemorableId {
+    export type RequestParams = {
+      /** @example "4e8" */
+      memorableId: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetStatsByMemorableIdData;
   }
 }
 
@@ -743,6 +772,21 @@ export class ApiClient<
     ) =>
       this.request<GetRecentMatchesByMemorableIdData, void>({
         path: `/players/${memorableId}/matches`,
+        method: 'GET',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags player, stats
+     * @name GetStatsByMemorableId
+     * @summary Get stats of a given player given their memorable id
+     * @request GET:/players/{memorableId}/stats
+     */
+    getStatsByMemorableId: (memorableId: string, params: RequestParams = {}) =>
+      this.request<GetStatsByMemorableIdData, void>({
+        path: `/players/${memorableId}/stats`,
         method: 'GET',
         ...params,
       }),

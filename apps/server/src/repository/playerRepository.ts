@@ -1,41 +1,54 @@
 import { prismaClient as prisma } from 'database';
+import { User } from 'schema';
 
 export const getPlayerBaseStats = async (
   memorableId: string,
-): // eslint-disable-next-line @typescript-eslint/no-explicit-any
-Promise<any> => {
+): Promise<{
+  gamesPlayed: number;
+  gamesWon: number;
+  winPercentage: number;
+}> => {
+  // Find the total number of game results where the user with the given memorable ID is a player
   const gamesPlayed = await prisma.gameResult.count({
     where: {
       teams: {
         some: {
           players: {
-            some: {
-              memorableId: memorableId,
-            },
+            some: { memorableId },
           },
         },
       },
+      endTime: { not: null },
+      winningTeamId: { not: null },
     },
   });
 
+  // Find the total number of game results where the user with the given memorable ID is a player in a winning team
   const gamesWon = await prisma.gameResult.count({
     where: {
       winningTeam: {
         players: {
-          some: {
-            memorableId: memorableId,
-          },
+          some: { memorableId },
         },
       },
+      endTime: { not: null },
+      winningTeamId: { not: null },
     },
   });
 
-  const winPercentage = gamesWon / gamesPlayed;
+  // Calculate the win percentage as a decimal
+  const winPercentage =
+    gamesPlayed === 0
+      ? 0
+      : parseFloat(((gamesWon / gamesPlayed) * 100).toFixed(2));
 
-  return { winPercentage, gamesWon, gamesPlayed };
+  // Return the gamesPlayed, gamesWon, and winPercentage values
+  return { gamesPlayed, gamesWon, winPercentage };
 };
 
-export const getPlayerBestFriend = async (memorableId: string) => {
+export const getPlayerBestFriend = async (
+  memorableId: string,
+): Promise<User | null> => {
   // Find the game results where the user with the given memorable ID is a player
   const gameResults = await prisma.gameResult.findMany({
     where: {
@@ -65,6 +78,10 @@ export const getPlayerBestFriend = async (memorableId: string) => {
     },
   });
 
+  if (!gameResults) {
+    return null;
+  }
+
   // Extract the IDs of the opponents from the game results
   const opponentIds = gameResults.flatMap(result => {
     const opponents = result.teams
@@ -91,19 +108,29 @@ export const getPlayerBestFriend = async (memorableId: string) => {
     return counts;
   }, {});
 
+  if (Object.keys(opponentCounts).length === 0) {
+    return null;
+  }
+
   // Sort the opponents by the number of times the user has played against them
   // and return the one that the user has played against the most
-  const mostPlayedAgainst = opponents.sort(
+  const bestFriend = opponents.sort(
     (a, b) => opponentCounts[b.memorableId] - opponentCounts[a.memorableId],
   )[0];
 
-  return mostPlayedAgainst;
+  if (!bestFriend) {
+    return null;
+  }
+
+  return bestFriend;
 };
 
-export const getMostWinsAgainst = async (memorableId: string) => {
+export const getMostWinsAgainst = async (
+  memorableId: string,
+): Promise<User | null> => {
   // Find the user with the given memorable ID and include their teams in the result
   const user = await prisma.user
-    .findMany({
+    .findFirst({
       where: {
         teams: {
           some: {
@@ -128,7 +155,11 @@ export const getMostWinsAgainst = async (memorableId: string) => {
         },
       },
     })
-    .then(users => users[0]);
+    .then(user => user);
+
+  if (!user) {
+    return null;
+  }
 
   // Extract the IDs of the opponents from the won games
   const opponentIds = user.teams.flatMap(team => {
@@ -148,6 +179,10 @@ export const getMostWinsAgainst = async (memorableId: string) => {
     return counts;
   }, {});
 
+  if (Object.keys(opponentCounts).length === 0) {
+    return null;
+  }
+
   // Find the opponent that the user has won against the most
   const mostWonAgainst = Object.keys(opponentCounts).reduce(
     (max, opponentId) => {
@@ -158,14 +193,22 @@ export const getMostWinsAgainst = async (memorableId: string) => {
   );
 
   // Find the opponent with the ID of the opponent that the user has won against the most
-  return await prisma.user.findFirst({
+  const easyPickings = await prisma.user.findFirst({
     where: {
       memorableId: mostWonAgainst,
     },
   });
+
+  if (!easyPickings) {
+    return null;
+  }
+
+  return easyPickings;
 };
 
-export const getMostLostAgainst = async (memorableId: string) => {
+export const getMostLostAgainst = async (
+  memorableId: string,
+): Promise<User | null> => {
   // Find the user with the given memorable ID and include their game results in the result
   const user = await prisma.user
     .findFirst({
@@ -187,6 +230,10 @@ export const getMostLostAgainst = async (memorableId: string) => {
     })
     .then(user => user);
 
+  if (!user) {
+    return null;
+  }
+
   // Extract the IDs of the opponents from the lost games
   const opponentIds = user.teams.flatMap(team => {
     return team.gameResults
@@ -207,6 +254,10 @@ export const getMostLostAgainst = async (memorableId: string) => {
     return counts;
   }, {});
 
+  if (Object.keys(opponentCounts).length === 0) {
+    return null;
+  }
+
   // Find the opponent that the user has lost against the most
   const mostLostAgainst = Object.keys(opponentCounts).reduce(
     (max, opponentId) => {
@@ -217,9 +268,15 @@ export const getMostLostAgainst = async (memorableId: string) => {
   );
 
   // Find the opponent with the ID of the opponent that the user has lost against the most
-  return await prisma.user.findFirst({
+  const nemesis = await prisma.user.findFirst({
     where: {
       memorableId: mostLostAgainst,
     },
   });
+
+  if (!nemesis) {
+    return null;
+  }
+
+  return nemesis;
 };

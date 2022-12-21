@@ -176,58 +176,70 @@ export async function abandonMatch(matchId: number): Promise<boolean> {
   }
 }
 
+const findGameResults = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  where: any,
+  offset: number,
+  total: number,
+): Promise<GetResultsForLocationResult[]> => {
+  return prisma.gameResult.findMany({
+    where,
+    include: {
+      gameType: true,
+      winningTeam: {
+        select: {
+          cumulativeTeamId: true,
+        },
+      },
+      locationPlayed: {
+        select: {
+          name: true,
+        },
+      },
+      teams: {
+        select: {
+          cumulativeTeamId: true,
+          players: true,
+        },
+      },
+      ratingChanges: {
+        select: {
+          playerRanking: {
+            select: {
+              player: {
+                select: {
+                  memorableId: true,
+                },
+              },
+            },
+          },
+          ratingChangeAmount: true,
+        },
+      },
+    },
+    orderBy: {
+      endTime: 'desc',
+    },
+    skip: offset,
+    take: total,
+  });
+};
+
 export async function getResultsForLocation(
   locationId: number,
   offset = 0,
   total = 10,
 ): Promise<GetRecentMatchesData> {
-  const matches: GetResultsForLocationResult[] =
-    await prisma.gameResult.findMany({
-      where: {
-        locationPlayedId: locationId,
-        winningTeamId: {
-          not: null,
-        },
+  const matches: GetResultsForLocationResult[] = await findGameResults(
+    {
+      locationPlayedId: locationId,
+      winningTeamId: {
+        not: null,
       },
-      include: {
-        gameType: true,
-        winningTeam: {
-          select: {
-            cumulativeTeamId: true,
-          },
-        },
-        locationPlayed: {
-          select: {
-            name: true,
-          },
-        },
-        teams: {
-          select: {
-            cumulativeTeamId: true,
-            players: true,
-          },
-        },
-        ratingChanges: {
-          select: {
-            playerRanking: {
-              select: {
-                player: {
-                  select: {
-                    memorableId: true,
-                  },
-                },
-              },
-            },
-            ratingChangeAmount: true,
-          },
-        },
-      },
-      orderBy: {
-        endTime: 'desc',
-      },
-      skip: offset,
-      take: total,
-    });
+    },
+    offset,
+    total,
+  );
 
   return gameResultMapper.map(matches);
 }
@@ -235,66 +247,29 @@ export async function getResultsForLocation(
 export async function getResultsForPlayer(
   memorableId: string,
   offset = 0,
-  total = 10,
+  total = 20,
 ): Promise<GetRecentMatchesByMemorableIdData> {
-  const matches: GetResultsForLocationResult[] =
-    await prisma.gameResult.findMany({
-      where: {
-        teams: {
-          some: {
-            players: {
-              some: {
-                memorableId: memorableId,
-              },
+  const matches: GetResultsForLocationResult[] = await findGameResults(
+    {
+      teams: {
+        some: {
+          players: {
+            some: {
+              memorableId: memorableId,
             },
           },
         },
-        endTime: {
-          not: null,
-        },
-        winningTeamId: {
-          not: null,
-        },
       },
-      include: {
-        gameType: true,
-        winningTeam: {
-          select: {
-            cumulativeTeamId: true,
-          },
-        },
-        locationPlayed: {
-          select: {
-            name: true,
-          },
-        },
-        teams: {
-          select: {
-            cumulativeTeamId: true,
-            players: true,
-          },
-        },
-        ratingChanges: {
-          select: {
-            playerRanking: {
-              select: {
-                player: {
-                  select: {
-                    memorableId: true,
-                  },
-                },
-              },
-            },
-            ratingChangeAmount: true,
-          },
-        },
+      endTime: {
+        not: null,
       },
-      orderBy: {
-        endTime: 'desc',
+      winningTeamId: {
+        not: null,
       },
-      skip: offset,
-      take: total,
-    });
+    },
+    offset,
+    total,
+  );
 
   return gameResultMapper.map(matches);
 }

@@ -1,11 +1,10 @@
-import { Text, Link, Card, LocationLinkCard } from 'ui';
+import { Text, Card, LocationLinkCard } from 'ui';
 import { getApiInstance } from '@src/context/ApiContext';
 import Head from 'next/head';
 import {
   getLocationStaticPropsFactory,
   PagePropsWithLocation,
 } from '@src/utils/staticPropUtils';
-import { Routes } from '@src/types/routes';
 import { buildLocationUrl } from '@src/utils/routingUtils';
 
 export const getStaticProps = getLocationStaticPropsFactory(getApiInstance());
@@ -31,12 +30,6 @@ export default function Index({ locations }: PagePropsWithLocation) {
           ))}
         </section>
       </Card>
-
-      <hr />
-
-      <Link href={Routes.Lobby}>Play game</Link>
-
-      <Link href={Routes.SignUp}>Sign up</Link>
     </main>
   );
 }
