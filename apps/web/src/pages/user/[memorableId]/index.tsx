@@ -1,4 +1,4 @@
-import { GameType, GetStatsByMemorableIdData, User } from 'schema';
+import { GameType, User } from 'schema';
 import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { PagePropsWithLocation } from '@src/utils/staticPropUtils';
 import {
