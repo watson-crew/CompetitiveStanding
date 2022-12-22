@@ -1,4 +1,4 @@
-import { RankedPlayerTableCard } from '@src/../../../packages/ui';
+import RankedPlayerTableCard from '@src/components/atoms/RankedPlayerTableCard/RankedPlayerTableCard';
 import RankedPlayerTable from '@src/components/molecules/Table/RankedPlayerTable';
 import { ApiContext, getApiInstance } from '@src/context/ApiContext';
 import { PagePropsWithLocation } from '@src/utils/staticPropUtils';

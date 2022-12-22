@@ -25,7 +25,7 @@ const httpTrigger = async function (
 
   const { memorableId } = req.params;
 
-  log(`[func-get-player-stats] Got memorableId: ${memorableId}`);
+  log(`Got memorableId: ${memorableId}`);
 
   try {
     log(`Finding player stats by id ${memorableId}`);

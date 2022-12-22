@@ -4,4 +4,5 @@ export enum Routes {
   Lobby = '/game/lobby',
   CurrentMatch = '/game/play',
   SignUp = '/signup',
+  User = '/user/{memorableId}',
 }
