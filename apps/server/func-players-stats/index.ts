@@ -11,7 +11,7 @@ import {
 } from '@src/types';
 import { getFunctionLogger } from '@utils/logging';
 import {
-  getMostLostAgainst,
+  getMostLostTo,
   getMostWinsAgainst,
   getPlayerBaseStats,
   getPlayerBestFriend,
@@ -34,7 +34,7 @@ const httpTrigger = async function (
       getPlayerBaseStats(memorableId),
       getPlayerBestFriend(memorableId),
       getMostWinsAgainst(memorableId),
-      getMostLostAgainst(memorableId),
+      getMostLostTo(memorableId),
     ]);
 
     if (!baseStats && !bestFriend && !easyPickings && !nemesis) {
