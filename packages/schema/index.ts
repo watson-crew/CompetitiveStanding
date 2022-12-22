@@ -73,9 +73,19 @@ export interface GameType {
 
 export type GetAllLocationsData = Location[];
 
+export type GetAllUsersData = User[];
+
 export type GetLocationByUrlData = Location;
 
 export type GetRankingsForLocationData = Record<string, RankedPlayer[]>;
+
+export interface GetRecentMatchesByMemorableIdData {
+  results: GameResult[];
+  resources: {
+    /** @example {"abc":{"id":1,"memorableId":"abc","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"},"xyz":{"id":2,"memorableId":"xyz","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"}} */
+    players: Record<string, User>;
+  };
+}
 
 export interface GetRecentMatchesData {
   results: GameResult[];
@@ -83,6 +93,18 @@ export interface GetRecentMatchesData {
     /** @example {"abc":{"id":1,"memorableId":"abc","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"},"xyz":{"id":2,"memorableId":"xyz","firstName":"John","lastName":"James","location":"London","profilePicture":"https://i.pinimg.com/736x/f1/0f/f7/f10ff70a7155e5ab666bcdd1b45b726d.jpg"}} */
     players: Record<string, User>;
   };
+}
+
+export interface GetStatsByMemorableIdData {
+  /** @example 10 */
+  gamesPlayed: number;
+  /** @example 5 */
+  gamesWon: number;
+  /** @example 50 */
+  winPercentage: number;
+  bestFriend: User;
+  easyPickings: User;
+  nemesis: User;
 }
 
 export type GetUserByMemorableIdData = User;
@@ -229,6 +251,23 @@ export namespace User {
   }
 }
 
+export namespace Users {
+  /**
+   * No description
+   * @tags users
+   * @name GetAllUsers
+   * @summary Get all users
+   * @request GET:/users/all
+   */
+  export namespace GetAllUsers {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetAllUsersData;
+  }
+}
+
 export namespace Location {
   /**
    * No description
@@ -332,6 +371,43 @@ export namespace Matches {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = GetRankingsForLocationData;
+  }
+}
+
+export namespace Player {
+  /**
+   * No description
+   * @tags player, matches
+   * @name GetRecentMatchesByMemorableId
+   * @summary Get recent matches of a given player given their memorable id
+   * @request GET:/players/{memorableId}/matches
+   */
+  export namespace GetRecentMatchesByMemorableId {
+    export type RequestParams = {
+      /** @example "4e8" */
+      memorableId: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetRecentMatchesByMemorableIdData;
+  }
+  /**
+   * No description
+   * @tags player, stats
+   * @name GetStatsByMemorableId
+   * @summary Get stats of a given player given their memorable id
+   * @request GET:/players/{memorableId}/stats
+   */
+  export namespace GetStatsByMemorableId {
+    export type RequestParams = {
+      /** @example "4e8" */
+      memorableId: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = GetStatsByMemorableIdData;
   }
 }
 
@@ -543,6 +619,22 @@ export class ApiClient<
         ...params,
       }),
   };
+  users = {
+    /**
+     * No description
+     *
+     * @tags users
+     * @name GetAllUsers
+     * @summary Get all users
+     * @request GET:/users/all
+     */
+    getAllUsers: (params: RequestParams = {}) =>
+      this.request<GetAllUsersData, any>({
+        path: `/users/all`,
+        method: 'GET',
+        ...params,
+      }),
+  };
   location = {
     /**
      * No description
@@ -662,6 +754,40 @@ export class ApiClient<
         path: `/matches/rankings`,
         method: 'GET',
         query: query,
+        ...params,
+      }),
+  };
+  player = {
+    /**
+     * No description
+     *
+     * @tags player, matches
+     * @name GetRecentMatchesByMemorableId
+     * @summary Get recent matches of a given player given their memorable id
+     * @request GET:/players/{memorableId}/matches
+     */
+    getRecentMatchesByMemorableId: (
+      memorableId: string,
+      params: RequestParams = {},
+    ) =>
+      this.request<GetRecentMatchesByMemorableIdData, void>({
+        path: `/players/${memorableId}/matches`,
+        method: 'GET',
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags player, stats
+     * @name GetStatsByMemorableId
+     * @summary Get stats of a given player given their memorable id
+     * @request GET:/players/{memorableId}/stats
+     */
+    getStatsByMemorableId: (memorableId: string, params: RequestParams = {}) =>
+      this.request<GetStatsByMemorableIdData, void>({
+        path: `/players/${memorableId}/stats`,
+        method: 'GET',
         ...params,
       }),
   };

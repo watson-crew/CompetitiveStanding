@@ -12,11 +12,37 @@ import {
   WinningTeamDetails,
   ResultFilterType,
   RankedPlayer,
+  GetRecentMatchesByMemorableIdData,
 } from 'schema';
 import dayjs from 'dayjs';
 import executeRankingQuery, {
   RankingForSortTypeQueryParams,
 } from './raw/rankingRawQuery';
+
+type GameResultWhereInput =
+  | {
+      locationPlayedId: number;
+      winningTeamId: {
+        not: null;
+      };
+    }
+  | {
+      teams: {
+        some: {
+          players: {
+            some: {
+              memorableId: string;
+            };
+          };
+        };
+      };
+      endTime: {
+        not: null;
+      };
+      winningTeamId: {
+        not: null;
+      };
+    };
 
 function extractPlayerIds(teamId: string): string[] {
   if (teamId.length % 3 !== 0) throw new Error();
@@ -175,19 +201,14 @@ export async function abandonMatch(matchId: number): Promise<boolean> {
   }
 }
 
-export async function getResultsForLocation(
-  locationId: number,
-  offset = 0,
-  total = 10,
-): Promise<GetRecentMatchesData> {
+const findGameResults = async (
+  where: GameResultWhereInput,
+  offset: number,
+  total: number,
+): Promise<GetRecentMatchesData> => {
   const matches: GetResultsForLocationResult[] =
     await prisma.gameResult.findMany({
-      where: {
-        locationPlayedId: locationId,
-        winningTeamId: {
-          not: null,
-        },
-      },
+      where,
       include: {
         gameType: true,
         winningTeam: {
@@ -229,6 +250,51 @@ export async function getResultsForLocation(
     });
 
   return gameResultMapper.map(matches);
+};
+
+export async function getResultsForLocation(
+  locationId: number,
+  offset = 0,
+  total = 10,
+): Promise<GetRecentMatchesData> {
+  return await findGameResults(
+    {
+      locationPlayedId: locationId,
+      winningTeamId: {
+        not: null,
+      },
+    },
+    offset,
+    total,
+  );
+}
+
+export async function getResultsForPlayer(
+  memorableId: string,
+  offset = 0,
+  total = 20,
+): Promise<GetRecentMatchesByMemorableIdData> {
+  return await findGameResults(
+    {
+      teams: {
+        some: {
+          players: {
+            some: {
+              memorableId: memorableId,
+            },
+          },
+        },
+      },
+      endTime: {
+        not: null,
+      },
+      winningTeamId: {
+        not: null,
+      },
+    },
+    offset,
+    total,
+  );
 }
 
 const additionalParamsForSortType: Record<

@@ -1,4 +1,4 @@
-import { GameType, Location } from 'schema';
+import { GameType, Location, User } from 'schema';
 import { Routes } from '@src/types/routes';
 import { UrlObject } from 'url';
 
@@ -17,4 +17,8 @@ export const buildLobbyUrl = (
 
 export const buildLocationUrl = ({ urlPath }: Location): string => {
   return Routes.Location.replace('{locationUrlPath}', urlPath);
+};
+
+export const buildUserUrl = ({ memorableId }: User): string => {
+  return Routes.User.replace('{memorableId}', memorableId);
 };

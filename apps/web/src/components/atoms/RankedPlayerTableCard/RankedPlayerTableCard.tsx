@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { User } from 'schema';
-import PlayerImage from '../PlayerImage/PlayerImage';
+import PlayerImage from '../../../../../../packages/ui/atoms/PlayerImage/PlayerImage';
+import { buildUserUrl } from '@src/utils/routingUtils';
+
 export default function RankedPlayerTableCard({ user }: { user: User }) {
   const userName = `${user.firstName} ${user.lastName}`;
   return (
-    <Link href="#">
+    <Link href={buildUserUrl(user)}>
       <PlayerImage
         src={user.profilePicture}
         playerName={userName}
