@@ -19,6 +19,31 @@ import executeRankingQuery, {
   RankingForSortTypeQueryParams,
 } from './raw/rankingRawQuery';
 
+type GameResultWhereInput =
+  | {
+      locationPlayedId: number;
+      winningTeamId: {
+        not: null;
+      };
+    }
+  | {
+      teams: {
+        some: {
+          players: {
+            some: {
+              memorableId: string;
+            };
+          };
+        };
+      };
+      endTime: {
+        not: null;
+      };
+      winningTeamId: {
+        not: null;
+      };
+    };
+
 function extractPlayerIds(teamId: string): string[] {
   if (teamId.length % 3 !== 0) throw new Error();
 
@@ -177,52 +202,54 @@ export async function abandonMatch(matchId: number): Promise<boolean> {
 }
 
 const findGameResults = async (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  where: any,
+  where: GameResultWhereInput,
   offset: number,
   total: number,
-): Promise<GetResultsForLocationResult[]> => {
-  return prisma.gameResult.findMany({
-    where,
-    include: {
-      gameType: true,
-      winningTeam: {
-        select: {
-          cumulativeTeamId: true,
+): Promise<GetRecentMatchesData> => {
+  const matches: GetResultsForLocationResult[] =
+    await prisma.gameResult.findMany({
+      where,
+      include: {
+        gameType: true,
+        winningTeam: {
+          select: {
+            cumulativeTeamId: true,
+          },
         },
-      },
-      locationPlayed: {
-        select: {
-          name: true,
+        locationPlayed: {
+          select: {
+            name: true,
+          },
         },
-      },
-      teams: {
-        select: {
-          cumulativeTeamId: true,
-          players: true,
+        teams: {
+          select: {
+            cumulativeTeamId: true,
+            players: true,
+          },
         },
-      },
-      ratingChanges: {
-        select: {
-          playerRanking: {
-            select: {
-              player: {
-                select: {
-                  memorableId: true,
+        ratingChanges: {
+          select: {
+            playerRanking: {
+              select: {
+                player: {
+                  select: {
+                    memorableId: true,
+                  },
                 },
               },
             },
+            ratingChangeAmount: true,
           },
-          ratingChangeAmount: true,
         },
       },
-    },
-    orderBy: {
-      endTime: 'desc',
-    },
-    skip: offset,
-    take: total,
-  });
+      orderBy: {
+        endTime: 'desc',
+      },
+      skip: offset,
+      take: total,
+    });
+
+  return gameResultMapper.map(matches);
 };
 
 export async function getResultsForLocation(
@@ -230,7 +257,7 @@ export async function getResultsForLocation(
   offset = 0,
   total = 10,
 ): Promise<GetRecentMatchesData> {
-  const matches: GetResultsForLocationResult[] = await findGameResults(
+  return await findGameResults(
     {
       locationPlayedId: locationId,
       winningTeamId: {
@@ -240,8 +267,6 @@ export async function getResultsForLocation(
     offset,
     total,
   );
-
-  return gameResultMapper.map(matches);
 }
 
 export async function getResultsForPlayer(
@@ -249,7 +274,7 @@ export async function getResultsForPlayer(
   offset = 0,
   total = 20,
 ): Promise<GetRecentMatchesByMemorableIdData> {
-  const matches: GetResultsForLocationResult[] = await findGameResults(
+  return await findGameResults(
     {
       teams: {
         some: {
@@ -270,8 +295,6 @@ export async function getResultsForPlayer(
     offset,
     total,
   );
-
-  return gameResultMapper.map(matches);
 }
 
 const additionalParamsForSortType: Record<
