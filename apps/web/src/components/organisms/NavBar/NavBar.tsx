@@ -50,7 +50,6 @@ export default function NavBar({
           name={nav.name}
           isExpanded={menuContent?.name === nav.name}
           onClick={() => setNavBarContent(nav.name, nav.component)}
-          key={nav.name}
         />
       );
     }
