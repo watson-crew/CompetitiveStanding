@@ -12,6 +12,10 @@ export const buildLocationUrl = ({ urlPath }: Location): string => {
   return Routes.Location.replace('{locationUrlPath}', urlPath);
 };
 
+export const buildLocationResultsUrl = ({ urlPath }: Location): string => {
+  return Routes.LocationResults.replace('{locationUrlPath}', urlPath);
+};
+
 export const buildUserUrl = ({ memorableId }: User): string => {
   return Routes.User.replace('{memorableId}', memorableId);
 };

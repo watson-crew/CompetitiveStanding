@@ -1,5 +1,4 @@
-import { PrismaClient } from 'database';
-import { User } from 'schema';
+import { PrismaClient, User } from 'database';
 
 export const executePlayerBestFriendQuery = async (
   prisma: PrismaClient,

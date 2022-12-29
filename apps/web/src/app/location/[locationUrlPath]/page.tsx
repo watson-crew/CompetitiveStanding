@@ -3,6 +3,7 @@ import LocationPage from './LocationPage';
 import { LocationPageStaticParam, PageStaticParamProps } from './types';
 import { notFound } from 'next/navigation';
 import { Location } from 'schema';
+
 export async function generateStaticParams(): Promise<
   LocationPageStaticParam[]
 > {

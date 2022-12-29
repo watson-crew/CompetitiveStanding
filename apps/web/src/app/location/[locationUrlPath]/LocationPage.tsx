@@ -5,7 +5,10 @@ import { Card, GameResult, Text } from 'ui';
 import { ApiContext } from '@src/context/ApiContext';
 import { useContext, useEffect, useState } from 'react';
 import mapRecentResults from '@src/mappers/recentResultsMapper';
-import { buildLobbyUrl } from '@src/utils/routingUtils';
+import {
+  buildLobbyUrl,
+  buildLocationResultsUrl,
+} from '@src/utils/routingUtils';
 import AvailableGamesOverview from '@src/components/organisms/AvailableGamesOverview/AvailableGamesOverview';
 import RecentMatchesOverview from '@src/components/organisms/RecentMatchesOverview/RecentMatchesOverview';
 import TopPlayersOverview from '@src/components/organisms/TopPlayersOverview/TopPlayersOverview';
@@ -85,6 +88,7 @@ export default function LocationPage({ location }: LocationPageProps) {
           className="col-span-2 row-span-2 h-full w-full"
           loading={loadingRankedPlayers}
           rankedPlayers={rankedPlayers}
+          resultsPagePath={buildLocationResultsUrl(location)}
         />
 
         <RecentMatchesOverview

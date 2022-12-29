@@ -1,5 +1,6 @@
 import { twMerge } from 'tailwind-merge';
 import Card from 'ui/atoms/Card/Card';
+import Link from 'ui/atoms/Link/Link';
 import TopPlayersCard from 'ui/molecules/TopPlayerCard/TopPlayerCard';
 import { topPlayerCardType } from 'ui/molecules/TopPlayerCard/TopPlayerCard';
 import { CommonIcons, WithDefaultProps, WithLoadingProps } from 'ui/types';
@@ -14,6 +15,7 @@ import TextWithIcon from 'ui/molecules/TextWithIcon/TextWithIcon';
 type TopPlayersOverviewProps = WithDefaultProps<
   WithLoadingProps<{
     rankedPlayers?: Record<ResultFilterType, RankedPlayer[]>;
+    resultsPagePath: string;
   }>
 >;
 
@@ -21,6 +23,7 @@ export default function TopPlayersOverview({
   rankedPlayers,
   className,
   loading,
+  resultsPagePath,
 }: TopPlayersOverviewProps) {
   const cardsToRender: JSX.Element[] = [];
 
@@ -33,8 +36,6 @@ export default function TopPlayersOverview({
       icon: CommonIcons.Percentage,
     },
   ];
-
-  const router = useRouter();
 
   const [selectedPlayers, setSelectedPlayers] = useState<RankedPlayer[]>([]);
 
@@ -103,10 +104,7 @@ export default function TopPlayersOverview({
         <TextWithIcon textProps={{ type: 'h2' }} icon={CommonIcons.Podium}>
           Who&apos;s on top
         </TextWithIcon>
-        <Link
-          href={`${router.asPath}/results`}
-          className="text-l font-bold underline"
-        >
+        <Link href={resultsPagePath} className="text-l font-bold underline">
           Go to Leaderboard
         </Link>
         <SelectWithIcon
