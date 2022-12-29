@@ -238,7 +238,7 @@ jobs:
     env:
       API_BASE_URL: ${{ github.ref == 'refs/heads/main' && secrets.PRODUCTION_API_BASE_URL || secrets.QA_API_BASE_URL }}
     outputs:
-      frontend_url: ${{ steps.deploy.outputs.static_web_app_url }}
+      frontend_url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -250,6 +250,13 @@ jobs:
       #     key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
       - name: NPM I
         run: npm install
+      - name: Deploy frontend
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'competitive-standing-frontend-nonprod'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C3D35FE506F943D6A206D4F3B6FA8236 }}
+          package: './apps/web'
       - name: Deploy frontend
         id: deploy
         uses: Azure/static-web-apps-deploy@v1
