@@ -205,8 +205,8 @@ jobs:
   #       run: curl '${{ env.API_BASE_URL }}/users/jjp' -w "%{http_code}" -f -s -S -o /dev/null
     
   build-frontend:
-    needs:
-      - backend-smoke
+    # needs:
+    #   - backend-smoke
     runs-on: ubuntu-latest
     name: Build frontend
     env:
