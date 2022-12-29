@@ -34,6 +34,8 @@ export default function TopPlayersOverview({
     },
   ];
 
+  const router = useRouter();
+
   const [selectedPlayers, setSelectedPlayers] = useState<RankedPlayer[]>([]);
 
   const [filterType, setFilterType] = useState(options[0]);
@@ -101,6 +103,12 @@ export default function TopPlayersOverview({
         <TextWithIcon textProps={{ type: 'h2' }} icon={CommonIcons.Podium}>
           Who&apos;s on top
         </TextWithIcon>
+        <Link
+          href={`${router.asPath}/results`}
+          className="text-l font-bold underline"
+        >
+          Go to Leaderboard
+        </Link>
         <SelectWithIcon
           className="w-36 min-w-fit"
           value={filterType}

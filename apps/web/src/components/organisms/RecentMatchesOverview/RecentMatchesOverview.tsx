@@ -46,7 +46,7 @@ export default function RecentMatchesOverview({
     >
       <Text type="h2">Recent matches</Text>
       <div
-        className={`mt-2 flex h-full w-full flex-col gap-2 overflow-scroll ${
+        className={`mt-2	 flex h-full w-full flex-col gap-2 overflow-y-auto ${
           !hasRecentMatches ? 'items-center justify-center' : ''
         }`}
       >
