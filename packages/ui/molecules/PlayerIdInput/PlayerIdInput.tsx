@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import OtpField from 'react-otp-field';
 import Text from '../../atoms/Text/Text';

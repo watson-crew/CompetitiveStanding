@@ -39,6 +39,8 @@ import TextWithIcon from './molecules/TextWithIcon/TextWithIcon';
 import TeamHistoricResultsCard from './molecules/TeamHistoricResultsCard/TeamHistoricResultsCard';
 import TeamCard from './molecules/TeamCard/TeamCard';
 import Timer from './molecules/Timer/Timer';
+import ResultCard from './molecules/ResultCard/ResultCard';
+import GameSelectCard from './molecules/GameSelectCard/GameSelectCard';
 
 export {
   LocationLinkCard,
@@ -52,19 +54,14 @@ export {
   SelectInput,
   TextWithIcon,
   Timer,
+  ResultCard,
+  GameSelectCard,
 };
 
 // Organisms
-import AvailableGamesOverview from './organisms/AvailableGamesOverview/AvailableGamesOverview';
-import RecentMatchesOverview from './organisms/RecentMatchesOverview/RecentMatchesOverview';
 import TeamSelectionCard from './organisms/TeamSelectionCard/TeamSelectionCard';
-import TopPlayersOverview from './organisms/TopPlayersOverview/TopPlayersOverview';
 
-export {
-  AvailableGamesOverview,
-  RecentMatchesOverview,
-  TeamSelectionCard,
-  TopPlayersOverview,
-};
+export { TeamSelectionCard };
 
 export * from './types';
+export * from './utils/iconUtils';

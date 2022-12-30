@@ -1,3 +1,5 @@
+'use client';
+
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { CommonIcons, WithDefaultProps } from '../../types';

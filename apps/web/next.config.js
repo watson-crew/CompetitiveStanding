@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const withTM = require('next-transpile-modules')(['ui', 'schema']);
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 })
 
-module.exports = withBundleAnalyzer(withTM({
+/** @type {import('next').NextConfig} */
+module.exports = withBundleAnalyzer({
   reactStrictMode: false,
-  pageExtensions: ['tsx'],
   images: {
     domains: ['i.pinimg.com', 'ca.slack-edge.com'],
     unoptimized: true,
@@ -23,4 +22,8 @@ module.exports = withBundleAnalyzer(withTM({
       }
     ]
   },
-}));
+  experimental: {
+    transpilePackages: ["ui"],
+    appDir: true,
+  },
+});

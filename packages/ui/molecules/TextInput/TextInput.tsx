@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, FocusEvent, ChangeEvent } from 'react';
 import { twMerge } from 'tailwind-merge';
 import LoadingSpinner from '../../atoms/LoadingSpinner/LoadingSpinner';
