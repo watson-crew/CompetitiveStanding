@@ -223,11 +223,16 @@ jobs:
         run: npm install
       - name: Build
         run: npm run next:build -w web
-      - name: Cache Frontend
-        uses: actions/cache@v3
-        with:
+      - name: Upload artifact for deployment job	
+        uses: actions/upload-artifact@v2	
+        with:	
+          name: competitive-standing-frontend-${{ github.sha }}
           path: ${{ env.FRONTEND_LOCATION }}
-          key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
+      # - name: Cache Frontend
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{ env.FRONTEND_LOCATION }}
+      #     key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
 
   deploy-frontend:
     needs:
@@ -239,21 +244,25 @@ jobs:
     outputs:
       frontend_url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-      - name: Load frontend
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.FRONTEND_LOCATION }}
-          key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
+      # - uses: actions/checkout@v3
+      #   with:
+      #     submodules: true
+      # - name: Load frontend
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{ env.FRONTEND_LOCATION }}
+      #     key: ${{ runner.os }}-build-cache-frontend-${{ github.sha }}
+      - name: Download artifact from build job	
+        uses: actions/download-artifact@v2	
+        with:	
+          name: competitive-standing-frontend-${{ github.sha }}
       - name: Deploy frontend
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'competitive-standing-frontend-nonprod'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C3D35FE506F943D6A206D4F3B6FA8236 }}
-          package: './apps/web'
+          package: .
 
   smoke:
     name: Frontend smoke tests
